@@ -21,6 +21,11 @@ app.get("/", async (req, res) => {
 // 首页
 app.post("/message", async (req, res) => {
   console.log('post req');
+
+  res.send({
+    code: 0,
+    data: 'success',
+  });
 });
 
 app.get("/message", async (req, res) => {
