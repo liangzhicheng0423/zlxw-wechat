@@ -22,14 +22,18 @@ app.get("/", async (req, res) => {
 app.post("/message", async (req, res) => {
   console.log('post req --- body', req.body);
 
-  const responseMsg = `<xml>
-                          <ToUserName><![CDATA[${req.body.FromUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${req.body.ToUserName}]]></FromUserName>
-                          <CreateTime>${new Date().getTime()}</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[这是后台回复的内容]]></Content>
-                      </xml>`
+  const content = '1231321321231';
+
+  const responseMsg =  `<xml>
+  <ToUserName><![CDATA[${req.body.FromUserName}]]></ToUserName>
+  <FromUserName><![CDATA[${req.body.ToUserName}]]></FromUserName>
+  <CreateTime>${Date.now()}</CreateTime>
+  <MsgType><![CDATA[text]]></MsgType>
+  <Content><![CDATA[You said: ${content}]]></Content>
+</xml>`
   console.log('responseMsg',responseMsg)
+  res.set('Content-Type', 'text/xml');
+
   res.send (responseMsg)
 
   // res.send({
