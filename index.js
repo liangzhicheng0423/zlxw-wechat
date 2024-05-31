@@ -27,10 +27,21 @@ app.post("/message", async (req, res) => {
   console.log('post req --- MsgType', req.MsgType);
   console.log('post req --- MsgType', req.MsgType);
 
-  res.send({
-    code: 0,
-    data: 'success',
-  });
+
+  const responseMsg = `<xml>
+                          <ToUserName><![CDATA[${req.body.ToUserName}]]></ToUserName>
+                          <FromUserName><![CDATA[${req.body.FromUserName}]]></FromUserName>
+                          <CreateTime>${new Date().getTime()}</CreateTime>
+                          <MsgType><![CDATA[text]]></MsgType>
+                          <Content><![CDATA[这是后台回复的内容]]></Content>
+                      </xml>`
+  console.log(responseMsg)
+  res.send (responseMsg)
+
+  // res.send({
+  //   code: 0,
+  //   data: 'success',
+  // });
 });
 
 app.get("/message", async (req, res) => {
