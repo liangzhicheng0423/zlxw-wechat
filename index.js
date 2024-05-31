@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
 
 // 首页
 app.post("/message", async (req, res) => {
-  console.log('post req');
+  console.log('post req', req);
 
   res.send({
     code: 0,
