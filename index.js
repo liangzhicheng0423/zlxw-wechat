@@ -24,17 +24,14 @@ app.post("/message", async (req, res) => {
 
   const content = '1231321321231';
 
-  const responseMsg =  `<xml>
-  <ToUserName><![CDATA[${req.body.FromUserName}]]></ToUserName>
-  <FromUserName><![CDATA[${req.body.ToUserName}]]></FromUserName>
-  <CreateTime>${Date.now()}</CreateTime>
-  <MsgType><![CDATA[text]]></MsgType>
-  <Content><![CDATA[You said: ${content}]]></Content>
-</xml>`
-  console.log('responseMsg',responseMsg)
-  res.set('Content-Type', 'text/xml');
-
-  res.send (responseMsg)
+  res.send ({
+    "ToUserName": req.body.FromUserName,
+    "FromUserName": req.body.ToUserName,
+    "CreateTime": Date.now(), // 整型，例如：1648014186
+    "MsgType": "text",
+    "Content": content
+  }
+  )
 
   // res.send({
   //   code: 0,
