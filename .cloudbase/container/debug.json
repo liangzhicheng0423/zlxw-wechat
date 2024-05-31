@@ -1,5 +1,11 @@
 {
-  "containers": [],
+  "containers": [
+    {
+      "name": "zlxw-wechat",
+      "domain": "",
+      "ip": ""
+    }
+  ],
   "config": {
     "zlxw-wechat": {
       "containerPort": 80,
