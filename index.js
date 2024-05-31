@@ -20,7 +20,9 @@ app.get("/", async (req, res) => {
 
 // 首页
 app.post("/message", async (req, res) => {
-  console.log('post req', req);
+  console.log('post req --- x-wx-openid', req['x-wx-openid']);
+  console.log('post req --- data', req.data);
+  
 
   res.send({
     code: 0,
