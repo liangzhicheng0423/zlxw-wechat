@@ -22,7 +22,7 @@ app.get("/", async (req, res) => {
 app.post("/message", async (req, res) => {
   console.log('post req --- body', req.body);
 
-  const content = '1231321321231';
+  const content = '敬请期待';
 
   res.send ({
     "ToUserName": req.body.FromUserName,
