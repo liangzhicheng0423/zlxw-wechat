@@ -20,22 +20,16 @@ app.get("/", async (req, res) => {
 
 // 首页
 app.post("/message", async (req, res) => {
-  console.log('post req --- x-wx-openid', req['x-wx-openid']);
-  console.log('post req --- data', req.data);
   console.log('post req --- body', req.body);
-  console.log('post req --- content', req.Content);
-  console.log('post req --- MsgType', req.MsgType);
-  console.log('post req --- MsgType', req.MsgType);
-
 
   const responseMsg = `<xml>
-                          <ToUserName><![CDATA[${req.body.ToUserName}]]></ToUserName>
-                          <FromUserName><![CDATA[${req.body.FromUserName}]]></FromUserName>
+                          <ToUserName><![CDATA[${req.body.FromUserName}]]></ToUserName>
+                          <FromUserName><![CDATA[${req.body.ToUserName}]]></FromUserName>
                           <CreateTime>${new Date().getTime()}</CreateTime>
                           <MsgType><![CDATA[text]]></MsgType>
                           <Content><![CDATA[这是后台回复的内容]]></Content>
                       </xml>`
-  console.log(responseMsg)
+  console.log('responseMsg',responseMsg)
   res.send (responseMsg)
 
   // res.send({
