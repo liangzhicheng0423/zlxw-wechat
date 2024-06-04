@@ -53,6 +53,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
         // 查找用户
         const foundUser = await User.findOne({ where: { userId: shareUserId, subscribe_status: true } });
+        console.log('-=====3 foundUser', foundUser);
 
         if (foundUser) {
           // 更新奖励
