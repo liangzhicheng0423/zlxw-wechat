@@ -3,6 +3,8 @@ import fs from 'fs';
 import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, WeChatMessage } from './types';
 
+const request = require('request');
+
 export const getShareQRcode = async () => {
   console.log('请求');
   const response = await axios.post('https://api.weixin.qq.com/cgi-bin/qrcode/create', {
@@ -115,4 +117,28 @@ export const getBonus = (currentCount: number, strategy: 'subscribe' | 'scan') =
     type: bonusType,
     bonus: currentBonus?.[bonusType] ?? 0
   };
+};
+
+export const sendMessage = (userId: string) => {
+  return new Promise((resolve, reject) => {
+    request(
+      {
+        method: 'POST',
+        url: 'http://api.weixin.qq.com/cgi-bin/message/custom/send',
+        // 资源复用情况下，参数from_appid应写明发起方appid
+        // url: 'http://api.weixin.qq.com/cgi-bin/message/custom/send?from_appid=wxxxxx'
+        body: JSON.stringify({
+          touser: userId, // 一般是消息推送body的FromUserName值，为用户的openid
+          msgtype: 'text',
+          text: {
+            content: 'Hello World'
+          }
+        })
+      },
+      function (_: any, response: any) {
+        console.log('接口返回内容', response.body);
+        resolve(JSON.parse(response.body));
+      }
+    );
+  });
 };

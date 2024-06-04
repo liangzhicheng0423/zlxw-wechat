@@ -1,6 +1,7 @@
 import { User } from '../mysqlModal/user';
-import { BonusTypeEnum, EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
-import { createQRCode, downloadImage, getBonus, getReplyBaseInfo, uploadPermanentImageMedia } from '../util';
+import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
+import { createQRCode, downloadImage, getReplyBaseInfo, uploadPermanentImageMedia } from '../util';
+import { award } from './award';
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -28,6 +29,8 @@ const handleImage = (message: ImageMessage, res: any) => {};
 const handleEvent = async (message: EventMessage, res: any) => {
   const currentUserId = message.FromUserName;
   const event = message.Event;
+  const eventKey = message.EventKey;
+
   switch (event) {
     case 'subscribe':
       // 用户订阅
@@ -39,7 +42,6 @@ const handleEvent = async (message: EventMessage, res: any) => {
       // 如果找到了用户，可以在这里更新用户信息
       if (!created) await user.update({ subscribe_status: true });
 
-      const eventKey = message.EventKey;
       if (!eventKey) return;
 
       // 如果携带了EventKey，则证明该二维码为别人分享而来
@@ -49,21 +51,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
         // 获取分享者的用户id
         const shareUserId = shareUser[1];
 
-        // 查找用户
-        const foundUser = await User.findOne({ where: { userId: shareUserId, subscribe_status: true } });
-
-        if (foundUser) {
-          // 更新奖励
-          const formatUser = foundUser.toJSON();
-
-          const bonus = getBonus(formatUser.share_count, 'subscribe');
-          const update: { cash?: number; integral?: number } = {};
-
-          if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus;
-          if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus;
-
-          await foundUser.update(update);
-        }
+        await award(shareUserId, 'subscribe');
       }
 
       break;
@@ -75,6 +63,9 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
     case 'SCAN':
       // 用户扫描二维码
+
+      // 二维码中携带了上一个用户的id
+      if (eventKey) await award(eventKey, 'scan');
       break;
   }
 };
@@ -103,22 +94,4 @@ export const onMessage = async (req: any, res: any) => {
 
   // 处理消息
   await handleMessage(message, res);
-
-  // if (req.body.Content === '生成个人邀请码') {
-  //   // 请求永久二维码
-
-  //   const url = await createQRCode(req.body.FromUserName);
-
-  //   console.log('========= url: ', url);
-  // }
-
-  // const content = '敬请期待';
-
-  // res.send({
-  //   ToUserName: req.body.FromUserName,
-  //   FromUserName: req.body.ToUserName,
-  //   CreateTime: Date.now(), // 整型，例如：1648014186
-  //   MsgType: 'text',
-  //   Content: content
-  // });
 };
