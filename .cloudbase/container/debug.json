@@ -4,7 +4,8 @@
       "name": "zlxw-wechat",
       "domain": "",
       "ip": "",
-      "containerId": "aa25b307a7238b2eb122c469aefcb632d825a2a2310010e7fd30e60c8c1807a6"
+      "mode": "compose",
+      "containerId": "4b23d670f29c771bbb7efaeda48e675965ffa3eedfc13e70598f9bb1e17e99cc"
     }
   ],
   "config": {

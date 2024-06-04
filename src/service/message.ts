@@ -21,13 +21,15 @@ const handleText = async (message: TextMessage, res: any) => {
     res.send({
       ...baseReply,
       MsgType: 'image',
-      MediaId: updateRes.media_id
+      Image: {
+        MediaId: updateRes.media_id
+      }
     });
   } else {
     res.send({
       ...baseReply,
       MsgType: 'text',
-      MediaId: '敬请期待'
+      Content: '敬请期待'
     });
   }
 };
