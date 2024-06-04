@@ -57,7 +57,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
         if (foundUser) {
           // 更新奖励
-          const formatUser = foundUser.toJSON;
+          const formatUser = foundUser.toJSON();
           console.log('找到了', formatUser);
 
           // await foundUser.update({ integral: 'john_updated@example.com' });
