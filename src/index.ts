@@ -1,7 +1,10 @@
-const path = require("path");
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
+
+import path  from 'path';
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import { getShareQRcode } from './util';
+
 // const { init: initDB, Counter } = require("./db");
 
 const logger = morgan("tiny");
@@ -21,6 +24,12 @@ app.get("/", async (req, res) => {
 // 首页
 app.post("/message", async (req, res) => {
   console.log('post req --- body', req.body);
+
+  if(req.body.Content === '生成个人邀请码'){
+    // 请求永久二维码
+
+   await getShareQRcode()
+  }
 
   const content = '敬请期待';
 
