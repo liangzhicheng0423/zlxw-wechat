@@ -3,7 +3,7 @@ import path  from 'path';
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import { getShareQRcode } from './util';
+import { createQRCode, getShareQRcode } from './util';
 
 // const { init: initDB, Counter } = require("./db");
 
@@ -28,7 +28,9 @@ app.post("/message", async (req, res) => {
   if(req.body.Content === '生成个人邀请码'){
     // 请求永久二维码
 
-   await getShareQRcode()
+   const url = await createQRCode(req.body.FromUserName);
+
+   console.log('========= url: ', url)
   }
 
   const content = '敬请期待';
