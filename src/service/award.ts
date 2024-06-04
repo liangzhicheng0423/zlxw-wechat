@@ -22,7 +22,7 @@ export const award = async (userId: string, type: 'subscribe' | 'scan') => {
       text += `🎉 获得积分奖励: ${bonus.bonus}\n当前总积分: ${update.integral}`;
     }
 
-    if (bonus.type === BonusTypeEnum.Integral) {
+    if (bonus.type === BonusTypeEnum.Cash) {
       text += `🎉 获得现金奖励: ${bonus.bonus}\n当前提现余额: ¥${update.cash}`;
     }
 
