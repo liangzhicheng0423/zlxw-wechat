@@ -13,10 +13,19 @@ export const award = async (userId: string, type: 'subscribe' | 'scan') => {
     const bonus = getBonus(formatUser.share_count, type);
     const update: { cash?: number; integral?: number } = {};
 
-    if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus;
-    if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus;
+    if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus + (formatUser.cash ?? 0);
+    if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus + (formatUser.integral ?? 0);
 
     await foundUser.update(update);
-    await sendMessage(userId);
+    let text = '';
+    if (bonus.type === BonusTypeEnum.Integral) {
+      text += `🎉 获得积分奖励: ${bonus.bonus}\n当前总积分: ${update.integral}`;
+    }
+
+    if (bonus.type === BonusTypeEnum.Integral) {
+      text += `🎉 获得现金奖励: ${bonus.bonus}\n当前提现余额: ¥${update.cash}`;
+    }
+
+    await sendMessage(userId, text);
   }
 };

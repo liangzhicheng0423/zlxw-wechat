@@ -51,7 +51,8 @@ const handleEvent = async (message: EventMessage, res: any) => {
         // 获取分享者的用户id
         const shareUserId = shareUser[1];
 
-        await award(shareUserId, 'subscribe');
+        // 之前关注过，取消了又关注。不给奖励
+        if (created) await award(shareUserId, 'subscribe');
       }
 
       break;

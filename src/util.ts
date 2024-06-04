@@ -106,15 +106,10 @@ export const getBonus = (currentCount: number, strategy: 'subscribe' | 'scan') =
   };
 };
 
-export const sendMessage = async (userId: string) => {
-  // 发送请求
-  const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
-    touser: userId, // 一般是消息推送body的FromUserName值，为用户的openid
+export const sendMessage = async (userId: string, text?: string) => {
+  await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+    touser: userId,
     msgtype: 'text',
-    text: {
-      content: 'Hello World'
-    }
+    text: { content: text ?? '获得新积分' }
   });
-
-  console.log('通知后的结果', response.data);
 };
