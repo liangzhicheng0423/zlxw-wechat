@@ -3,19 +3,6 @@ import fs from 'fs';
 import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, WeChatMessage } from './types';
 
-const request = require('request');
-
-export const getShareQRcode = async () => {
-  console.log('请求');
-  const response = await axios.post('https://api.weixin.qq.com/cgi-bin/qrcode/create', {
-    action_name: 'QR_LIMIT_STR_SCENE',
-    action_info: { scene: { scene_str: 'test' } }
-  });
-
-  const res = response.data;
-  console.log('res', res);
-};
-
 const appId = 'xxx'; // 替换为你的微信公众号的 appId
 const appSecret = 'xxx'; // 替换为你的微信公众号的 appSecret
 
@@ -119,26 +106,15 @@ export const getBonus = (currentCount: number, strategy: 'subscribe' | 'scan') =
   };
 };
 
-export const sendMessage = (userId: string) => {
-  return new Promise((resolve, reject) => {
-    request(
-      {
-        method: 'POST',
-        url: 'http://api.weixin.qq.com/cgi-bin/message/custom/send',
-        // 资源复用情况下，参数from_appid应写明发起方appid
-        // url: 'http://api.weixin.qq.com/cgi-bin/message/custom/send?from_appid=wxxxxx'
-        body: JSON.stringify({
-          touser: userId, // 一般是消息推送body的FromUserName值，为用户的openid
-          msgtype: 'text',
-          text: {
-            content: 'Hello World'
-          }
-        })
-      },
-      function (_: any, response: any) {
-        console.log('接口返回内容', response.body);
-        resolve(JSON.parse(response.body));
-      }
-    );
+export const sendMessage = async (userId: string) => {
+  // 发送请求
+  const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+    touser: userId, // 一般是消息推送body的FromUserName值，为用户的openid
+    msgtype: 'text',
+    text: {
+      content: 'Hello World'
+    }
   });
+
+  console.log('通知后的结果', response.data);
 };
