@@ -38,3 +38,8 @@ export type WeChatMessage = TextMessage | ImageMessage | EventMessage;
 
 // 云托管消息推送处理函数类型
 export type MessageHandler = (message: WeChatMessage) => void;
+
+export enum BonusTypeEnum {
+  Cash = 'Cash', // 现金奖励
+  Integral = 'integral' // 积分
+}

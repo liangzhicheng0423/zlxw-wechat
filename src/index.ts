@@ -3,10 +3,6 @@ import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import { onMessage } from './service/message';
-import { MessageHandler, WeChatMessage } from './types';
-import { createQRCode, getShareQRcode } from './util';
-
-// const { init: initDB, Counter } = require("./db");
 
 const logger = morgan('tiny');
 
@@ -58,7 +54,6 @@ app.get('/api/wx_openid', async (req, res) => {
 const port = process.env.PORT || 80;
 
 async function bootstrap() {
-  // await initDB();
   app.listen(port, () => {
     console.log('启动成功', port);
   });

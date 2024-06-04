@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
-import { MessageHandler, WeChatMessage } from './types';
+import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
+import { BonusTypeEnum, WeChatMessage } from './types';
 
 export const getShareQRcode = async () => {
   console.log('请求');
@@ -79,9 +80,9 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
   });
 };
 
-// 上传永久图片素材函数
+// 上传临时图片素材函数
 export const uploadPermanentImageMedia = async (filePath: string) => {
-  const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/material/add_material';
+  const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/media/upload';
 
   try {
     // 构造上传参数
@@ -89,12 +90,9 @@ export const uploadPermanentImageMedia = async (filePath: string) => {
 
     // 发送请求
     const response = await axios.post(uploadUrl, formData, {
-      params: {
-        type: 'image' // 媒体文件类型，图片类型为 image
-      },
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+      // 媒体文件类型，图片类型为 image
+      params: { type: 'image' },
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
 
     // 返回上传结果
@@ -103,4 +101,18 @@ export const uploadPermanentImageMedia = async (filePath: string) => {
     console.error('Error uploading image:', error.message);
     throw error;
   }
+};
+
+// 获取用户奖励
+export const getBonus = (currentCount: number, strategy: 'subscribe' | 'scan') => {
+  // 获取当前定义的奖励类型
+  const bonusType = BonusStrategy[strategy]?.bonusType ?? BonusTypeEnum.Integral;
+
+  const LadderRewards = strategy === 'subscribe' ? SubscribeLadderRewards : ScanLadderRewards;
+
+  const currentBonus = LadderRewards.find(v => v.level >= currentCount);
+  return {
+    type: bonusType,
+    bonus: currentBonus?.[bonusType] ?? 0
+  };
 };
