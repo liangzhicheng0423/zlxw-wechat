@@ -1,6 +1,6 @@
 import { User } from '../mysqlModal/user';
-import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
-import { createQRCode, downloadImage, getReplyBaseInfo, uploadPermanentImageMedia } from '../util';
+import { BonusTypeEnum, EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
+import { createQRCode, downloadImage, getBonus, getReplyBaseInfo, uploadPermanentImageMedia } from '../util';
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -46,28 +46,33 @@ const handleEvent = async (message: EventMessage, res: any) => {
       const shareUser = eventKey.split('_');
 
       if (shareUser[0] === 'qrscene') {
-        console.log('-=====1');
         // 获取分享者的用户id
         const shareUserId = shareUser[1];
-        console.log('-=====2 shareUserId', shareUserId);
 
         // 查找用户
         const foundUser = await User.findOne({ where: { userId: shareUserId, subscribe_status: true } });
-        console.log('-=====3 foundUser', foundUser);
 
         if (foundUser) {
           // 更新奖励
           const formatUser = foundUser.toJSON();
-          console.log('找到了 ---', formatUser, '=----');
 
-          // await foundUser.update({ integral: 'john_updated@example.com' });
+          const bonus = getBonus(formatUser.share_count, 'subscribe');
+          const update: { cash?: number; integral?: number } = {};
+
+          if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus;
+          if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus;
+
+          await foundUser.update(update);
         }
       }
 
       break;
     case 'unsubscribe':
-      // 用户取消订阅
+      // 查找用户
+      const foundUser = await User.findOne({ where: { userId: currentUserId } });
+      if (foundUser) foundUser.update({ subscribe_status: true });
       break;
+
     case 'SCAN':
       // 用户扫描二维码
       break;
@@ -93,8 +98,8 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
 };
 
 export const onMessage = async (req: any, res: any) => {
-  console.log('post req --- body', req.body);
   const message: WeChatMessage = req.body;
+  console.log('收到消息', message);
 
   // 处理消息
   await handleMessage(message, res);
