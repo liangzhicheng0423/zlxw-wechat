@@ -11,7 +11,9 @@ export const award = async (userId: string, type: 'subscribe' | 'scan') => {
     const formatUser = foundUser.toJSON();
 
     const bonus = getBonus(formatUser.share_count, type);
-    const update: { cash?: number; integral?: number } = {};
+    const update: { cash?: number; integral?: number; share_count: number } = {
+      share_count: (formatUser.share_count ?? 0) + 1
+    };
 
     if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus + (formatUser.cash ?? 0);
     if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus + (formatUser.integral ?? 0);
@@ -19,7 +21,7 @@ export const award = async (userId: string, type: 'subscribe' | 'scan') => {
     await foundUser.update(update);
     let text = '';
     if (bonus.type === BonusTypeEnum.Integral) {
-      text += `🎉 获得积分奖励: ${bonus.bonus}\n当前总积分: ${update.integral}`;
+      text += `🎉 获得积分奖励: ${bonus.bonus}\n 当前总积分: ${update.integral}`;
     }
 
     if (bonus.type === BonusTypeEnum.Cash) {

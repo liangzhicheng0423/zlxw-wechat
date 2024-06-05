@@ -59,7 +59,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
     case 'unsubscribe':
       // 查找用户
       const foundUser = await User.findOne({ where: { userId: currentUserId } });
-      if (foundUser) foundUser.update({ subscribe_status: true });
+      if (foundUser) foundUser.update({ subscribe_status: false });
       break;
 
     case 'SCAN':

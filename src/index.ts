@@ -1,7 +1,6 @@
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
-import path from 'path';
 import { onMessage } from './service/message';
 
 const logger = morgan('tiny');
@@ -11,11 +10,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(logger);
-
-// 首页
-app.get('/', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 app.post('/message', onMessage);
 
