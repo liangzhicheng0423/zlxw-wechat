@@ -1,6 +1,6 @@
-import Jimp from 'Jimp';
 import axios from 'axios';
 import fs from 'fs';
+import Jimp from 'jimp';
 import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, WeChatMessage } from './types';
 
