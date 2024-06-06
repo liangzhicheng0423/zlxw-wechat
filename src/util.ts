@@ -138,6 +138,6 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
     return outputImagePath;
   } catch (error) {
     console.error('Error merging images:', error);
-    return outputImagePath;
+    return '';
   }
 };
