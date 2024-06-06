@@ -1,3 +1,4 @@
+import Jimp from 'Jimp';
 import axios from 'axios';
 import fs from 'fs';
 import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
@@ -112,4 +113,31 @@ export const sendMessage = async (userId: string, text?: string) => {
     msgtype: 'text',
     text: { content: text ?? '获得新积分' }
   });
+};
+
+export const mergeImages = async (image1Path: string, image2Path: string, outputImagePath: string) => {
+  try {
+    const [image1, image2] = await Promise.all([Jimp.read(image1Path), Jimp.read(image2Path)]);
+
+    const combinedWidth = image2.bitmap.width;
+    const combinedHeight = image2.bitmap.height;
+
+    image1.resize(176, 176); // 也可以使用 image.resize(Jimp.AUTO, height) 保持宽高比
+
+    // 设置压缩质量（仅适用于 JPEG 图片）
+    image1.quality(100); // 质量范围是 0-100
+
+    const combinedImage = new Jimp(combinedWidth, combinedHeight);
+
+    combinedImage.composite(image2, 0, 0);
+    combinedImage.composite(image1, 506, 1106);
+
+    await combinedImage.writeAsync(outputImagePath);
+
+    console.log('Image merged successfully:', outputImagePath);
+    return outputImagePath;
+  } catch (error) {
+    console.error('Error merging images:', error);
+    return outputImagePath;
+  }
 };

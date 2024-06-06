@@ -1,6 +1,6 @@
 import { User } from '../mysqlModal/user';
 import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
-import { createQRCode, downloadImage, getReplyBaseInfo, uploadPermanentImageMedia } from '../util';
+import { createQRCode, downloadImage, getReplyBaseInfo, mergeImages, uploadPermanentImageMedia } from '../util';
 import { award } from './award';
 
 const handleText = async (message: TextMessage, res: any) => {
@@ -13,7 +13,11 @@ const handleText = async (message: TextMessage, res: any) => {
     const qrCodeUrl = await createQRCode(userId);
 
     // 下载二维码
-    const path = await downloadImage(qrCodeUrl, userId);
+    const qrCodePath = await downloadImage(qrCodeUrl, userId);
+
+    const outPath = `./tmp/image_qrcode_${Date.now()}.jpeg`;
+    // 合成背景图
+    const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
 
     // 上传至素材库
     const updateRes = await uploadPermanentImageMedia(path);
