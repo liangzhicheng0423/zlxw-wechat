@@ -134,7 +134,6 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 
     await combinedImage.writeAsync(outputImagePath);
 
-    console.log('Image merged successfully:', outputImagePath);
     return outputImagePath;
   } catch (error) {
     console.error('Error merging images:', error);
