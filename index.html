@@ -18,16 +18,16 @@
       window.nowtime = new Date().getTime()
       localStorage.setItem('WERUN_NOID',window.nowtime)
     }
-    toquery() // 设置后查询一下该订单的状态
+    // toquery() // 设置后查询一下该订单的状态
     console.log('支付ID',window.nowtime)
   }
   /**
    * 用本地存储的ID发起支付订单，设置1分钱
    */
-  async function toorder(){
-    const res = await callapi('unifiedOrder')
+  async function order(){
+    const res = await callAPI('unifiedOrder')
     if((res.respdata||{}).payment!=null){
-      toquery() // 发起订单后查询一下该订单的状态
+      // toquery() // 发起订单后查询一下该订单的状态
       const { timeStamp, signType, paySign, package, nonceStr } = res.respdata.payment
       wx.chooseWXPay({ // 微信SDK传入支付信息
         timestamp: parseInt(timeStamp),
@@ -44,22 +44,22 @@
   /**
    * 用本地存储的ID查询订单的付款状态
    */
-  async function toquery(){
+  async function toquery1(){
     document.getElementById('show').innerHTML = ''
-    const res = await callapi('queryorder')
+    const res = await callAPI('queryorder')
     document.getElementById('show').innerHTML = (res.respdata.err_code_des || res.respdata.trade_state_desc)
   }
   /**
    * 用本地存储的ID发起订单退款
    */
   async function torefund(){
-    const res = await callapi('refund')
-    toquery() // 退款后查询一下该订单的状态
+    const res = await callAPI('refund')
+    // toquery() // 退款后查询一下该订单的状态
   }
   /**
    * 用本地存储的ID发起订单退款
    */
-  async function callapi(api=null){
+  async function callAPI(api=null){
     // 向云托管服务发起调用
     if(api!=null){
       const callres = await window.app.callContainer({
@@ -81,6 +81,7 @@
       return null
     }
   }
+
   window.onload = async function () {
     const vConsole = new window.VConsole();
     // 使用登录模块，传入信息开始授权登录过程
@@ -90,17 +91,18 @@
       appid: 'wxd00871cb6294c274',           // 必填，公众号appid，将以此 appid 名义进行请求
       envid: 'prod-0g0wjgnwbf66fcf0',                          // 选填，资源方微信云托管环境，如果传递此参数则会返回初始化的 cloud 操作对象
       // resourceAppid: '资源共享方APPID，无共享则同appid一致',   // 选填，如果是资源复用模式，需要填环境共享下资源方微信账号
-      // signature: window.location.href,       // 选填，如果需要微信 SDK 的API方法，则填写要使用的地址，会返回 signature 签名对象，envid参数不填则无效。
+      signature: window.location.href,       // 选填，如果需要微信 SDK 的API方法，则填写要使用的地址，会返回 signature 签名对象，envid参数不填则无效。
     })
     console.log({result})
     if (result.ret === 0) {                 // ret为0时，代表登录已经完成，可以进行业务操作
       window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
+
       // 初始化支付ID
-      initnoid()
+      initnoid();
+
       // 监听签名注册成功
-      wx.ready(function () {
-        console.log('WX监听完成')
-      })
+      wx.ready( ()=> console.log('WX监听完成'));
+
       // 发起签名注册，是一个异步操作，成功会触发wx.ready
       wx.config({
         debug: true,
@@ -116,10 +118,9 @@
     }
   }
 </script>
+
 <div>
-  <!-- <button onclick="initnoid(true)">更新支付ID</button> -->
-  <button onclick="toorder()">发起支付</button>
-  <!-- <button onclick="toquery()">查询订单</button>
-  <button onclick="torefund()">发起退款</button>  -->
+  <button onclick="order()">发起支付</button>
 </div>
+
 <div id="show"></div>
