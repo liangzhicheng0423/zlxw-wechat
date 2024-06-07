@@ -55,14 +55,20 @@ const handleEvent = async (message: EventMessage, res: any) => {
         const update: { subscribe_status: boolean; pId?: string } = { subscribe_status: true };
         const formatUser = user.toJSON();
 
-        if (!formatUser.pId) update.pId = eventKey;
+        if (!formatUser.pId && eventKey) {
+          const shareUser = eventKey.split('_');
+
+          if (shareUser[0] === 'qrscene') {
+            // 获取分享者的用户id
+            const shareUserId = shareUser[1];
+            if (shareUserId !== currentUserId) update.pId = shareUserId;
+          }
+        }
 
         await user.update(update);
       }
 
       if (!eventKey) return;
-
-      if (eventKey === currentUserId) return;
 
       // 如果携带了EventKey，则证明该二维码为别人分享而来
       const shareUser = eventKey.split('_');
@@ -70,6 +76,8 @@ const handleEvent = async (message: EventMessage, res: any) => {
       if (shareUser[0] === 'qrscene') {
         // 获取分享者的用户id
         const shareUserId = shareUser[1];
+
+        if (shareUserId === currentUserId) return;
 
         // 只有新增关注才给予奖励
         if (created) await award(shareUserId, 'subscribe');
