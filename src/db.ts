@@ -24,7 +24,7 @@ export const Counter = sequelize.define('Counter', {
 
 (async () => {
   try {
-    await sequelize.sync();
+    // await sequelize.sync();
     console.log('Database synchronized successfully.');
   } catch (error) {
     console.error('Error synchronizing database:', error);
