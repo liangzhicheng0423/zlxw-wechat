@@ -8,6 +8,8 @@ export const unifiedorder = async (req: any, res: any) => {
   const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
   const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
 
+  console.log('openid: ', openid);
+
   const option = {
     body: '测试', // 订单描述
     out_trade_no: `WERUNMP_${Date.now()}`, // 自定义订单号
