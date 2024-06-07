@@ -14,7 +14,7 @@ app.use(cors());
 app.use(logger);
 
 /** 服务号接收消息 */
-app.post('/message', onMessage);
+app.post('/message', unifiedorder);
 
 // 首页
 app.get('/', async (req, res) => {
@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
 });
 
 /** 统一下单 */
-app.post('/unifiedorder', onMessage);
+app.post('/unifiedorder', unifiedorder);
 
 app.post('/payRes', unifiedorderCb);
 
