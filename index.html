@@ -103,6 +103,7 @@
       })
       // 发起签名注册，是一个异步操作，成功会触发wx.ready
       wx.config({
+        debug: true,
         appId: 'wxd00871cb6294c274',                   // 微信公众号appid
         timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
         nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取

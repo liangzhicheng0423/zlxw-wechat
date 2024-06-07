@@ -14,7 +14,7 @@ app.use(cors());
 app.use(logger);
 
 /** 服务号接收消息 */
-app.post('/message', unifiedorder);
+app.post('/message', onMessage);
 
 // 首页
 app.get('/', async (req, res) => {
