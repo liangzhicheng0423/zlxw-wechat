@@ -1,7 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import Jimp from 'jimp';
-import { BonusStrategy, ScanLadderRewards, SubscribeLadderRewards } from './constant';
+import { BonusStrategy, OrderLadderRewards, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, WeChatMessage } from './types';
 
 const appId = 'xxx'; // 替换为你的微信公众号的 appId
@@ -94,11 +94,11 @@ export const uploadPermanentImageMedia = async (filePath: string) => {
 };
 
 // 获取用户奖励
-export const getBonus = (currentCount: number, strategy: 'subscribe' | 'scan') => {
+export const getBonus = (currentCount: number, strategy: 'subscribe' | 'order') => {
   // 获取当前定义的奖励类型
   const bonusType = BonusStrategy[strategy]?.bonusType ?? BonusTypeEnum.Integral;
 
-  const LadderRewards = strategy === 'subscribe' ? SubscribeLadderRewards : ScanLadderRewards;
+  const LadderRewards = strategy === 'subscribe' ? SubscribeLadderRewards : OrderLadderRewards;
 
   const currentBonus = LadderRewards.find(v => v.level >= currentCount);
   return {

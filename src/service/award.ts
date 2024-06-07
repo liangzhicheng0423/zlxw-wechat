@@ -2,7 +2,7 @@ import { User } from '../mysqlModal/user';
 import { BonusTypeEnum } from '../types';
 import { getBonus, sendMessage } from '../util';
 
-export const award = async (userId: string, type: 'subscribe' | 'scan') => {
+export const award = async (userId: string, type: 'subscribe' | 'order') => {
   // 查找用户
   const foundUser = await User.findOne({ where: { userId: userId, subscribe_status: true } });
 
@@ -21,11 +21,11 @@ export const award = async (userId: string, type: 'subscribe' | 'scan') => {
     await foundUser.update(update);
     let text = '';
     if (bonus.type === BonusTypeEnum.Integral) {
-      text += `🎉 获得积分奖励: ${bonus.bonus}\n 当前总积分: ${update.integral}`;
+      text += `🎉 获得积分奖励: ${bonus.bonus}\n🏆 当前剩余积分: ${update.integral}`;
     }
 
     if (bonus.type === BonusTypeEnum.Cash) {
-      text += `🎉 获得现金奖励: ${bonus.bonus}\n当前提现余额: ¥${update.cash}`;
+      text += `🎉 获得现金奖励: ${bonus.bonus}\n🏆 当前提现余额: ¥${update.cash}`;
     }
 
     await sendMessage(userId, text);

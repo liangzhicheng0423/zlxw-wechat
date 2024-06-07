@@ -15,6 +15,11 @@ export const User = sequelize.define('User', {
     unique: true,
     allowNull: false
   },
+  pId: {
+    type: DataTypes.CHAR(50),
+    unique: true,
+    allowNull: true
+  },
   integral: {
     type: DataTypes.INTEGER,
     allowNull: true,

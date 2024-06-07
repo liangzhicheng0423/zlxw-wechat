@@ -1,6 +1,13 @@
 import { User } from '../mysqlModal/user';
 import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
-import { createQRCode, downloadImage, getReplyBaseInfo, mergeImages, uploadPermanentImageMedia } from '../util';
+import {
+  createQRCode,
+  downloadImage,
+  getReplyBaseInfo,
+  mergeImages,
+  sendMessage,
+  uploadPermanentImageMedia
+} from '../util';
 import { award } from './award';
 
 const handleText = async (message: TextMessage, res: any) => {
@@ -40,13 +47,22 @@ const handleEvent = async (message: EventMessage, res: any) => {
       // 用户订阅
       const [user, created] = await User.findOrCreate({
         where: { userId: currentUserId },
-        defaults: { subscribe_status: true }
+        defaults: { subscribe_status: true, pId: eventKey }
       });
 
       // 如果找到了用户，可以在这里更新用户信息
-      if (!created) await user.update({ subscribe_status: true });
+      if (!created) {
+        const update: { subscribe_status: boolean; pId?: string } = { subscribe_status: true };
+        const formatUser = user.toJSON();
+
+        if (!formatUser.pId) update.pId = eventKey;
+
+        await user.update(update);
+      }
 
       if (!eventKey) return;
+
+      if (eventKey === currentUserId) return;
 
       // 如果携带了EventKey，则证明该二维码为别人分享而来
       const shareUser = eventKey.split('_');
@@ -55,7 +71,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
         // 获取分享者的用户id
         const shareUserId = shareUser[1];
 
-        // 之前关注过，取消了又关注。不给奖励
+        // 只有新增关注才给予奖励
         if (created) await award(shareUserId, 'subscribe');
       }
 
@@ -63,14 +79,15 @@ const handleEvent = async (message: EventMessage, res: any) => {
     case 'unsubscribe':
       // 查找用户
       const foundUser = await User.findOne({ where: { userId: currentUserId } });
+
       if (foundUser) foundUser.update({ subscribe_status: false });
       break;
 
     case 'SCAN':
-      // 用户扫描二维码
+      if (eventKey === currentUserId) return;
 
       // 二维码中携带了上一个用户的id
-      if (eventKey) await award(eventKey, 'scan');
+      if (eventKey) await sendMessage(currentUserId, '付款链接');
       break;
   }
 };
@@ -95,7 +112,6 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
 
 export const onMessage = async (req: any, res: any) => {
   const message: WeChatMessage = req.body;
-  console.log('收到消息', message);
 
   // 处理消息
   await handleMessage(message, res);
