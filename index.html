@@ -25,7 +25,9 @@
    * 用本地存储的ID发起支付订单，设置1分钱
    */
   async function order(){
-    const res = await callAPI('unifiedOrder')
+    const res = await callAPI('unifiedorder')
+
+    console.log('res: ', res)
     if((res.respdata||{}).payment!=null){
       // toquery() // 发起订单后查询一下该订单的状态
       const { timeStamp, signType, paySign, package, nonceStr } = res.respdata.payment
@@ -75,7 +77,7 @@
           // noid是每个接口必备的，发起支付和退款才需要其他的，具体看后端服务接收逻辑
         }
       })
-      console.log(callres)
+      console.log('callres', callres)
       return callres.data||{}
     } else {
       return null
