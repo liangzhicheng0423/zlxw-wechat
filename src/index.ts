@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
 });
 
 /** 统一下单 */
-app.post('/unifiedorder', unifiedorder);
+app.post('/unifiedorder', onMessage);
 
 app.post('/payRes', unifiedorderCb);
 
