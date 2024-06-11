@@ -53,4 +53,5 @@ async function bootstrap() {
   });
 }
 
+create();
 bootstrap();
