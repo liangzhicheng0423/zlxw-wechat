@@ -56,20 +56,20 @@ export const Menu = {
 export const PayBody = {
   [Product.Dan]: {
     [VipLevel.Ten]: '',
-    [VipLevel.Year]: '购买年卡 899元/年（约75元/月）',
-    [VipLevel.Quarter]: '购买季卡 299元/季（约100元/月）',
+    [VipLevel.Year]: '购买年卡 899元/年（75元/月）',
+    [VipLevel.Quarter]: '购买季卡 299元/季（100元/月）',
     [VipLevel.Month]: '购买月卡 129元/月'
   },
   [Product.GPT4]: {
     [VipLevel.Ten]: '10份年卡 2480元/年',
-    [VipLevel.Year]: '购买年卡 249元/年（约20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（约16元/月）',
+    [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（16元/月）',
     [VipLevel.Month]: '购买月卡 79元/月'
   },
   [Product.Midjourney]: {
     [VipLevel.Ten]: '10份年卡 2480元/年',
-    [VipLevel.Year]: '购买年卡 249元/年（约20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（约16元/月）',
+    [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（16元/月）',
     [VipLevel.Month]: '购买月卡 79元/月'
   }
 };

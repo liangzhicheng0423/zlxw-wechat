@@ -36,9 +36,13 @@
     // 获取当前页面的 URL
     const url = new URL(window.location.href);
 
+    console.log('url', url)
+
     // 创建 URLSearchParams 对象
     const params = new URLSearchParams(url.search);
 
+
+    console.log('params', params)
     // 获取参数值
     const level = params.get('level');
     console.log('level', level)
