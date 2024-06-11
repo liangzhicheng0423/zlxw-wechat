@@ -59,6 +59,8 @@ export const unifiedorder = async (req: any, res: any) => {
 
   const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
 
+  console.log('unifiedorder response ======', response);
+
   res.send(response.data);
 };
 
