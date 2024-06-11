@@ -119,6 +119,8 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
 export const onMessage = async (req: any, res: any) => {
   const message: WeChatMessage = req.body;
 
+  console.log('message: ', message);
+
   // 处理消息
   await handleMessage(message, res);
 };

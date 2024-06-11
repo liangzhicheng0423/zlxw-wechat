@@ -24,10 +24,9 @@ export const unifiedorder = async (req: any, res: any) => {
       path: '/payRes' // 回调的路径
     }
   };
-  console.log('请求参数:', option);
+
   const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
 
-  console.log('[unifiedOrder]响应体', response.data);
   res.send(response.data);
 };
 

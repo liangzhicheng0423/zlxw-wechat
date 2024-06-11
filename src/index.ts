@@ -2,8 +2,10 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
+import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
+import { share } from './service/share';
 
 const logger = morgan('tiny');
 
@@ -15,6 +17,8 @@ app.use(logger);
 
 /** 服务号接收消息 */
 app.post('/message', onMessage);
+
+app.get('/share', share);
 
 // 首页
 app.get('/', async (req, res) => {
@@ -28,7 +32,11 @@ app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
 /** 统一下单 */
 app.post('/unifiedorder', unifiedorder);
 
+/** 支付成回调 */
 app.post('/payRes', unifiedorderCb);
+
+/** 自定义菜单 */
+app.post('create', create);
 
 // 小程序调用，获取微信 Open ID
 http: app.get('/api/wx_openid', async (req, res) => {
