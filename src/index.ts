@@ -5,7 +5,6 @@ import path from 'path';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
-import { share } from './service/share';
 
 const logger = morgan('tiny');
 
@@ -17,8 +16,6 @@ app.use(logger);
 
 /** 服务号接收消息 */
 app.post('/message', onMessage);
-
-app.get('/share', share);
 
 // 首页
 app.get('/', async (req, res) => {
