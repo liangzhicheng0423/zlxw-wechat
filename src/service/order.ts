@@ -85,46 +85,50 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
   let is_award = false;
 
-  // 奖励其父用户
-  const user = await User.findOne({ where: { user_id: userId } });
+  try {
+    // 奖励其父用户
+    const user = await User.findOne({ where: { user_id: userId } });
 
-  const formatUser = user?.toJSON();
-  console.log('--------- 4', formatUser);
+    const formatUser = user?.toJSON();
+    console.log('--------- 4', formatUser);
 
-  if (formatUser?.p_id) {
-    const shareUser = await User.findOne({ where: { user_id: formatUser.p_id } });
-    const formatShareUser = shareUser?.toJSON();
-    console.log('--------- 4.5', formatShareUser);
+    if (formatUser?.p_id) {
+      const shareUser = await User.findOne({ where: { user_id: formatUser.p_id } });
+      const formatShareUser = shareUser?.toJSON();
+      console.log('--------- 4.5', formatShareUser);
 
-    if (formatShareUser && !formatUser.is_award) {
-      await award(formatShareUser.user_id, 'order');
-      is_award = true;
+      if (formatShareUser && !formatUser.is_award) {
+        await award(formatShareUser.user_id, 'order');
+        is_award = true;
+      }
     }
+
+    const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
+
+    // 创建用户
+    await User.upsert({
+      user_id: userId,
+      p_id: formatUser?.p_id ?? null,
+      is_award,
+      is_vip: true,
+      vip_level: level,
+      expire_date: getExpireDate(date, level as VipLevel),
+      subscribe_status: true
+    });
+
+    console.log('--------- 5', getExpireDate(date, level as VipLevel));
+
+    await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
+
+    /** TODO: 后续要更换成图片 */
+    res.send({
+      ToUserName: 'gh_c1c4f430f4a9',
+      FromUserName: userId,
+      CreateTime: Date.now(),
+      MsgType: 'text',
+      Content: '【客服二维码】'
+    });
+  } catch (error) {
+    console.log('error:', error);
   }
-
-  const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
-
-  // 创建用户
-  await User.upsert({
-    user_id: userId,
-    p_id: formatUser?.p_id ?? null,
-    is_award,
-    is_vip: true,
-    vip_level: level,
-    expire_date: getExpireDate(date, level as VipLevel),
-    subscribe_status: true
-  });
-
-  console.log('--------- 5', getExpireDate(date, level as VipLevel));
-
-  await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
-
-  /** TODO: 后续要更换成图片 */
-  res.send({
-    ToUserName: 'gh_c1c4f430f4a9',
-    FromUserName: userId,
-    CreateTime: Date.now(),
-    MsgType: 'text',
-    Content: '【客服二维码】'
-  });
 };
