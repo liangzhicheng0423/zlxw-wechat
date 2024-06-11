@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Menu, MenuKey, PayBody } from '../constant';
-import { WeChatMessage } from '../types';
-import { getReplyBaseInfo } from '../util';
+import { Product, VipLevel, WeChatMessage } from '../types';
+import { getOrderUrl, getReplyBaseInfo, sendMessage } from '../util';
 
 export const create = () => {
   axios
@@ -16,17 +16,16 @@ export const create = () => {
 
 export const menuEvent = async (message: WeChatMessage, eventKey: string, res: any) => {
   const baseReply = getReplyBaseInfo(message);
+  const danText = `${getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan })}
+
+${getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan })}
+
+${getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })}`;
+
   switch (eventKey) {
     case MenuKey.Dan:
-      res.send({
-        ...baseReply,
-        MsgType: 'text',
-        Content: `<a href="https://wechat.ai-xiaowu.com?type=year">${PayBody.year}</a>
+      await sendMessage(message.FromUserName, danText);
 
-        <a href="https://wechat.ai-xiaowu.com?type=quarter">${PayBody.quarter}</a>
-
-        <a href="https://wechat.ai-xiaowu.com?type=month">${PayBody.month}</a>`
-      });
       /** TODO: 后续要更换成图片 */
       res.send({ ...baseReply, MsgType: 'text', Content: '【Dan产品介绍页】' });
       break;

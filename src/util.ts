@@ -1,8 +1,10 @@
 import axios from 'axios';
 import fs from 'fs';
 import Jimp from 'jimp';
+import moment, { Moment } from 'moment';
+import { features } from 'process';
 import { BonusStrategy, OrderLadderRewards, SubscribeLadderRewards } from './constant';
-import { BonusTypeEnum, WeChatMessage } from './types';
+import { BonusTypeEnum, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
 const appId = 'xxx'; // 替换为你的微信公众号的 appId
 const appSecret = 'xxx'; // 替换为你的微信公众号的 appSecret
@@ -141,6 +143,50 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
   }
 };
 
-export const generateOrderNumber = () => {
-  return `WE_RUN_MP_${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}`;
+export const generateOrderNumber = (level: VipLevel, product: Product) => {
+  return `WE_RUN_MP_${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}_${level}_${product}`;
+};
+
+export const getLevelAndProduct = (tradeNo: string) => {
+  const arr = tradeNo.split('_');
+  const level = arr[arr.length - 1];
+  const product = arr[arr.length - 2];
+  return { level, product };
+};
+
+export const getTextReplyUrl = (text: string, name: string) => {
+  const msgMenUid = Date.now() + '_' + Math.floor(100000 + Math.random() * 900000);
+  return `<a href="weixin://bizmsgmenu?msgmenucontent=${text}&msgmenuid=${msgMenUid}">${name}</a>`;
+};
+
+export const getOrderUrl = (name: string, params?: OrderBody) => {
+  const baseUrl = 'https://wechat.ai-xiaowu.com';
+
+  // 将 params 对象转换为查询字符串
+  const queryString = params ? new URLSearchParams(params as any).toString() : '';
+
+  // 拼接查询字符串到 URL 后面
+  const urlWithParams = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+  return `<a href="${urlWithParams}">${name}</a>`;
+};
+
+export const getOneYearLater = (date: Moment = moment()): Moment => {
+  return date.clone().add(1, 'years');
+};
+
+/** 获取会员过期时间 */
+export const getExpireDate = (date: Moment, level: VipLevel) => {
+  const now = moment();
+  switch (level) {
+    case VipLevel.Month:
+      return date.add(1, 'months');
+    case VipLevel.Quarter:
+      return date.add(3, 'months');
+    case VipLevel.Year:
+    case VipLevel.Ten:
+      return date.add(1, 'years');
+    default:
+      return null;
+  }
 };

@@ -13,26 +13,42 @@ import { menuEvent } from './create';
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
+  const userId = message.FromUserName;
 
-  if (message.Content === '生成专属邀请二维码') {
-    const userId = message.FromUserName;
+  switch (message.Content) {
+    case '获取专属分享海报':
+      // 获取二维码
+      const qrCodeUrl = await createQRCode(userId);
 
-    // 获取二维码
-    const qrCodeUrl = await createQRCode(userId);
+      // 下载二维码
+      const qrCodePath = await downloadImage(qrCodeUrl, userId);
 
-    // 下载二维码
-    const qrCodePath = await downloadImage(qrCodeUrl, userId);
+      const outPath = `./tmp/image_qrcode_${Date.now()}.jpeg`;
+      // 合成背景图
+      const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
 
-    const outPath = `./tmp/image_qrcode_${Date.now()}.jpeg`;
-    // 合成背景图
-    const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
+      // 上传至素材库
+      const updateRes = await uploadPermanentImageMedia(path);
 
-    // 上传至素材库
-    const updateRes = await uploadPermanentImageMedia(path);
+      res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+      break;
 
-    res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
-  } else {
-    res.send({ ...baseReply, MsgType: 'text', Content: '敬请期待' });
+    case '查询账户N币':
+      const [user, created] = await User.findOrCreate({
+        where: { user_id: userId },
+        defaults: { subscribe_status: true }
+      });
+      const formatUser = user.toJSON();
+      if (created) res.send({ ...baseReply, MsgType: 'text', Content: '当前剩余N币：0' });
+      else res.send({ ...baseReply, MsgType: 'text', Content: `🏆当前剩余N币：${formatUser.integral}` });
+      break;
+
+    case 'N币奖励规则':
+      res.send({ ...baseReply, MsgType: 'text', Content: 'N币奖励规则（即将呈现）' });
+      break;
+
+    default:
+      break;
   }
 };
 
@@ -47,22 +63,22 @@ const handleEvent = async (message: EventMessage, res: any) => {
     case 'subscribe':
       // 用户订阅
       const [user, created] = await User.findOrCreate({
-        where: { userId: currentUserId },
-        defaults: { subscribe_status: true, pId: eventKey }
+        where: { user_id: currentUserId },
+        defaults: { subscribe_status: true, p_id: eventKey }
       });
 
       // 如果找到了用户，可以在这里更新用户信息
       if (!created) {
-        const update: { subscribe_status: boolean; pId?: string } = { subscribe_status: true };
+        const update: { subscribe_status: boolean; p_id?: string } = { subscribe_status: true };
         const formatUser = user.toJSON();
 
-        if (!formatUser.pId && eventKey) {
+        if (!formatUser.p_id && eventKey) {
           const shareUser = eventKey.split('_');
 
           if (shareUser[0] === 'qrscene') {
             // 获取分享者的用户id
             const shareUserId = shareUser[1];
-            if (shareUserId !== currentUserId) update.pId = shareUserId;
+            if (shareUserId !== currentUserId) update.p_id = shareUserId;
           }
         }
         await user.update(update);

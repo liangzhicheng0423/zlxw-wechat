@@ -43,3 +43,40 @@ export enum BonusTypeEnum {
   Cash = 'Cash', // 现金奖励
   Integral = 'integral' // 积分
 }
+
+export type WeChatPayCallback = {
+  timeEnd: string; // 支付完成时间
+  outTradeNo: string; // 商户订单号
+  transactionId: string; // 微信支付订单号
+  cashFee: string; // 现金支付金额
+  feeType: string; // 货币种类
+  totalFee: string; // 订单金额
+  bankType: string; // 付款银行
+  tradeType: string; // 交易类型
+  subIsSubscribe: string;
+  subOpenid: string;
+  isSubscribe: string; // 用户是否关注公众账号
+  openid: string;
+  resultCode: string; // 业务结果
+  nonceStr: string; // 随机字符串
+  subMchId: string;
+  subAppid: string;
+  mchId: string; // 微信支付分配的商户号
+  appid: string; // 微信分配的公众账号ID
+  returnCode: string; // 返回状态码
+};
+
+export enum Product {
+  GPT4 = 'gpt4',
+  Midjourney = 'midjourney',
+  Dan = 'dan'
+}
+
+export enum VipLevel {
+  Year = 'year',
+  Quarter = 'quarter',
+  Month = 'month',
+  Ten = 'ten' // 10份年卡
+}
+
+export type OrderBody = { level: VipLevel; product: Product };

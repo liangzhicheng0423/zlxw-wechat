@@ -1,46 +1,53 @@
 import axios from 'axios';
-import { PayBody } from '../constant';
-import { WeChatMessage } from '../types';
-import { generateOrderNumber } from '../util';
+import moment from 'moment';
+import { PayBody, PayLevel } from '../constant';
+import { User } from '../mysqlModal/user';
+import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
+import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage } from '../util';
+import { award } from './award';
 
 export const unifiedorder = async (req: any, res: any) => {
-  const type: { type: 'year' | 'quarter' | 'month' } = req.body;
+  const { level, product } = req.body as OrderBody;
 
   let body = '';
   let total_fee = 0;
-  switch (type.type) {
-    case 'year':
-      body = PayBody.year;
-      total_fee = 89900;
+  switch (level) {
+    case VipLevel.Ten:
+      body = PayBody[product][VipLevel.Ten];
+      total_fee = PayLevel[product][VipLevel.Ten];
       break;
-    case 'quarter':
-      body = PayBody.quarter;
-      total_fee = 29900;
+
+    case VipLevel.Year:
+      body = PayBody[product][VipLevel.Year];
+      total_fee = PayLevel[product][VipLevel.Year];
       break;
-    case 'month':
-      body = PayBody.month;
-      total_fee = 12900;
+
+    case VipLevel.Quarter:
+      body = PayBody[product][VipLevel.Quarter];
+      total_fee = PayLevel[product][VipLevel.Quarter];
       break;
+
+    case VipLevel.Month:
+      body = PayBody[product][VipLevel.Month];
+      total_fee = PayLevel[product][VipLevel.Month];
+      break;
+
     default:
       break;
   }
 
-  console.log('type', type);
-  console.log('total_fee', total_fee);
-
   const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
   const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
-
-  console.log('openid: ', openid);
+  const env_id = req.headers['x-wx-env'];
 
   const option = {
     body,
-    out_trade_no: generateOrderNumber(),
+    out_trade_no: generateOrderNumber(level, product),
     sub_mch_id: '1678905103', // 微信支付商户号
     total_fee: 1,
-    openid: openid, // 用户唯一身份ID
+    openid, // 用户唯一身份ID
     spbill_create_ip: ip, // 用户客户端IP地址
-    env_id: req.headers['x-wx-env'], // 接收回调的环境ID
+    env_id, // 接收回调的环境ID
     callback_type: 2, // 云托管服务接收回调，填2
     container: {
       service: req.headers['x-wx-service'], // 回调的服务名称
@@ -48,12 +55,62 @@ export const unifiedorder = async (req: any, res: any) => {
     }
   };
 
+  console.log('option ======', option);
+
   const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
 
   res.send(response.data);
 };
 
 export const unifiedorderCb = async (req: any, res: any) => {
-  const message: WeChatMessage = req.body;
-  console.log('unifiedorderCb: ', message);
+  const message: WeChatPayCallback = req.body;
+
+  console.log('支付成功的回调参数:', message);
+
+  const userId = message.subOpenid;
+
+  const tradeNo = message.outTradeNo;
+  const { level } = getLevelAndProduct(tradeNo);
+
+  if (message.resultCode !== 'SUCCESS' && message.returnCode !== 'SUCCESS') return;
+
+  let is_award = false;
+
+  // 奖励其父用户
+  const user = await User.findOne({ where: { user_id: userId } });
+  const formatUser = user?.toJSON();
+
+  if (formatUser?.p_id) {
+    const shareUser = await User.findOne({ where: { user_id: formatUser.p_id } });
+    const formatShareUser = shareUser?.toJSON();
+
+    if (formatShareUser && !formatUser.is_award) {
+      await award(formatShareUser.user_id, 'order');
+      is_award = true;
+    }
+  }
+
+  const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
+
+  // 创建用户
+  await User.upsert({
+    user_id: userId,
+    p_id: formatUser?.p_id ?? null,
+    is_award,
+    is_vip: true,
+    vip_level: level,
+    expire_date: getExpireDate(date, level as VipLevel),
+    subscribe_status: true
+  });
+
+  await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
+
+  /** TODO: 后续要更换成图片 */
+  res.send({
+    ToUserName: 'gh_c1c4f430f4a9',
+    FromUserName: userId,
+    CreateTime: Date.now(),
+    MsgType: 'text',
+    Content: '【客服二维码】'
+  });
 };

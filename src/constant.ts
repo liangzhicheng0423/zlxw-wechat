@@ -1,4 +1,4 @@
-import { BonusTypeEnum } from './types';
+import { BonusTypeEnum, Product, VipLevel } from './types';
 
 const BonusType = BonusTypeEnum.Integral;
 
@@ -7,26 +7,11 @@ export const BonusStrategy = {
   order: { bonusType: BonusType }
 };
 
-export const SubscribeLadderRewards = [
-  { level: 10, [BonusTypeEnum.Integral]: 10, [BonusTypeEnum.Cash]: 1 },
-  { level: 20, [BonusTypeEnum.Integral]: 25, [BonusTypeEnum.Cash]: 2.5 },
-  { level: 50, [BonusTypeEnum.Integral]: 75, [BonusTypeEnum.Cash]: 7.5 },
-  { level: 100, [BonusTypeEnum.Integral]: 100, [BonusTypeEnum.Cash]: 10 }
-];
+export const SubscribeLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 10, [BonusTypeEnum.Cash]: 10 }];
 
-export const ScanLadderRewards = [
-  { level: 10, [BonusTypeEnum.Integral]: 10, [BonusTypeEnum.Cash]: 1 },
-  { level: 20, [BonusTypeEnum.Integral]: 25, [BonusTypeEnum.Cash]: 2.5 },
-  { level: 50, [BonusTypeEnum.Integral]: 75, [BonusTypeEnum.Cash]: 7.5 },
-  { level: 100, [BonusTypeEnum.Integral]: 100, [BonusTypeEnum.Cash]: 10 }
-];
+export const ScanLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 10, [BonusTypeEnum.Cash]: 10 }];
 
-export const OrderLadderRewards = [
-  { level: 10, [BonusTypeEnum.Integral]: 100, [BonusTypeEnum.Cash]: 10 },
-  { level: 20, [BonusTypeEnum.Integral]: 250, [BonusTypeEnum.Cash]: 20.5 },
-  { level: 50, [BonusTypeEnum.Integral]: 750, [BonusTypeEnum.Cash]: 70.5 },
-  { level: 100, [BonusTypeEnum.Integral]: 1000, [BonusTypeEnum.Cash]: 100 }
-];
+export const OrderLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 500, [BonusTypeEnum.Cash]: 500 }];
 
 export enum MenuKey {
   Dan = 'get_dan',
@@ -69,7 +54,43 @@ export const Menu = {
 };
 
 export const PayBody = {
-  year: '购买年卡 899元/年（约75元/月）',
-  quarter: '购买季卡 299元/季（约100元/月）',
-  month: '购买月卡 129元/月'
+  [Product.Dan]: {
+    [VipLevel.Ten]: '',
+    [VipLevel.Year]: '购买年卡 899元/年（约75元/月）',
+    [VipLevel.Quarter]: '购买季卡 299元/季（约100元/月）',
+    [VipLevel.Month]: '购买月卡 129元/月'
+  },
+  [Product.GPT4]: {
+    [VipLevel.Ten]: '10份年卡 2480元/年',
+    [VipLevel.Year]: '购买年卡 249元/年（约20元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（约16元/月）',
+    [VipLevel.Month]: '购买月卡 79元/月'
+  },
+  [Product.Midjourney]: {
+    [VipLevel.Ten]: '10份年卡 2480元/年',
+    [VipLevel.Year]: '购买年卡 249元/年（约20元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（约16元/月）',
+    [VipLevel.Month]: '购买月卡 79元/月'
+  }
+};
+
+export const PayLevel = {
+  [Product.Dan]: {
+    [VipLevel.Year]: 89900,
+    [VipLevel.Ten]: 0,
+    [VipLevel.Quarter]: 29900,
+    [VipLevel.Month]: 12900
+  },
+  [Product.GPT4]: {
+    [VipLevel.Ten]: 248000,
+    [VipLevel.Year]: 24900,
+    [VipLevel.Quarter]: 19900,
+    [VipLevel.Month]: 7900
+  },
+  [Product.Midjourney]: {
+    [VipLevel.Ten]: 248000,
+    [VipLevel.Year]: 24900,
+    [VipLevel.Quarter]: 19900,
+    [VipLevel.Month]: 7900
+  }
 };
