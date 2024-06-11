@@ -39,6 +39,11 @@ export const User = sequelize.define('User', {
     type: DataTypes.CHAR(50),
     allowNull: true
   },
+  // 订单号
+  out_trade_no: {
+    type: DataTypes.CHAR(50),
+    allowNull: true
+  },
   // 到期时间
   expire_date: {
     type: DataTypes.DATE

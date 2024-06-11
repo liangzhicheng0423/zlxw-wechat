@@ -90,6 +90,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
     const user = await User.findOne({ where: { user_id: userId } });
 
     const formatUser = user?.toJSON();
+
+    if (formatUser?.out_trade_no === tradeNo) return;
     console.log('--------- 4', formatUser);
 
     if (formatUser?.p_id) {
@@ -112,6 +114,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       is_award,
       is_vip: true,
       vip_level: level,
+      out_trade_no: tradeNo,
       expire_date: getExpireDate(date, level as VipLevel),
       subscribe_status: true
     });
@@ -120,14 +123,9 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
 
-    /** TODO: 后续要更换成图片 */
-    res.send({
-      ToUserName: userId,
-      FromUserName: 'gh_c1c4f430f4a9',
-      CreateTime: Date.now(),
-      MsgType: 'text',
-      Content: '【客服二维码】'
-    });
+    await sendMessage(userId, '【客服二维码】');
+
+    res.send({ return_code: 'SUCCESS', return_msg: 'OK' });
   } catch (error) {
     console.log('error:', error);
   }
