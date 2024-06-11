@@ -149,8 +149,8 @@ export const generateOrderNumber = (level: VipLevel, product: Product) => {
 
 export const getLevelAndProduct = (tradeNo: string) => {
   const arr = tradeNo.split('_');
-  const level = arr[arr.length - 1];
-  const product = arr[arr.length - 2];
+  const level = arr[arr.length - 2];
+  const product = arr[arr.length - 1];
   return { level, product };
 };
 
