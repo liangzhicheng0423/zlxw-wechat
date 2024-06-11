@@ -79,7 +79,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
   const { level } = getLevelAndProduct(tradeNo);
   console.log('--------- 2', level);
 
-  if (message.resultCode !== 'SUCCESS' && message.returnCode !== 'SUCCESS') return;
+  if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
 
   console.log('--------- 3');
 
@@ -122,8 +122,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     /** TODO: 后续要更换成图片 */
     res.send({
-      ToUserName: 'gh_c1c4f430f4a9',
-      FromUserName: userId,
+      ToUserName: userId,
+      FromUserName: 'gh_c1c4f430f4a9',
       CreateTime: Date.now(),
       MsgType: 'text',
       Content: '【客服二维码】'

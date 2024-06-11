@@ -109,11 +109,11 @@ export const getBonus = (currentCount: number, strategy: 'subscribe' | 'order') 
   };
 };
 
-export const sendMessage = async (userId: string, text?: string) => {
+export const sendMessage = async (userId: string, text: string) => {
   await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
     touser: userId,
     msgtype: 'text',
-    text: { content: text ?? '获得新积分' }
+    text: { content: text }
   });
 };
 
@@ -177,15 +177,14 @@ export const getOneYearLater = (date: Moment = moment()): Moment => {
 
 /** 获取会员过期时间 */
 export const getExpireDate = (date: Moment, level: VipLevel) => {
-  const now = moment();
   switch (level) {
     case VipLevel.Month:
-      return date.add(1, 'months');
+      return date.clone().add(1, 'months');
     case VipLevel.Quarter:
-      return date.add(3, 'months');
+      return date.clone().add(3, 'months');
     case VipLevel.Year:
     case VipLevel.Ten:
-      return date.add(1, 'years');
+      return date.clone().add(1, 'years');
     default:
       return null;
   }
