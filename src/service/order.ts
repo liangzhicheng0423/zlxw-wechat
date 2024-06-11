@@ -57,11 +57,13 @@ export const unifiedorder = async (req: any, res: any) => {
 
   console.log('option ======', option);
 
-  const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
-
-  console.log('unifiedorder response ======', response);
-
-  res.send(response.data);
+  try {
+    const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
+    res.send(response.data);
+    console.log('unifiedorder response ======', response);
+  } catch (error) {
+    console.log('post error: ', error);
+  }
 };
 
 export const unifiedorderCb = async (req: any, res: any) => {
