@@ -27,6 +27,8 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
   const myAccountText = `已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换', '兑换')}`;
 
+  const aiAccessText = getTextReplyUrl('立即接入AI', '马上接入');
+
   switch (eventKey) {
     case MenuKey.Dan:
       await sendMessage(message.FromUserName, danText);
@@ -45,6 +47,28 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
     case MenuKey.MyAccount:
       res.send({ ...baseReply, MsgType: 'text', Content: myAccountText });
+      break;
+
+    case MenuKey.Instructions:
+      /** TODO: 后续要更换成图片 */
+      res.send({ ...baseReply, MsgType: 'text', Content: '【使用说明页】' });
+      break;
+
+    case MenuKey.AIAccess:
+      await sendMessage(message.FromUserName, aiAccessText);
+
+      /** TODO: 后续要更换成图片 */
+      res.send({ ...baseReply, MsgType: 'text', Content: '【AI接入服务介绍页】' });
+      break;
+
+    case MenuKey.BusinessCooperation:
+      /** TODO: 后续要更换成图片 */
+      res.send({ ...baseReply, MsgType: 'text', Content: '【Neo个微二维码】' });
+      break;
+
+    case MenuKey.ContactCustomerService:
+      /** TODO: 后续要更换成图片 */
+      res.send({ ...baseReply, MsgType: 'text', Content: '【客服二维码】' });
       break;
   }
 };

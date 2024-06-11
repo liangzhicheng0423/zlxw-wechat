@@ -44,13 +44,30 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     case 'N币奖励规则':
+      // TODO: 后续更换为图片
       res.send({ ...baseReply, MsgType: 'text', Content: 'N币奖励规则（即将呈现）' });
+      break;
+
+    case '获取分享活动规则':
+      // TODO: 后续更换为图片
+      res.send({ ...baseReply, MsgType: 'text', Content: '【分享有礼活动规则详情页】' });
       break;
 
     case '兑换':
       await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
 
-      // 后续更换为图片
+      // TODO: 后续更换为图片
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: '【客服二维码】'
+      });
+      break;
+
+    case '立即接入AI':
+      await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“AI接入”');
+
+      // TODO: 后续更换为图片
       res.send({
         ...baseReply,
         MsgType: 'text',
