@@ -3,7 +3,7 @@ import moment from 'moment';
 import { PayBody, PayLevel } from '../constant';
 import { User } from '../mysqlModal/user';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
-import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage } from '../util';
+import { generateOrderNumber, getExpireDate, getLevelAndProduct, jsonToXml, sendMessage } from '../util';
 import { award } from './award';
 
 export const unifiedorder = async (req: any, res: any) => {
@@ -107,6 +107,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
 
+    console.log('data============', date);
+
     // 创建用户
     await User.upsert({
       user_id: userId,
@@ -125,7 +127,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendMessage(userId, '【客服二维码】');
 
-    res.send({ return_code: 'SUCCESS', return_msg: 'OK' });
+    res.send(jsonToXml({ return_code: 'SUCCESS', return_msg: 'OK' }));
   } catch (error) {
     console.log('error:', error);
   }

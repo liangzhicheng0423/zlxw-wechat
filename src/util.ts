@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
-import { features } from 'process';
+import xml2js from 'xml2js';
 import { BonusStrategy, OrderLadderRewards, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
@@ -188,4 +188,9 @@ export const getExpireDate = (date: Moment, level: VipLevel) => {
     default:
       return null;
   }
+};
+
+export const jsonToXml = (json: any): string => {
+  const builder = new xml2js.Builder();
+  return builder.buildObject(json);
 };
