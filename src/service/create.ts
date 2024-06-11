@@ -44,29 +44,9 @@ export const create = () => {
         ]
       },
       {
-        name: '发送位置',
-        type: 'location_select',
-        key: 'rselfmenu_2_0'
-      },
-      {
         type: 'media_id',
         name: '图片',
         media_id: 'MEDIA_ID1'
-      },
-      {
-        type: 'view_limited',
-        name: '图文消息',
-        media_id: 'MEDIA_ID2'
-      },
-      {
-        type: 'article_id',
-        name: '发布后的图文消息',
-        article_id: 'ARTICLE_ID1'
-      },
-      {
-        type: 'article_view_limited',
-        name: '发布后的图文消息',
-        article_id: 'ARTICLE_ID2'
       }
     ]
   };
