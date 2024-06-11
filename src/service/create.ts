@@ -16,11 +16,7 @@ export const create = () => {
 
 export const menuEvent = async (message: WeChatMessage, eventKey: string, res: any) => {
   const baseReply = getReplyBaseInfo(message);
-  const danText = `${getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan })}
-
-${getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan })}
-
-${getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })}`;
+  const danText = `${getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan })}\n\n${getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan })}\n\n${getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })}`;
 
   switch (eventKey) {
     case MenuKey.Dan:

@@ -41,7 +41,9 @@
 
     // 获取参数值
     const level = params.get('level');
+    console.log('level', level)
     const product = params.get('product');
+    console.log('product', product)
 
     const response = await window.app.callContainer({
       path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
