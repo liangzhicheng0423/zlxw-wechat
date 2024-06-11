@@ -144,7 +144,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 };
 
 export const generateOrderNumber = (level: VipLevel, product: Product) => {
-  return `WE_RUN_MP_${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}_${level}_${product}`;
+  return `${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}_${level}_${product}`;
 };
 
 export const getLevelAndProduct = (tradeNo: string) => {
