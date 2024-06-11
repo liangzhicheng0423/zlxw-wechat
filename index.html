@@ -30,9 +30,12 @@
   }
 
   async function callAPI(api = null) {
+
+    console.log('api: ', api)
     if (!api) return null;
     // 向云托管服务发起调用
 
+    console.log('getUrl')
     // 获取当前页面的 URL
     const url = new URL(window.location.href);
 
