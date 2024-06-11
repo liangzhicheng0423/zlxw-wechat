@@ -9,6 +9,7 @@ import {
   uploadPermanentImageMedia
 } from '../util';
 import { award } from './award';
+import { menuEvent } from './create';
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -64,7 +65,6 @@ const handleEvent = async (message: EventMessage, res: any) => {
             if (shareUserId !== currentUserId) update.pId = shareUserId;
           }
         }
-
         await user.update(update);
       }
 
@@ -94,6 +94,11 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
       // 二维码中携带了上一个用户的id
       if (eventKey) await sendMessage(currentUserId, '付款链接');
+      break;
+
+    case 'CLICK':
+      if (!eventKey) return;
+      await menuEvent(message, eventKey, res);
       break;
   }
 };

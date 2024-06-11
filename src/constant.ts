@@ -44,8 +44,8 @@ export const Menu = {
     {
       name: 'AI工具',
       sub_button: [
-        { type: 'click', name: 'Dan', key: MenuKey.Dan },
-        { type: 'click', name: 'AI群聊', key: MenuKey.AIGroup }
+        { type: 'click', name: 'AI群聊', key: MenuKey.AIGroup },
+        { type: 'click', name: 'Dan', key: MenuKey.Dan }
       ]
     },
     {
@@ -66,4 +66,10 @@ export const Menu = {
       ]
     }
   ]
+};
+
+export const PayBody = {
+  year: '购买年卡 899元/年（约75元/月）',
+  quarter: '购买季卡 299元/季（约100元/月）',
+  month: '购买月卡 129元/月'
 };

@@ -140,3 +140,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
     return '';
   }
 };
+
+export const generateOrderNumber = () => {
+  return `WE_RUN_MP_${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}`;
+};

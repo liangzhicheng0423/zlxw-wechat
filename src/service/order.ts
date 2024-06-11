@@ -1,20 +1,43 @@
 import axios from 'axios';
+import { PayBody } from '../constant';
 import { WeChatMessage } from '../types';
+import { generateOrderNumber } from '../util';
 
 export const unifiedorder = async (req: any, res: any) => {
-  const message: WeChatMessage = req.body;
+  const type: { type: 'year' | 'quarter' | 'month' } = req.body;
 
-  console.log('message', message);
+  let body = '';
+  let total_fee = 0;
+  switch (type.type) {
+    case 'year':
+      body = PayBody.year;
+      total_fee = 89900;
+      break;
+    case 'quarter':
+      body = PayBody.quarter;
+      total_fee = 29900;
+      break;
+    case 'month':
+      body = PayBody.month;
+      total_fee = 12900;
+      break;
+    default:
+      break;
+  }
+
+  console.log('type', type);
+  console.log('total_fee', total_fee);
+
   const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
   const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
 
   console.log('openid: ', openid);
 
   const option = {
-    body: '测试', // 订单描述
-    out_trade_no: `WERUNMP_${Date.now()}`, // 自定义订单号
+    body,
+    out_trade_no: generateOrderNumber(),
     sub_mch_id: '1678905103', // 微信支付商户号
-    total_fee: 1, // 金额，单位：分
+    total_fee: 1,
     openid: openid, // 用户唯一身份ID
     spbill_create_ip: ip, // 用户客户端IP地址
     env_id: req.headers['x-wx-env'], // 接收回调的环境ID
