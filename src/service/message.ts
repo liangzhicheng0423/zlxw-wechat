@@ -33,7 +33,7 @@ const handleText = async (message: TextMessage, res: any) => {
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
 
-    case '查询账户N币':
+    case '查询账户':
       const [user, created] = await User.findOrCreate({
         where: { user_id: userId },
         defaults: { subscribe_status: true }
@@ -45,6 +45,17 @@ const handleText = async (message: TextMessage, res: any) => {
 
     case 'N币奖励规则':
       res.send({ ...baseReply, MsgType: 'text', Content: 'N币奖励规则（即将呈现）' });
+      break;
+
+    case '兑换':
+      await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
+
+      // 后续更换为图片
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: '【客服二维码】'
+      });
       break;
 
     default:

@@ -75,13 +75,9 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
   const tradeNo = message.outTradeNo;
 
-  console.log('--------- 1');
   const { level } = getLevelAndProduct(tradeNo);
-  console.log('--------- 2', level);
 
   if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
-
-  console.log('--------- 3');
 
   let is_award = false;
 
@@ -92,12 +88,10 @@ export const unifiedorderCb = async (req: any, res: any) => {
     const formatUser = user?.toJSON();
 
     if (formatUser?.out_trade_no === tradeNo) return;
-    console.log('--------- 4', formatUser);
 
     if (formatUser?.p_id) {
       const shareUser = await User.findOne({ where: { user_id: formatUser.p_id } });
       const formatShareUser = shareUser?.toJSON();
-      console.log('--------- 4.5', formatShareUser);
 
       if (formatShareUser && !formatUser.is_award) {
         await award(formatShareUser.user_id, 'order');
@@ -106,8 +100,6 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
-
-    console.log('data============', date);
 
     // 创建用户
     await User.upsert({
@@ -120,8 +112,6 @@ export const unifiedorderCb = async (req: any, res: any) => {
       expire_date: getExpireDate(date, level as VipLevel),
       subscribe_status: true
     });
-
-    console.log('--------- 5', getExpireDate(date, level as VipLevel));
 
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
 
