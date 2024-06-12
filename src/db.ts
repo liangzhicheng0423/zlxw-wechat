@@ -140,7 +140,7 @@ Order.init(
 
 export const syncDatabase = async () => {
   try {
-    await sequelize.authenticate();
+    await sequelize.sync();
     console.log('Connection has been established successfully.');
 
     await User.sync({ alter: true });

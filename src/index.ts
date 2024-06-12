@@ -46,12 +46,12 @@ http: app.get('/api/wx_openid', async (req, res) => {
 const port = process.env.PORT || 80;
 
 async function bootstrap() {
-  app.listen(port, () => {
+  app.listen(port, async () => {
     console.log('启动成功', port);
     // 创建菜单
     create();
     // 同步数据库
-    syncDatabase();
+    await syncDatabase();
   });
 }
 
