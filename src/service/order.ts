@@ -67,6 +67,8 @@ export const unifiedorder = async (req: any, res: any) => {
 export const unifiedorderCb = async (req: any, res: any) => {
   const message: WeChatPayCallback = req.body;
 
+  console.info('支付成功回调:', message);
+
   const userId = message.subOpenid;
 
   const tradeNo = message.outTradeNo;

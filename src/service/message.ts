@@ -85,6 +85,7 @@ const handleText = async (message: TextMessage, res: any) => {
     case '马上抢（助理小吴AI群）':
       const aiGroupText = getAiGroupText();
       await sendMessage(baseReply.ToUserName, aiGroupText);
+      break;
 
     case '企业购买/赠好友':
       await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“企业购买”或“赠好友”');

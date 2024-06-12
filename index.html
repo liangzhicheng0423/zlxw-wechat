@@ -31,20 +31,26 @@
 
   async function callAPI(api = null) {
 
+    console.log('api: ', api)
     if (!api) return null;
     // 向云托管服务发起调用
 
+    console.log('getUrl')
     // 获取当前页面的 URL
     const url = new URL(window.location.href);
 
+    console.log('url', url)
 
     // 创建 URLSearchParams 对象
     const params = new URLSearchParams(url.search);
 
 
+    console.log('params', params)
     // 获取参数值
     const level = params.get('level');
+    console.log('level', level)
     const product = params.get('product');
+    console.log('product', product)
 
     const response = await window.app.callContainer({
       path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
@@ -52,6 +58,7 @@
       header: { 'X-WX-SERVICE': 'express-nvni' },
       data: { level, product }
     })
+    console.log('response', response)
     return response.data || {}
   }
 
@@ -66,16 +73,23 @@
       signature: window.location.href,      // 选填，如果需要微信 SDK 的API方法，则填写要使用的地址，会返回 signature 签名对象，envid参数不填则无效。
     })
 
+    console.log({ result });
 
-    if (result.ret !== 0) return
+    if (result.ret !== 0) {
+      return
+    }
 
     window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
     // 监听签名注册成功
-    wx.ready(order);
+    wx.ready(() => {
+      console.log('WX监听完成');
+      order();
+    });
 
     // 发起签名注册，是一个异步操作，成功会触发wx.ready
     wx.config({
+      debug: false,
       appId: 'wxd00871cb6294c274',                   // 微信公众号appid
       timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
       nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取
