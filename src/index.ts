@@ -36,13 +36,6 @@ app.post('/payRes', unifiedorderCb);
 /** 自定义菜单 */
 app.post('create', create);
 
-// 小程序调用，获取微信 Open ID
-http: app.get('/api/wx_openid', async (req, res) => {
-  if (req.headers['x-wx-source']) {
-    res.send(req.headers['x-wx-openid']);
-  }
-});
-
 const port = process.env.PORT || 80;
 
 async function bootstrap() {

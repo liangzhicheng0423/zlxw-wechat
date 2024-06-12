@@ -81,7 +81,7 @@ User.init(
     }
   },
   {
-    sequelize: new Sequelize(),
+    sequelize,
     modelName: 'User',
     tableName: 'users',
     timestamps: true
@@ -131,7 +131,7 @@ Order.init(
     }
   },
   {
-    sequelize: new Sequelize(),
+    sequelize,
     modelName: 'Order',
     tableName: 'orders',
     timestamps: true
@@ -140,7 +140,8 @@ Order.init(
 
 export const syncDatabase = async () => {
   try {
-    await sequelize.sync();
+    await sequelize.authenticate();
+
     console.log('Connection has been established successfully.');
 
     await User.sync({ alter: true });
