@@ -144,10 +144,10 @@ export const syncDatabase = async () => {
     console.log('Connection has been established successfully.');
 
     await User.sync({ alter: true });
+    console.log('User sync successfully.');
 
     await Order.sync({ alter: true });
-
-    console.log('Database synchronized successfully.');
+    console.log('Order sync successfully.');
   } catch (error) {
     console.error('Error synchronizing database:', error);
   }
