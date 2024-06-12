@@ -4,7 +4,7 @@ import { getBonus, getTextReplyUrl, sendMessage } from '../util';
 
 export const award = async (userId: string, type: 'subscribe' | 'order') => {
   // 查找用户
-  const foundUser = await User.findOne({ where: { userId: userId, subscribe_status: true } });
+  const foundUser = await User.findOne({ where: { user_id: userId, subscribe_status: true } });
 
   if (foundUser) {
     // 更新奖励

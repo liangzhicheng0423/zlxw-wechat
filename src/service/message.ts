@@ -3,13 +3,19 @@ import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types
 import {
   createQRCode,
   downloadImage,
+  getAiGroupText,
+  getDanText,
   getReplyBaseInfo,
+  getWelcome,
   mergeImages,
+  sendAiGroupText,
+  sendDanText,
   sendMessage,
+  sendServiceQRcode,
   uploadPermanentImageMedia
 } from '../util';
-import { award } from './award';
 import { menuEvent } from './create';
+import { subscribe } from './subscribe';
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -55,24 +61,34 @@ const handleText = async (message: TextMessage, res: any) => {
 
     case '兑换':
       await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
-
-      // TODO: 后续更换为图片
-      res.send({
-        ...baseReply,
-        MsgType: 'text',
-        Content: '【客服二维码】'
-      });
+      await sendServiceQRcode(baseReply.ToUserName);
       break;
 
     case '立即接入AI':
       await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“AI接入”');
+      await sendServiceQRcode(baseReply.ToUserName);
+      break;
 
-      // TODO: 后续更换为图片
-      res.send({
-        ...baseReply,
-        MsgType: 'text',
-        Content: '【客服二维码】'
-      });
+    case '获取助理小吴AI群':
+      await sendAiGroupText(baseReply.ToUserName);
+      break;
+
+    case '获取Dan':
+      await sendDanText(baseReply.ToUserName);
+      break;
+
+    case '马上抢（Dan）':
+      const danText = getDanText();
+      await sendMessage(baseReply.ToUserName, danText);
+      break;
+
+    case '马上抢（助理小吴AI群）':
+      const aiGroupText = getAiGroupText();
+      await sendMessage(baseReply.ToUserName, aiGroupText);
+
+    case '企业购买/赠好友':
+      await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“企业购买”或“赠好友”');
+      await sendServiceQRcode(baseReply.ToUserName);
       break;
 
     default:
@@ -83,66 +99,28 @@ const handleText = async (message: TextMessage, res: any) => {
 const handleImage = (message: ImageMessage, res: any) => {};
 
 const handleEvent = async (message: EventMessage, res: any) => {
-  const currentUserId = message.FromUserName;
-  const event = message.Event;
-  const eventKey = message.EventKey;
+  const { FromUserName, Event, EventKey } = message;
 
-  switch (event) {
+  switch (Event) {
     case 'subscribe':
-      // 用户订阅
-      const [user, created] = await User.findOrCreate({
-        where: { user_id: currentUserId },
-        defaults: { subscribe_status: true, p_id: eventKey }
-      });
-
-      // 如果找到了用户，可以在这里更新用户信息
-      if (!created) {
-        const update: { subscribe_status: boolean; p_id?: string } = { subscribe_status: true };
-        const formatUser = user.toJSON();
-
-        if (!formatUser.p_id && eventKey) {
-          const shareUser = eventKey.split('_');
-
-          if (shareUser[0] === 'qrscene') {
-            // 获取分享者的用户id
-            const shareUserId = shareUser[1];
-            if (shareUserId !== currentUserId) update.p_id = shareUserId;
-          }
-        }
-        await user.update(update);
-      }
-
-      if (!eventKey) return;
-
-      // 如果携带了EventKey，则证明该二维码为别人分享而来
-      const shareUser = eventKey.split('_');
-
-      if (shareUser[0] === 'qrscene') {
-        // 获取分享者的用户id
-        const shareUserId = shareUser[1];
-
-        if (shareUserId === currentUserId) return;
-
-        // 只有新增关注才给予奖励
-        if (created) await award(shareUserId, 'subscribe');
-      }
-
+      await sendMessage(FromUserName, getWelcome());
+      await subscribe(message);
       break;
 
     case 'unsubscribe':
-      await User.update({ subscribe_status: false }, { where: { userId: currentUserId } });
+      await User.update({ subscribe_status: false }, { where: { user_id: FromUserName } });
       break;
 
     case 'SCAN':
-      if (eventKey === currentUserId) return;
+      if (EventKey === FromUserName) return;
 
       // 二维码中携带了上一个用户的id
-      if (eventKey) await sendMessage(currentUserId, '付款链接');
+      if (EventKey) await sendMessage(FromUserName, getWelcome());
       break;
 
     case 'CLICK':
-      if (!eventKey) return;
-      await menuEvent(message, eventKey, res);
+      if (!EventKey) return;
+      await menuEvent(message, EventKey, res);
       break;
   }
 };

@@ -19,7 +19,6 @@ export const User = sequelize.define('User', {
   // 父级id
   p_id: {
     type: DataTypes.CHAR(50),
-    unique: true,
     allowNull: true
   },
   // 是否已经奖励了父级用户
@@ -33,20 +32,6 @@ export const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: 0
-  },
-  // 会员级别
-  vip_level: {
-    type: DataTypes.CHAR(50),
-    allowNull: true
-  },
-  // 订单号
-  out_trade_no: {
-    type: DataTypes.CHAR(50),
-    allowNull: true
-  },
-  // 到期时间
-  expire_date: {
-    type: DataTypes.DATE
   },
   // 积分
   integral: {
@@ -71,6 +56,16 @@ export const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: 1
+  },
+  // 用户备注
+  remark: {
+    type: DataTypes.CHAR(255),
+    allowNull: true
+  },
+  // 标签列表
+  tagid_list: {
+    type: DataTypes.CHAR(255),
+    allowNull: true
   },
   createdAt: {
     type: DataTypes.DATE

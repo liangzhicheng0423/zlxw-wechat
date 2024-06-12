@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { Menu, MenuKey, PayBody } from '../constant';
+import { Menu, MenuKey } from '../constant';
 import { User } from '../mysqlModal/user';
-import { Product, VipLevel, WeChatMessage } from '../types';
-import { getOrderUrl, getReplyBaseInfo, getTextReplyUrl, sendMessage } from '../util';
+import { WeChatMessage } from '../types';
+import { getReplyBaseInfo, getTextReplyUrl, sendDanText, sendMessage, sendServiceQRcode } from '../util';
 
 export const create = () => {
   axios
@@ -17,7 +17,6 @@ export const create = () => {
 
 export const menuEvent = async (message: WeChatMessage, eventKey: string, res: any) => {
   const baseReply = getReplyBaseInfo(message);
-  const danText = `${getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan })}\n\n${getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan })}\n\n${getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })}`;
 
   // 查询当前账户剩余积分
   const user = await User.findOne({ where: { user_id: baseReply.ToUserName } });
@@ -31,10 +30,7 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
   switch (eventKey) {
     case MenuKey.Dan:
-      await sendMessage(message.FromUserName, danText);
-
-      /** TODO: 后续要更换成图片 */
-      res.send({ ...baseReply, MsgType: 'text', Content: '【Dan产品介绍页】' });
+      await sendDanText(message.FromUserName);
       break;
 
     case MenuKey.SharingIsPolite:
@@ -67,8 +63,7 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       break;
 
     case MenuKey.ContactCustomerService:
-      /** TODO: 后续要更换成图片 */
-      res.send({ ...baseReply, MsgType: 'text', Content: '【客服二维码】' });
+      await sendServiceQRcode(baseReply.ToUserName);
       break;
   }
 };

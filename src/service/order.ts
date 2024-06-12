@@ -1,11 +1,13 @@
 import axios from 'axios';
 import moment from 'moment';
 import { PayBody, PayLevel } from '../constant';
+import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
-import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
-import { generateOrderNumber, getExpireDate, getLevelAndProduct, jsonToXml, sendMessage } from '../util';
+import { OrderBody, VipLevel, WeChatPayCallback } from '../types';
+import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
 import { award } from './award';
 
+/** 下单 */
 export const unifiedorder = async (req: any, res: any) => {
   const { level, product } = req.body as OrderBody;
 
@@ -61,6 +63,7 @@ export const unifiedorder = async (req: any, res: any) => {
   } catch (error) {}
 };
 
+/** 支付成功 */
 export const unifiedorderCb = async (req: any, res: any) => {
   const message: WeChatPayCallback = req.body;
 
@@ -68,19 +71,27 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
   const tradeNo = message.outTradeNo;
 
-  const { level } = getLevelAndProduct(tradeNo);
+  const { level, product } = getLevelAndProduct(tradeNo);
 
   if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
 
   let is_award = false;
 
+  // 已有订单号
+  const beforeOrder = await Order.findOne({ where: { user_id: userId, out_trade_no: tradeNo } });
+  if (beforeOrder) {
+    console.info('订单号已经存在');
+    return;
+  }
+
   try {
     // 奖励其父用户
-    const user = await User.findOne({ where: { user_id: userId } });
+    const [user] = await User.findOrCreate({
+      where: { user_id: userId },
+      defaults: { subscribe_status: true }
+    });
 
     const formatUser = user?.toJSON();
-
-    if (formatUser?.out_trade_no === tradeNo) return;
 
     if (formatUser?.p_id) {
       const p_id = formatUser.p_id.split('_').at(-1);
@@ -88,28 +99,30 @@ export const unifiedorderCb = async (req: any, res: any) => {
       const formatShareUser = shareUser?.toJSON();
 
       if (formatShareUser && !formatUser.is_award) {
+        console.info('奖励父用户');
         await award(formatShareUser.user_id, 'order');
         is_award = true;
       }
     }
 
-    const date = formatUser?.expire_date ? moment(formatUser.expire_date) : moment();
+    // 更新用户表
+    await user.update({ is_award, is_vip: true });
 
-    // 创建用户
-    await User.upsert({
+    // 新增订单
+    const expire_date = getExpireDate(moment(), level as VipLevel);
+
+    console.info('创建订单');
+    await Order.create({
       user_id: userId,
-      p_id: formatUser?.p_id ?? null,
-      is_award,
-      is_vip: true,
+      product: product,
       vip_level: level,
       out_trade_no: tradeNo,
-      expire_date: getExpireDate(date, level as VipLevel),
-      subscribe_status: true
+      fee: message.totalFee,
+      expire_date
     });
 
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
-
-    await sendMessage(userId, '【客服二维码】');
+    await sendServiceQRcode(userId);
 
     res.send({ code: 'SUCCESS', message: '' });
   } catch (error) {}

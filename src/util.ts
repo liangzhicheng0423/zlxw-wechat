@@ -3,7 +3,7 @@ import fs from 'fs';
 import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
 import xml2js from 'xml2js';
-import { BonusStrategy, OrderLadderRewards, SubscribeLadderRewards } from './constant';
+import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
 const appId = 'xxx'; // 替换为你的微信公众号的 appId
@@ -193,4 +193,53 @@ export const getExpireDate = (date: Moment, level: VipLevel) => {
 export const jsonToXml = (json: any): string => {
   const builder = new xml2js.Builder();
   return builder.buildObject(json);
+};
+
+export const getWelcome = () => {
+  const reply = [
+    '你好',
+    '👩🏻‍💻我是你的助理小吴，我可以：',
+    '🥇让排名第一的AI工具，成为你的微信好友',
+    `👉🏻${getTextReplyUrl('获取助理小吴AI群', '获取助理小吴AI群')}`,
+    `👉🏻${getTextReplyUrl('获取Dan', '获取Dan')}`,
+    '<a href="https://ai-xiaowu.com">官网</a>'
+  ];
+  return reply.join('\n\n');
+};
+
+export const getDanText = () => {
+  const reply = [
+    'Dan',
+    getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan }),
+    getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan }),
+    getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })
+  ];
+  return reply.join('\n\n');
+};
+
+export const getAiGroupText = () => {
+  const reply = [
+    '助理小吴AI群',
+    getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
+    getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
+    getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
+    getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
+    getTextReplyUrl('企业购买/赠好友', '企业购买/赠好友')
+  ];
+  return reply.join('\n\n');
+};
+
+export const sendDanText = async (userId: string) => {
+  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`;
+  await sendMessage(userId, danText);
+  await sendMessage(userId, '【Dan产品介绍页】');
+};
+
+export const sendAiGroupText = async (userId: string) => {
+  await sendMessage(userId, `Dan ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
+  await sendMessage(userId, '【AI群产品介绍页】');
+};
+
+export const sendServiceQRcode = async (userId: string) => {
+  await sendMessage(userId, '【客服二维码】');
 };
