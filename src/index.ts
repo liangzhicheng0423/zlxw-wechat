@@ -2,7 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
-import { syncDatabase } from './db';
+import { sequelize } from './db';
+import { syncOrder } from './mysqlModal/order';
+import { syncUser } from './mysqlModal/user';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
@@ -43,8 +45,17 @@ async function bootstrap() {
     console.log('启动成功', port);
     // 创建菜单
     create();
+
     // 同步数据库
-    await syncDatabase();
+    try {
+      await sequelize.authenticate();
+      await syncUser();
+      await syncOrder();
+
+      console.log('Connection has been established successfully.');
+    } catch (error) {
+      console.error('Error synchronizing database:', error);
+    }
   });
 }
 
