@@ -2,7 +2,14 @@ import axios from 'axios';
 import { Menu, MenuKey } from '../constant';
 import { User } from '../mysqlModal/user';
 import { WeChatMessage } from '../types';
-import { getReplyBaseInfo, getTextReplyUrl, sendDanText, sendMessage, sendServiceQRcode } from '../util';
+import {
+  getReplyBaseInfo,
+  getTextReplyUrl,
+  sendAiGroupText,
+  sendDanText,
+  sendMessage,
+  sendServiceQRcode
+} from '../util';
 
 export const create = () => {
   axios
@@ -31,6 +38,10 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
   switch (eventKey) {
     case MenuKey.Dan:
       await sendDanText(message.FromUserName);
+      break;
+
+    case MenuKey.AIGroup:
+      await sendAiGroupText(message.FromUserName);
       break;
 
     case MenuKey.SharingIsPolite:

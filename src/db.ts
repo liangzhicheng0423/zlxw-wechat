@@ -1,4 +1,6 @@
-import { DataTypes, Sequelize } from 'sequelize';
+import { Sequelize } from 'sequelize';
+import { Order } from './mysqlModal/order';
+import { User } from './mysqlModal/user';
 
 // 从环境变量中读取数据库配置
 const { MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_ADDRESS = '' } = process.env;
@@ -11,20 +13,17 @@ export const sequelize = new Sequelize('zlxw', MYSQL_USERNAME!, MYSQL_PASSWORD, 
   dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
 });
 
-// 定义数据模型
-export const Counter = sequelize.define('Counter', {
-  count: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 1
-  }
-});
-
 // 数据库初始化方法
 
 (async () => {
   try {
-    await sequelize.sync();
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+
+    await User.sync({ alter: true });
+
+    await Order.sync({ alter: true });
+
     console.log('Database synchronized successfully.');
   } catch (error) {
     console.error('Error synchronizing database:', error);

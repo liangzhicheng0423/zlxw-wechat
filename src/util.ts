@@ -236,7 +236,7 @@ export const sendDanText = async (userId: string) => {
 };
 
 export const sendAiGroupText = async (userId: string) => {
-  await sendMessage(userId, `Dan ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
+  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
   await sendMessage(userId, '【AI群产品介绍页】');
 };
 
