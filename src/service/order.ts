@@ -111,6 +111,6 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendMessage(userId, '【客服二维码】');
 
-    res.send(jsonToXml({ return_code: 'SUCCESS', return_msg: 'OK' }));
+    res.send({ code: 'SUCCESS', message: '' });
   } catch (error) {}
 };
