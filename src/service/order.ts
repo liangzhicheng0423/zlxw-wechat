@@ -11,6 +11,8 @@ import { award } from './award';
 export const unifiedorder = async (req: any, res: any) => {
   const { level, product } = req.body as OrderBody;
 
+  console.info('用户下单:', level, product);
+
   let body = '';
   let total_fee = 0;
   switch (level) {
@@ -57,10 +59,14 @@ export const unifiedorder = async (req: any, res: any) => {
     }
   };
 
+  console.info('用户下单: option', option);
+
   try {
     const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
     res.send(response.data);
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /** 支付成功 */
@@ -126,6 +132,11 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
     await sendServiceQRcode(userId);
 
-    res.send({ code: 'SUCCESS', message: '' });
-  } catch (error) {}
+    res.set('Content-Type', 'application/xml');
+    res.send('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
+  } catch (error) {
+    console.error('order error: ', error);
+    res.set('Content-Type', 'application/xml');
+    res.send('<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[FAIL]]></return_msg></xml>');
+  }
 };
