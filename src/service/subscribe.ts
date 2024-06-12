@@ -6,7 +6,10 @@ export const subscribe = async (message: EventMessage) => {
   const { FromUserName, EventKey } = message;
 
   let pid: string | undefined;
-  if (EventKey) pid = EventKey.split('_').at(-1);
+  if (EventKey) {
+    const keys = EventKey.split('_');
+    pid = keys[keys.length - 1];
+  }
   if (pid === FromUserName) pid = undefined;
 
   // 用户订阅
