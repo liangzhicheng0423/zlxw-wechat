@@ -220,7 +220,7 @@ export const getDanText = () => {
 export const getAiGroupText = () => {
   const reply = [
     '助理小吴AI群',
-    getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
+    '🔥' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
