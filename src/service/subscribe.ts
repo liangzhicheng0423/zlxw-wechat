@@ -10,10 +10,12 @@ export const subscribe = async (message: EventMessage) => {
   if (pid === FromUserName) pid = undefined;
 
   // 用户订阅
-  const [, created] = await User.findOrCreate({
+  const [user, created] = await User.findOrCreate({
     where: { user_id: FromUserName },
     defaults: { subscribe_status: true, p_id: pid }
   });
+
+  if (!created) user.update({ subscribe_status: true, p_id: pid });
 
   // 只有新增关注才给予奖励
   if (created && pid) await award(pid, 'subscribe');

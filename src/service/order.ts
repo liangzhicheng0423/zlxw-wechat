@@ -132,11 +132,11 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
     await sendServiceQRcode(userId);
 
-    res.set('Content-Type', 'application/xml');
-    res.send('<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>');
+    res.set('Content-Type', 'application/json');
+    res.send({ return_code: 'SUCCESS', return_msg: '' });
   } catch (error) {
     console.error('order error: ', error);
-    res.set('Content-Type', 'application/xml');
-    res.send('<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[FAIL]]></return_msg></xml>');
+    res.set('Content-Type', 'application/json');
+    res.send({ return_code: 'FAIL', return_msg: '' });
   }
 };
