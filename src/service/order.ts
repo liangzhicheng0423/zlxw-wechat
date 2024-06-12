@@ -55,21 +55,14 @@ export const unifiedorder = async (req: any, res: any) => {
     }
   };
 
-  console.log('option ======', option);
-
   try {
     const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
     res.send(response.data);
-    console.log('unifiedorder response ======', response);
-  } catch (error) {
-    console.log('post error: ', error);
-  }
+  } catch (error) {}
 };
 
 export const unifiedorderCb = async (req: any, res: any) => {
   const message: WeChatPayCallback = req.body;
-
-  console.log('支付成功的回调参数:', message);
 
   const userId = message.subOpenid;
 
@@ -90,7 +83,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
     if (formatUser?.out_trade_no === tradeNo) return;
 
     if (formatUser?.p_id) {
-      const shareUser = await User.findOne({ where: { user_id: formatUser.p_id } });
+      const p_id = formatUser.p_id.split('_').at(-1);
+      const shareUser = await User.findOne({ where: { user_id: p_id } });
       const formatShareUser = shareUser?.toJSON();
 
       if (formatShareUser && !formatUser.is_award) {
@@ -118,7 +112,5 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await sendMessage(userId, '【客服二维码】');
 
     res.send(jsonToXml({ return_code: 'SUCCESS', return_msg: 'OK' }));
-  } catch (error) {
-    console.log('error:', error);
-  }
+  } catch (error) {}
 };
