@@ -47,11 +47,11 @@ const port = process.env.PORT || 80;
 
 async function bootstrap() {
   app.listen(port, () => {
+    console.log('启动成功', port);
     // 创建菜单
     create();
     // 同步数据库
     syncDatabase();
-    console.log('启动成功', port);
   });
 }
 
