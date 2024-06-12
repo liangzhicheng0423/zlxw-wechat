@@ -1,6 +1,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width" />
-<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+<!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
 <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 <script
   src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.0/cloud.js"></script>
@@ -8,9 +8,7 @@
   src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.1/mplogin.min.js"></script>
 <script>
 
-  /**
-   * 用本地存储的ID发起支付订单，设置1分钱
-   */
+  
   async function order() {
     const res = await callAPI('unifiedorder')
 
@@ -63,7 +61,7 @@
   }
 
   window.onload = async function () {
-    const vConsole = new window.VConsole();
+    // const vConsole = new window.VConsole();
     // 使用登录模块，传入信息开始授权登录过程
     // 如果首次登录，页面会经历一系列跳转过程，请不要在登录前加业务处理代码，以免登录被中断。
     const result = await window.mplogin({
