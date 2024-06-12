@@ -1,3 +1,3 @@
-import { User as UserModal, sequelize } from '../db';
+import { User as UserModal } from '../db';
 
 export const User = UserModal;
