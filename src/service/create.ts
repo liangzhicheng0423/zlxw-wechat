@@ -29,11 +29,11 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
   const user = await User.findOne({ where: { user_id: baseReply.ToUserName } });
   const formatUser = user?.toJSON();
 
-  const shareText = `分享你的专属邀请，获取每单50元现金激励  ${getTextReplyUrl('获取分享活动规则', '活动规则')}\n\n${getTextReplyUrl('获取专属分享海报', '获取我的专属分享海报')}\n\n已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换', '兑换')}`;
+  const shareText = `分享你的专属邀请，获取每单50元现金激励  ${getTextReplyUrl('活动规则')}\n\n${getTextReplyUrl('获取我的专属分享海报')}\n\n已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换')}`;
 
-  const myAccountText = `已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换', '兑换')}`;
+  const myAccountText = `已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换')}`;
 
-  const aiAccessText = getTextReplyUrl('立即接入AI', '马上接入');
+  const aiAccessText = getTextReplyUrl('马上接入');
 
   switch (eventKey) {
     case MenuKey.Dan:

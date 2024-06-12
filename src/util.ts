@@ -154,9 +154,9 @@ export const getLevelAndProduct = (tradeNo: string) => {
   return { level, product };
 };
 
-export const getTextReplyUrl = (text: string, name: string) => {
+export const getTextReplyUrl = (text: string) => {
   const msgMenUid = Date.now() + '_' + Math.floor(100000 + Math.random() * 900000);
-  return `<a href="weixin://bizmsgmenu?msgmenucontent=${text}&msgmenuid=${msgMenUid}">${name}</a>`;
+  return `<a href="weixin://bizmsgmenu?msgmenucontent=${text}&msgmenuid=${msgMenUid}">${text}</a>`;
 };
 
 export const getOrderUrl = (name: string, params?: OrderBody) => {
@@ -200,8 +200,8 @@ export const getWelcome = () => {
     '你好',
     '👩🏻‍💻我是你的助理小吴，我可以：',
     '🥇让排名第一的AI工具，成为你的微信好友',
-    `👉🏻${getTextReplyUrl('获取助理小吴AI群', '获取助理小吴AI群')}`,
-    `👉🏻${getTextReplyUrl('获取Dan', '获取Dan')}`,
+    `👉🏻${getTextReplyUrl('获取助理小吴AI群')}`,
+    `👉🏻${getTextReplyUrl('获取Dan')}`,
     '<a href="https://ai-xiaowu.com">官网</a>'
   ];
   return reply.join('\n\n');
@@ -224,19 +224,19 @@ export const getAiGroupText = () => {
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
     getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
-    getTextReplyUrl('企业购买/赠好友', '企业购买/赠好友')
+    getTextReplyUrl('企业购买/赠好友')
   ];
   return reply.join('\n\n');
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`;
+  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）')}`;
   await sendMessage(userId, danText);
   await sendMessage(userId, '【Dan产品介绍页】');
 };
 
 export const sendAiGroupText = async (userId: string) => {
-  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
+  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）')}`);
   await sendMessage(userId, '【AI群产品介绍页】');
 };
 

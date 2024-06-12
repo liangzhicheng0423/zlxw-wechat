@@ -22,7 +22,7 @@ const handleText = async (message: TextMessage, res: any) => {
   const userId = message.FromUserName;
 
   switch (message.Content) {
-    case '获取专属分享海报':
+    case '获取我的专属分享海报':
       // 获取二维码
       const qrCodeUrl = await createQRCode(userId);
 
@@ -39,7 +39,7 @@ const handleText = async (message: TextMessage, res: any) => {
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
 
-    case '查询账户':
+    case '查询':
       const [user, created] = await User.findOrCreate({
         where: { user_id: userId },
         defaults: { subscribe_status: true }
@@ -49,12 +49,12 @@ const handleText = async (message: TextMessage, res: any) => {
       else res.send({ ...baseReply, MsgType: 'text', Content: `🏆当前剩余N币：${formatUser.integral}` });
       break;
 
-    case 'N币奖励规则':
+    case '奖励规则':
       // TODO: 后续更换为图片
       res.send({ ...baseReply, MsgType: 'text', Content: 'N币奖励规则（即将呈现）' });
       break;
 
-    case '获取分享活动规则':
+    case '活动规则':
       // TODO: 后续更换为图片
       res.send({ ...baseReply, MsgType: 'text', Content: '【分享有礼活动规则详情页】' });
       break;
@@ -64,7 +64,7 @@ const handleText = async (message: TextMessage, res: any) => {
       await sendServiceQRcode(baseReply.ToUserName);
       break;
 
-    case '立即接入AI':
+    case '马上接入':
       await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“AI接入”');
       await sendServiceQRcode(baseReply.ToUserName);
       break;
