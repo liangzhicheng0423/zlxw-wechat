@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
+import { syncDatabase } from './db';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
@@ -52,3 +53,4 @@ async function bootstrap() {
 
 create();
 bootstrap();
+syncDatabase();
