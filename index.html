@@ -72,7 +72,7 @@
     window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
     // 监听签名注册成功
-    wx.ready(() => order);
+    wx.ready(order);
 
     // 发起签名注册，是一个异步操作，成功会触发wx.ready
     wx.config({
