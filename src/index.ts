@@ -50,8 +50,8 @@ async function bootstrap() {
     // 同步数据库
     try {
       await sequelize.authenticate();
-      await syncUser();
-      await syncOrder();
+      // await syncUser();
+      // await syncOrder();
 
       await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
       await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');

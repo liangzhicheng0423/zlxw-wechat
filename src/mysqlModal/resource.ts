@@ -16,6 +16,11 @@ Resource.init(
     media_id: {
       type: DataTypes.CHAR(50),
       allowNull: false
+    },
+    // 用户唯一id
+    name: {
+      type: DataTypes.CHAR(50),
+      allowNull: false
     }
   },
   {
