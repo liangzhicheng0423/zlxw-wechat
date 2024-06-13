@@ -53,8 +53,8 @@ async function bootstrap() {
       // await syncUser();
       // await syncOrder();
 
-      await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
-      await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
+      // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
+      // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
 
       console.log('Connection has been established successfully.');
     } catch (error) {

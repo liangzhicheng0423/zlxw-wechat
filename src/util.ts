@@ -142,6 +142,14 @@ export const sendMessage = async (userId: string, text: string) => {
   });
 };
 
+export const sendImage = async (userId: string, mediaId: string) => {
+  await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+    touser: userId,
+    msgtype: 'image',
+    image: { media_id: mediaId }
+  });
+};
+
 export const mergeImages = async (image1Path: string, image2Path: string, outputImagePath: string) => {
   try {
     const [image1, image2] = await Promise.all([Jimp.read(image1Path), Jimp.read(image2Path)]);
@@ -266,5 +274,5 @@ export const sendAiGroupText = async (userId: string) => {
 };
 
 export const sendServiceQRcode = async (userId: string) => {
-  await sendMessage(userId, '【客服二维码】');
+  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
 };
