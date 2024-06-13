@@ -35,8 +35,7 @@ Order.init(
     // 订单金额
     fee: {
       type: DataTypes.NUMBER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: true
     },
     // 到期时间
     expire_date: {
