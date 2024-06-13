@@ -8,6 +8,7 @@ import { syncUser } from './mysqlModal/user';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
+import { uploadPermanentImageMedia } from './util';
 
 const logger = morgan('tiny');
 
@@ -51,6 +52,9 @@ async function bootstrap() {
       await sequelize.authenticate();
       await syncUser();
       await syncOrder();
+
+      await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
+      await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
 
       console.log('Connection has been established successfully.');
     } catch (error) {

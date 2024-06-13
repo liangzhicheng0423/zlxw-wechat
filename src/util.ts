@@ -73,7 +73,7 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
 };
 
 // 上传临时图片素材函数
-export const uploadPermanentImageMedia = async (filePath: string) => {
+export const uploadTemporaryImageMedia = async (filePath: string) => {
   const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/media/upload';
 
   try {
@@ -86,6 +86,31 @@ export const uploadPermanentImageMedia = async (filePath: string) => {
       params: { type: 'image' },
       headers: { 'Content-Type': 'multipart/form-data' }
     });
+
+    // 返回上传结果
+    return response.data;
+  } catch (error: any) {
+    console.error('Error uploading image:', error.message);
+    throw error;
+  }
+};
+
+// 上传永久图片素材函数
+export const uploadPermanentImageMedia = async (filePath: string) => {
+  const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/material/add_material';
+
+  try {
+    // 构造上传参数
+    const formData = { media: fs.createReadStream(filePath) };
+
+    // 发送请求
+    const response = await axios.post(uploadUrl, formData, {
+      // 媒体文件类型，图片类型为 image
+      params: { type: 'image' },
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    console.log('上传永久素材', filePath, response.data);
 
     // 返回上传结果
     return response.data;

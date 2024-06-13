@@ -12,7 +12,7 @@ import {
   sendDanText,
   sendMessage,
   sendServiceQRcode,
-  uploadPermanentImageMedia
+  uploadTemporaryImageMedia
 } from '../util';
 import { menuEvent } from './create';
 import { subscribe } from './subscribe';
@@ -34,7 +34,7 @@ const handleText = async (message: TextMessage, res: any) => {
       const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
 
       // 上传至素材库
-      const updateRes = await uploadPermanentImageMedia(path);
+      const updateRes = await uploadTemporaryImageMedia(path);
 
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
