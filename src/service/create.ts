@@ -70,7 +70,6 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
     case MenuKey.BusinessCooperation:
       /** TODO: 后续要更换成图片 */
-      res.send({ ...baseReply, MsgType: 'text', Content: '【Neo个微二维码】' });
       res.send({
         ...baseReply,
         MsgType: 'image',
