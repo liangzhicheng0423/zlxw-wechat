@@ -1,5 +1,5 @@
 import { TaskStatus, TextMessage } from '../../types';
-import { getReplyBaseInfo } from '../../util';
+import { getReplyBaseInfo, sendMessage } from '../../util';
 import { check } from './check';
 import { getLinkAIReply } from './linkAI';
 import taskManager from './taskManager';
@@ -35,8 +35,7 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
 
     console.log('回复', reply);
     if (!reply) return;
-
-    res.send({ ...baseReply, MsgType: 'text', Content: reply });
+    await sendMessage(baseReply.FromUserName, reply);
   } catch (error) {
     console.log('gpt4 reply error: ', error);
     res.send({ ...baseReply, MsgType: 'text', Content: '[ERROR]\n由于神秘力量，本次操作失败，请重新尝试' });
