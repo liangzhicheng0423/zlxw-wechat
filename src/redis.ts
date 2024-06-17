@@ -58,14 +58,14 @@ export const getMode = async (userId: string) => {
 export const getIsVip = async (userId: string) => {
   const redis = getRedisClient();
   const value = redis?.get(getVipKey(userId));
-  return (value ?? null) as boolean | null;
+  return (value ?? null) as 'true' | 'false' | null;
 };
 
 /** 免费额度 */
 export const getFreeCount = async (userId: string) => {
   const redis = getRedisClient();
   const value = redis?.get(getFreeCountKey(userId));
-  return (value ?? null) as number | null;
+  return Number(value ?? 0);
 };
 
 // 消耗免费额度

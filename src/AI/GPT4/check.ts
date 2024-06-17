@@ -66,6 +66,7 @@ export const stringToWordsArray = (str: string) => {
 
 const detectSensitiveWords = (text: string) => {
   const banWords = fs.readFileSync('./banwords.txt', 'utf8').trim().split('\n');
+  console.log('banWords: ', banWords.length);
 
   const formatText = stringToWordsArray(text);
 
@@ -141,7 +142,10 @@ const textCensor = async (text: string): Promise<boolean> => {
 
 export const check = async (text: string) => {
   // 本地敏感词检测
+
+  console.log('本地敏感词检测: ', text);
   const { isSensitive } = detectSensitiveWords(text);
+  console.log('isSensitive: ', isSensitive);
   if (isSensitive) return false;
 
   // 百度内容审核(文本)

@@ -26,6 +26,8 @@ const chatWithAI = async (message: TextMessage, res: any) => {
   const userId = message.FromUserName;
 
   const mode = await getMode(userId);
+
+  console.log('mode: ', mode);
   if (!mode) {
     res.send({
       ...baseReply,
@@ -36,10 +38,14 @@ const chatWithAI = async (message: TextMessage, res: any) => {
   }
 
   const isVip = await getIsVip(userId);
+  console.log('isVip: ', isVip);
 
-  if (!isVip) {
+  if (isVip === 'false') {
     // 消耗免费额度
     const freeCount = await getFreeCount(userId);
+
+    console.log('freeCount: ', freeCount);
+
     if (!freeCount) {
       res.send({
         ...baseReply,
