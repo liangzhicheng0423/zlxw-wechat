@@ -119,8 +119,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     if (formatUser?.p_id) {
-      const keys = formatUser.p_id.split('_');
-      const p_id = keys[keys.length - 1];
+      const p_id = formatUser.p_id;
       const shareUser = await User.findOne({ where: { user_id: p_id } });
       const formatShareUser = shareUser?.toJSON();
 
