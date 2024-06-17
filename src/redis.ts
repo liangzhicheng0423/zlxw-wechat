@@ -20,6 +20,7 @@ export const initRedis = (): Promise<void> => {
 
     redisClient.on('connect', () => {
       console.log('Connected to Redis');
+      redisScheduleTaskStart();
       resolve();
     });
   });
@@ -113,7 +114,10 @@ const getAllKeysValues = async () => {
 
 const updateKeysWithPipeline = async (keyValuePairs: { [key: string]: string }) => {
   const pipeline = redis?.pipeline();
-  if (!pipeline) return;
+  if (!pipeline) {
+    console.log('-= redis 不存在');
+    return;
+  }
 
   for (const [key, value] of Object.entries(keyValuePairs)) {
     pipeline.set(key, value);

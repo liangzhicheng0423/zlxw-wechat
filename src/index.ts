@@ -56,8 +56,6 @@ async function bootstrap() {
 
       await initRedis();
 
-      redisScheduleTaskStart();
-
       // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
       // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
 
