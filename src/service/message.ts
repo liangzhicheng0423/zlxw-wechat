@@ -47,6 +47,9 @@ const chatWithAI = async (message: TextMessage, res: any) => {
     console.log('freeCount: ', freeCount);
 
     if (!freeCount) {
+      const aiGroupText = getAiGroupText();
+      await sendMessage(baseReply.ToUserName, aiGroupText);
+
       res.send({
         ...baseReply,
         MsgType: 'text',
