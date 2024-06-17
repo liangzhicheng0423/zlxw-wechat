@@ -1,5 +1,7 @@
+import { chatWithTextAI } from '../AI/GPT4';
 import { User } from '../mysqlModal/user';
-import { EventMessage, ImageMessage, TextMessage, WeChatMessage } from '../types';
+import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, redis, useFreeCount } from '../redis';
+import { EventMessage, ImageMessage, Product, TextMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
   downloadImage,
@@ -16,6 +18,44 @@ import {
 } from '../util';
 import { menuEvent } from './create';
 import { subscribe } from './subscribe';
+
+const chatWithAI = async (message: TextMessage, res: any) => {
+  const baseReply = getReplyBaseInfo(message);
+  console.info('转入AI对话');
+
+  const userId = message.FromUserName;
+
+  const mode = await getMode(userId);
+  if (!mode) {
+    res.send({
+      ...baseReply,
+      MsgType: 'text',
+      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"按钮切换模式）'
+    });
+    return;
+  }
+
+  const isVip = await getIsVip(userId);
+
+  if (!isVip) {
+    // 消耗免费额度
+    const freeCount = await getFreeCount(userId);
+    if (!freeCount) {
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: '您的免费次数已经用完啦，加入我们的会员，即可享受无限制的AI体验 🎉'
+      });
+      return;
+    } else {
+      await useFreeCount(userId);
+    }
+  }
+
+  if (mode === Product.GPT4) {
+    await chatWithTextAI(message, res);
+  }
+};
 
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -92,7 +132,14 @@ const handleText = async (message: TextMessage, res: any) => {
       await sendServiceQRcode(baseReply.ToUserName);
       break;
 
+    case '退出':
+      await sendMessage(baseReply.ToUserName, '已退出当前模式');
+      await deleteRedisKey(getModeKey(baseReply.ToUserName));
+      break;
+
+    // 转到AI对话
     default:
+      await chatWithAI(message, res);
       break;
   }
 };

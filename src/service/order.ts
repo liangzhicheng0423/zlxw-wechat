@@ -1,9 +1,9 @@
 import axios from 'axios';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { PayBody, PayLevel } from '../constant';
 import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
-import { OrderBody, VipLevel, WeChatPayCallback } from '../types';
+import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
 import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
 import { award } from './award';
 
@@ -101,6 +101,22 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const formatUser = user?.toJSON();
 
+    if (formatUser) {
+      const prevExpireDate = product === Product.Dan ? formatUser.expire_date_dan : formatUser.expire_date_group;
+      console.log('prevExpireDate: ', prevExpireDate);
+
+      const userExpireDate = getExpireDate(prevExpireDate ? moment(prevExpireDate) : moment(), level);
+      console.log('userExpireDate: ', userExpireDate);
+
+      const update: { expire_date_group?: Moment | null; expire_date_dan?: Moment | null } = {};
+
+      if (product === Product.Dan) update.expire_date_dan = userExpireDate;
+      else update.expire_date_group = userExpireDate;
+
+      console.log('update: ', update);
+      user.update(update);
+    }
+
     if (formatUser?.p_id) {
       const keys = formatUser.p_id.split('_');
       const p_id = keys[keys.length - 1];
@@ -118,7 +134,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await user.update({ is_award, is_vip: true });
 
     // 新增订单
-    const expire_date = getExpireDate(moment(), level as VipLevel);
+    const expireDate = getExpireDate(moment(), level);
 
     console.info('创建订单');
     await Order.create({
@@ -127,7 +143,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       vip_level: level,
       out_trade_no: tradeNo,
       fee: message.totalFee,
-      expire_date
+      expire_date: expireDate
     });
 
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');

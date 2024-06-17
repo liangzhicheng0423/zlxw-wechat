@@ -4,7 +4,11 @@ import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
 import xml2js from 'xml2js';
 import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
-import { BonusTypeEnum, OrderBody, Product, VipLevel, WeChatMessage } from './types';
+import { BonusTypeEnum, Config, OrderBody, Product, VipLevel, WeChatMessage } from './types';
+
+const config = require('../config.json');
+
+export const getConfig = () => config as Config;
 
 const appId = 'xxx'; // 替换为你的微信公众号的 appId
 const appSecret = 'xxx'; // 替换为你的微信公众号的 appSecret
@@ -182,8 +186,8 @@ export const generateOrderNumber = (level: VipLevel, product: Product) => {
 
 export const getLevelAndProduct = (tradeNo: string) => {
   const arr = tradeNo.split('_');
-  const level = arr[arr.length - 2];
-  const product = arr[arr.length - 1];
+  const level = arr[arr.length - 2] as VipLevel;
+  const product = arr[arr.length - 1] as Product;
   return { level, product };
 };
 

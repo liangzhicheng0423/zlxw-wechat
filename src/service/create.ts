@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { Menu, MenuKey } from '../constant';
 import { User } from '../mysqlModal/user';
-import { WeChatMessage } from '../types';
+import { setMode } from '../redis';
+import { Product, WeChatMessage } from '../types';
 import {
+  getConfig,
   getReplyBaseInfo,
   getTextReplyUrl,
   sendAiGroupText,
@@ -21,6 +23,8 @@ export const create = () => {
       console.error('Error creating menu:', error);
     });
 };
+
+const { welcome, welcome_enable } = getConfig();
 
 export const menuEvent = async (message: WeChatMessage, eventKey: string, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -69,12 +73,16 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       break;
 
     case MenuKey.BusinessCooperation:
-      /** TODO: 后续要更换成图片 */
       res.send({
         ...baseReply,
         MsgType: 'image',
         Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128oPxsNIfLLoGv1nncqrwLGeVJLVmJzITudarkzzPz0TI' }
       });
+
+    case MenuKey.GPT4:
+      if (!welcome_enable) return;
+      await sendMessage(message.FromUserName, welcome);
+      await setMode(message.FromUserName, Product.GPT4);
       break;
 
     case MenuKey.ContactCustomerService:

@@ -65,9 +65,24 @@ User.init(
       allowNull: true
     },
     // 标签列表
-    tagid_list: {
+    tag_list: {
       type: DataTypes.CHAR(255),
       allowNull: true
+    },
+    // 免费额度剩余
+    free_count: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    // 到期时间
+    expire_date_dan: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    // 到期时间
+    expire_date_group: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   },
   {

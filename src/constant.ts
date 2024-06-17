@@ -2,10 +2,7 @@ import { BonusTypeEnum, Product, VipLevel } from './types';
 
 const BonusType = BonusTypeEnum.Integral;
 
-export const BonusStrategy = {
-  subscribe: { bonusType: BonusType },
-  order: { bonusType: BonusType }
-};
+export const BonusStrategy = { subscribe: { bonusType: BonusType }, order: { bonusType: BonusType } };
 
 export const SubscribeLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 10, [BonusTypeEnum.Cash]: 10 }];
 
@@ -14,6 +11,7 @@ export const ScanLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 10, [
 export const OrderLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 500, [BonusTypeEnum.Cash]: 500 }];
 
 export enum MenuKey {
+  GPT4 = 'mode_gpt4',
   Dan = 'get_dan',
   AIGroup = 'ai_group',
   Instructions = 'instructions_for_use',
@@ -30,7 +28,8 @@ export const Menu = {
       name: 'AI工具',
       sub_button: [
         { type: 'click', name: 'AI群聊', key: MenuKey.AIGroup },
-        { type: 'click', name: 'Dan', key: MenuKey.Dan }
+        { type: 'click', name: 'Dan', key: MenuKey.Dan },
+        { type: 'click', name: 'GPT4', key: MenuKey.GPT4 }
       ]
     },
     {

@@ -80,3 +80,44 @@ export enum VipLevel {
 }
 
 export type OrderBody = { level: VipLevel; product: Product };
+
+export type Config = {
+  factory: 'linkAI'; // 默认策略
+  welcome: string; // 欢迎语
+  welcome_enable: boolean; // 是否开启欢迎语
+  tts_voice_id: 'alloy'; // 语音id
+  black_name_list: string[]; // 黑名单列表
+
+  use_context: boolean; // 是否开启上下文
+  max_context: number; // 上下文最大长度
+  max_context_time: number; // 上下文保留时间
+
+  second_interval: number; // 多少秒发送一次消息 默认3秒
+  max_messages_per_second: number; // 每${second_interval}秒可发送的最大消息数 默认1条
+
+  limiting_strategy: { count: number; seconds: number }[]; // 限流策略, 当任务总数大于count时，延时${seconds}秒发送消息
+
+  searchKeyWords: string[]; // 触发LinkAI搜索的关键测
+
+  common_msg: string; // 通用消息
+  administrator: string; // 管理员name
+
+  linkAI: { temperature: number; api_base: string; api_key: string; app_code: string };
+  summary: { enabled: boolean; group_enabled: boolean; max_file_size: number; type: Array<'FILE' | 'SHARING'> };
+  GPTAI: { temperature: number; max_tokens: number; api_key: string };
+  DUCKAI: { temperature: number; max_tokens: number; api_key: string };
+  tutujin: { api_key: string };
+
+  baiduReview: { api_key: string; secret_key: string };
+};
+
+export enum TaskStatus {
+  Finished,
+  Pending
+}
+
+export enum Role {
+  User = 'user',
+  System = 'system',
+  Assistant = 'assistant'
+}

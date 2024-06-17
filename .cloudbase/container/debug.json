@@ -3,9 +3,7 @@
     {
       "name": "zlxw-wechat",
       "domain": "",
-      "ip": "",
-      "mode": "compose",
-      "containerId": "4b23d670f29c771bbb7efaeda48e675965ffa3eedfc13e70598f9bb1e17e99cc"
+      "ip": ""
     }
   ],
   "config": {
@@ -37,7 +35,10 @@
       "customLogs": "stdout",
       "initialDelaySeconds": 2,
       "dataBaseName": "nodejs_demo",
-      "executeSQLs": ["CREATE DATABASE IF NOT EXISTS nodejs_demo;", "USE nodejs_demo;"]
+      "executeSQLs": [
+        "CREATE DATABASE IF NOT EXISTS nodejs_demo;",
+        "USE nodejs_demo;"
+      ]
     }
   }
 }
