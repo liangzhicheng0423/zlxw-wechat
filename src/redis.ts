@@ -21,6 +21,7 @@ export const initRedis = (): Promise<void> => {
     redisClient.on('connect', () => {
       console.log('Connected to Redis');
       redisScheduleTaskStart();
+      updateRedis();
       resolve();
     });
   });
@@ -57,7 +58,7 @@ export const getMode = async (userId: string) => {
 /** 是否是会员 */
 export const getIsVip = async (userId: string) => {
   const redis = getRedisClient();
-  const value = redis?.get(getVipKey(userId));
+  const value = await redis?.get(getVipKey(userId));
   return (value ?? null) as 'true' | 'false' | null;
 };
 
@@ -93,15 +94,18 @@ export const deleteRedisKey = async (key: string) => {
 
 export const setMode = async (userId: string, mode: Product) => {
   const redis = getRedisClient();
-  redis?.set(getModeKey(userId), mode);
+  await redis?.set(getModeKey(userId), mode);
+};
+
+export const updateUserVipStatus = async (userId: string, status: boolean) => {
+  const redis = getRedisClient();
+  await redis?.set(getVipKey(userId), status.toString());
 };
 
 const getAllKeysValues = async () => {
   const redis = getRedisClient();
-  if (!redis) {
-    console.log('================== redis 不存在');
-    return;
-  }
+  if (!redis) return;
+
   const keys: string[] = [];
   const keyValues: { [key: string]: string | null } = {};
   let cursor = '0';

@@ -152,7 +152,11 @@ export const check = async (text: string) => {
   try {
     const pass = await textCensor(text);
 
+    console.log('pass: ', isSensitive);
+
     if (!pass) return false;
+
+    return true;
   } catch (error) {
     console.log('[bot] baidu review failed: ', error);
     return true;

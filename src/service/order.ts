@@ -3,6 +3,7 @@ import moment, { Moment } from 'moment';
 import { PayBody, PayLevel } from '../constant';
 import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
+import { getVipKey, updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
 import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
 import { award } from './award';
@@ -145,6 +146,11 @@ export const unifiedorderCb = async (req: any, res: any) => {
       fee: message.totalFee,
       expire_date: expireDate
     });
+
+    // 更新redis
+    if (product === Product.GPT4 || product === Product.Midjourney) {
+      await updateUserVipStatus(userId, true);
+    }
 
     await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
     await sendServiceQRcode(userId);
