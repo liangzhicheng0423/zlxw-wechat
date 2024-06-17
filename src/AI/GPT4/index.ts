@@ -7,9 +7,9 @@ import taskManager from './taskManager';
 // 文字聊天
 export const chatWithTextAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
-  const userId = baseReply.FromUserName;
+  const userId = baseReply.ToUserName;
   const text = message.Content;
-  const quoteId = baseReply.FromUserName + '_' + baseReply.CreateTime;
+  const quoteId = baseReply.ToUserName + '_' + baseReply.CreateTime;
 
   try {
     const pass = await check(text);
