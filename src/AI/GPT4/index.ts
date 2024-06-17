@@ -33,9 +33,10 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
 
     const reply = await getLinkAIReply(text, userId);
 
-    console.log('回复', reply);
     if (!reply) return;
-    await sendMessage(baseReply.FromUserName, reply);
+    console.log('回复', reply, userId);
+
+    await sendMessage(userId, reply);
   } catch (error) {
     console.log('gpt4 reply error: ', error);
     res.send({ ...baseReply, MsgType: 'text', Content: '[ERROR]\n由于神秘力量，本次操作失败，请重新尝试' });
