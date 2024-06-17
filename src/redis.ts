@@ -64,7 +64,7 @@ export const getIsVip = async (userId: string) => {
 /** 免费额度 */
 export const getFreeCount = async (userId: string) => {
   const redis = getRedisClient();
-  const value = redis?.get(getFreeCountKey(userId));
+  const value = await redis?.get(getFreeCountKey(userId));
 
   console.log('getFreeCount ', userId, value);
 
