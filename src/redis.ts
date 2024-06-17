@@ -157,7 +157,7 @@ export const updateRedis = async () => {
   await updateKeysWithPipeline(update);
 };
 
-export const RedisScheduleTaskStart = () => {
+export const redisScheduleTaskStart = () => {
   // 定义一个定时任务，每1分钟执行一次
   cron.schedule('* * * * *', () => {
     console.log('Running a task every minute');

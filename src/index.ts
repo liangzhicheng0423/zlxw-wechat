@@ -5,7 +5,7 @@ import path from 'path';
 import { sequelize } from './db';
 import { syncOrder } from './mysqlModal/order';
 import { syncUser } from './mysqlModal/user';
-import { initRedis } from './redis';
+import { initRedis, redisScheduleTaskStart } from './redis';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
@@ -55,6 +55,8 @@ async function bootstrap() {
       await syncOrder();
 
       await initRedis();
+
+      redisScheduleTaskStart();
 
       // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
       // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
