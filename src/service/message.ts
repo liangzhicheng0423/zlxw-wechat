@@ -1,6 +1,6 @@
 import { chatWithTextAI } from '../AI/GPT4';
 import { User } from '../mysqlModal/user';
-import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, redis, useFreeCount } from '../redis';
+import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
 import { EventMessage, ImageMessage, Product, TextMessage, WeChatMessage } from '../types';
 import {
   createQRCode,

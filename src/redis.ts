@@ -34,8 +34,6 @@ export const getRedisClient = (): Redis | null => {
   return redisClient;
 };
 
-export const redis = getRedisClient();
-
 // 各种个样的key
 /**
  * 1. 模式: ${userId}_mode  // gpt4 || mj
@@ -51,24 +49,28 @@ export const getFreeCountKey = (userId: string) => `${userId}_free_count`;
 
 /** 获取当前的模式 */
 export const getMode = async (userId: string) => {
+  const redis = getRedisClient();
   const value = await redis?.get(getModeKey(userId));
   return (value ?? null) as Product | null;
 };
 
 /** 是否是会员 */
 export const getIsVip = async (userId: string) => {
+  const redis = getRedisClient();
   const value = redis?.get(getVipKey(userId));
   return (value ?? null) as boolean | null;
 };
 
 /** 免费额度 */
 export const getFreeCount = async (userId: string) => {
+  const redis = getRedisClient();
   const value = redis?.get(getFreeCountKey(userId));
   return (value ?? null) as number | null;
 };
 
 // 消耗免费额度
 export const useFreeCount = async (userId: string) => {
+  const redis = getRedisClient();
   const count = await getFreeCount(userId);
   if (count !== null) {
     await redis?.set(getFreeCountKey(userId), Math.max(count - 1, 0));
@@ -82,19 +84,25 @@ export const useFreeCount = async (userId: string) => {
 };
 
 export const deleteRedisKey = async (key: string) => {
+  const redis = getRedisClient();
   await redis?.del(key);
 };
 
 export const setMode = async (userId: string, mode: Product) => {
+  const redis = getRedisClient();
   redis?.set(getModeKey(userId), mode);
 };
 
 const getAllKeysValues = async () => {
+  const redis = getRedisClient();
+  if (!redis) {
+    console.log('================== redis 不存在');
+    return;
+  }
   const keys: string[] = [];
   const keyValues: { [key: string]: string | null } = {};
   let cursor = '0';
 
-  if (!redis) return;
   do {
     const result = await redis.scan(cursor, 'MATCH', '*', 'COUNT', 100);
     cursor = result[0];
@@ -113,11 +121,13 @@ const getAllKeysValues = async () => {
 };
 
 const updateKeysWithPipeline = async (keyValuePairs: { [key: string]: string }) => {
-  const pipeline = redis?.pipeline();
-  if (!pipeline) {
-    console.log('-= redis 不存在');
+  const redis = getRedisClient();
+  if (!redis) {
+    console.log('================== redis 不存在');
     return;
   }
+
+  const pipeline = redis.pipeline();
 
   for (const [key, value] of Object.entries(keyValuePairs)) {
     pipeline.set(key, value);
