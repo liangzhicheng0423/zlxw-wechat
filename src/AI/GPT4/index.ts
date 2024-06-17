@@ -9,27 +9,31 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
   const userId = baseReply.FromUserName;
   const text = message.Content;
-  const pass = await check(text);
-
-  // 敏感词检测
-  if (!pass) {
-    res.send({ ...baseReply, MsgType: 'text', Content: '检测到对话中存在违规信息，让我们换个话题吧～' });
-    return;
-  }
-
-  // 限流策略
-  const { status, message: msg = '[Error]' } = taskManager.checkTask(userId);
-  if (status === 'error') {
-    res.send({ ...baseReply, MsgType: 'text', Content: msg });
-    return;
-  }
-
   const quoteId = baseReply.FromUserName + '_' + baseReply.CreateTime;
 
-  taskManager.addTask(userId, quoteId);
-
   try {
+    const pass = await check(text);
+
+    // 敏感词检测
+    if (!pass) {
+      res.send({ ...baseReply, MsgType: 'text', Content: '检测到对话中存在违规信息，让我们换个话题吧～' });
+      return;
+    }
+
+    // 限流策略
+    const { status, message: msg = '[Error]' } = taskManager.checkTask(userId);
+
+    console.log('限流：', status, message);
+    if (status === 'error') {
+      res.send({ ...baseReply, MsgType: 'text', Content: msg });
+      return;
+    }
+
+    taskManager.addTask(userId, quoteId);
+
     const reply = await getLinkAIReply(text, userId);
+
+    console.log('回复', reply);
     if (!reply) return;
 
     res.send({ ...baseReply, MsgType: 'text', Content: reply });

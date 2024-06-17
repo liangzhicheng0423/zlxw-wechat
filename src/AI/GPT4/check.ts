@@ -152,7 +152,7 @@ export const check = async (text: string) => {
   try {
     const pass = await textCensor(text);
 
-    console.log('pass: ', isSensitive);
+    console.log('pass: ', pass);
 
     if (!pass) return false;
 
