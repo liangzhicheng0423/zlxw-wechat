@@ -122,10 +122,7 @@ const getAllKeysValues = async () => {
 
 const updateKeysWithPipeline = async (keyValuePairs: { [key: string]: string }) => {
   const redis = getRedisClient();
-  if (!redis) {
-    console.log('================== redis 不存在');
-    return;
-  }
+  if (!redis) return;
 
   const pipeline = redis.pipeline();
 
@@ -153,7 +150,6 @@ export const updateRedis = async () => {
   const now = moment();
   users.forEach(user => {
     const formatUser = user.toJSON();
-    console.log('每次遍历结果: ', formatUser);
 
     // 是否是会员
     let isVip = false;

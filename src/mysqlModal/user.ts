@@ -77,12 +77,12 @@ User.init(
     // 到期时间
     expire_date_dan: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     // 到期时间
     expire_date_group: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   },
   {
