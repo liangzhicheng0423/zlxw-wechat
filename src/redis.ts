@@ -6,6 +6,8 @@ import { Product } from './types';
 
 let redisClient: Redis;
 
+const expirationSeconds = 600; // 10分钟的秒数
+
 export const initRedis = (): Promise<void> => {
   return new Promise((resolve, reject) => {
     redisClient = new Redis({
@@ -95,6 +97,7 @@ export const deleteRedisKey = async (key: string) => {
 export const setMode = async (userId: string, mode: Product) => {
   const redis = getRedisClient();
   await redis?.set(getModeKey(userId), mode);
+  await redis?.expire(getModeKey(userId), expirationSeconds);
 };
 
 export const updateUserVipStatus = async (userId: string, status: boolean) => {

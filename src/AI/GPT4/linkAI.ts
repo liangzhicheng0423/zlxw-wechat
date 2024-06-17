@@ -29,10 +29,14 @@ export const getLinkAIReply = async (content: string, userId: string): Promise<s
       data: { app_code, messages: flatMessage }
     };
 
+    console.log('请求：', options);
+
     axios
       .request(options)
       .then(response => {
         const reply = response.data.choices[0].message.content;
+
+        console.log('回复:', reply);
         taskManager.updateContext(userId, content, reply);
 
         resolve(reply);
