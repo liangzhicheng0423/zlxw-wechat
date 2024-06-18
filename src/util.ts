@@ -290,7 +290,7 @@ export const downloadVoiceFile = async (mediaId: string): Promise<string> => {
   // 下载语音文件
   const url = `https://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
   const response = await axios.get(url, { responseType: 'arraybuffer' });
-  const filePath = path.join(__dirname, `./tmp/${mediaId}.amr`);
+  const filePath = path.join(__dirname, `../tmp/${mediaId}.amr`);
   console.log('filePath,', filePath);
   fs.writeFileSync(filePath, response.data);
   return filePath;
@@ -369,7 +369,7 @@ export const textToVoice = async (input: string): Promise<string | null> => {
 
     if (res.status === 200) {
       const key = `${moment().format('YYYYMMDDHHmmss')}${uuidv4()}`;
-      const mp3Path = path.join('./tmp/voice/', `${key}.mp3`);
+      const mp3Path = path.join('../tmp/voice/', `${key}.mp3`);
       fs.writeFileSync(mp3Path, res.data);
 
       return mp3Path;
