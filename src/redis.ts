@@ -172,8 +172,8 @@ export const updateRedis = async () => {
 };
 
 export const redisScheduleTaskStart = () => {
-  // 定义一个定时任务，每1分钟执行一次
-  cron.schedule('* * * * *', () => {
+  // 定义一个定时任务，每小时执行一次
+  cron.schedule('0 * * * *', () => {
     updateRedis();
   });
 };
