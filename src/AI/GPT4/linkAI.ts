@@ -60,11 +60,15 @@ export const textToVoice = async (text: string): Promise<string> => {
     axios
       .request(options)
       .then(response => {
+        console.log('response.data', response.data);
         const tmp_file_name = 'tmp/' + Date.now() + Math.random() * 1000 + '.mp3';
-        fs.writeFile(tmp_file_name, response.data, err => {});
+        fs.writeFile(tmp_file_name, response.data, err => {
+          console.log('writeFile error', err);
+        });
         resolve(tmp_file_name);
       })
       .catch(error => {
+        console.log('textToVoice error', error);
         reject('error: ' + error);
       });
   });
