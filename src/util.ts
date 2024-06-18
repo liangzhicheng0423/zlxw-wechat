@@ -331,6 +331,7 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
 
         voiceFile = mp3File;
       } catch (e) {
+        console.log('anyToMp3 error', e);
         return null;
       }
     }
@@ -344,8 +345,9 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
     const res = await axios.post(url, formData, { headers, timeout: 60000 });
 
     if (res.status === 200) return res.data.text;
-    else return null;
+    return null;
   } catch (e) {
+    console.log('voiceToText error: ', e);
     return null;
   }
 };

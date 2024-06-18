@@ -198,6 +198,8 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
   const voicePath = await downloadVoiceFile(message.MediaId);
 
   const transformText = await voiceToText(voicePath);
+  console.log('transformText======== ', transformText);
+
   if (!transformText) {
     res.send({
       ...baseReply,
@@ -206,6 +208,7 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
     });
     return;
   }
+
   const granMessage = { ...message, MsgType: 'text', Content: transformText, ReplyWithVoice: true };
   await chatWithAI(granMessage as TextMessage, res);
 };
