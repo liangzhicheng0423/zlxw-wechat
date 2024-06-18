@@ -1,7 +1,10 @@
 import axios from 'axios';
+import ffmpeg from 'fluent-ffmpeg';
+import FormData from 'form-data';
 import fs from 'fs';
 import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
+import path from 'path';
 import xml2js from 'xml2js';
 import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, Config, OrderBody, Product, VipLevel, WeChatMessage } from './types';
@@ -10,8 +13,8 @@ const config = require('../config.json');
 
 export const getConfig = () => config as Config;
 
-const appId = 'xxx'; // 替换为你的微信公众号的 appId
-const appSecret = 'xxx'; // 替换为你的微信公众号的 appSecret
+const appId = 'gh_c1c4f430f4a9'; // 替换为你的微信公众号的 appId
+const appSecret = 'wxd00871cb6294c27462b8813d70c473a5f5e537e1728eb408'; // 替换为你的微信公众号的 appSecret
 
 // 获取 access_token
 export const getAccessToken = async () => {
@@ -279,4 +282,74 @@ export const sendAiGroupText = async (userId: string) => {
 
 export const sendServiceQRcode = async (userId: string) => {
   await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
+};
+
+/** 获取音频临时文件 */
+export const downloadVoiceFile = async (mediaId: string): Promise<string> => {
+  // 下载语音文件
+  const url = `https://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
+  const response = await axios.get(url, { responseType: 'arraybuffer' });
+  const filePath = path.join(__dirname, `${mediaId}.amr`);
+  fs.writeFileSync(filePath, response.data);
+  return filePath;
+};
+
+// (async () => {
+//   const path = await downloadVoiceFile('OpEE6Weo1p3q5ahc2OXCoUEueEQX84EsTN9TwxogMlmtCCph8nsf-hGXjnGJGkla');
+//   console.log('path===', path);
+// })();
+
+// 音频转换函数
+export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> => {
+  if (anyPath.endsWith('.mp3')) {
+    await fs.promises.copyFile(anyPath, mp3Path);
+    return;
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(anyPath)
+      .toFormat('mp3')
+      .on('end', () => resolve())
+      .on('error', (err: Error) => reject(err))
+      .save(mp3Path);
+  });
+};
+
+export const voiceToText = async (voiceFile: string) => {
+  const { linkAI } = getConfig();
+  try {
+    const url = `https://api.link-ai.chat/v1/audio/transcriptions`;
+    const headers = { Authorization: `Bearer ${linkAI.api_key}` };
+    const model = 'whisper-1';
+
+    if (voiceFile.endsWith('.amr')) {
+      try {
+        const mp3File = path.basename(voiceFile, '.amr') + '.mp3';
+
+        await anyToMp3(voiceFile, mp3File);
+
+        voiceFile = mp3File;
+        console.log('mp3File === ', mp3File);
+      } catch (e) {}
+    }
+
+    const file = fs.createReadStream(voiceFile);
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('model', model);
+
+    const res = await axios.post(url, formData, { headers, timeout: 60000 });
+
+    if (res.status === 200) {
+      const text = res.data.text;
+      console.log('text: =====', text);
+      return text;
+    } else {
+      console.log('接口调用失败', res.status);
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
 };

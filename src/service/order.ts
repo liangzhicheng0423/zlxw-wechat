@@ -102,20 +102,14 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const formatUser = user?.toJSON();
 
+    const update: { expire_date_group?: Moment | null; expire_date_dan?: Moment | null } = {};
+
     if (formatUser) {
       const prevExpireDate = product === Product.Dan ? formatUser.expire_date_dan : formatUser.expire_date_group;
-      console.log('prevExpireDate: ', prevExpireDate);
-
       const userExpireDate = getExpireDate(prevExpireDate ? moment(prevExpireDate) : moment(), level);
-      console.log('userExpireDate: ', userExpireDate);
-
-      const update: { expire_date_group?: Moment | null; expire_date_dan?: Moment | null } = {};
 
       if (product === Product.Dan) update.expire_date_dan = userExpireDate;
       else update.expire_date_group = userExpireDate;
-
-      console.log('update: ', update);
-      user.update(update);
     }
 
     if (formatUser?.p_id) {
@@ -131,7 +125,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     // 更新用户表
-    await user.update({ is_award, is_vip: true });
+    await user.update({ ...update, is_award, is_vip: true });
 
     // 新增订单
     const expireDate = getExpireDate(moment(), level);

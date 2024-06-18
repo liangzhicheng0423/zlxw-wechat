@@ -19,6 +19,13 @@ export interface ImageMessage extends BaseMessage {
   MediaId: string; // 图片消息媒体id，可以调用获取临时素材接口拉取数据
 }
 
+// 音频消息
+export interface VoiceMessage extends BaseMessage {
+  MsgType: 'voice';
+  MediaId: string; // 音频消息媒体id，可以调用获取临时素材接口拉取数据
+  Format: string; // 语音格式，如amr，speex等
+}
+
 // 事件消息
 export interface EventMessage extends BaseMessage {
   MsgType: 'event';
@@ -34,7 +41,7 @@ export interface MessagePush {
 }
 
 // 定义可能的消息类型
-export type WeChatMessage = TextMessage | ImageMessage | EventMessage;
+export type WeChatMessage = TextMessage | ImageMessage | EventMessage | VoiceMessage;
 
 // 云托管消息推送处理函数类型
 export type MessageHandler = (message: WeChatMessage) => void;

@@ -1,10 +1,11 @@
 import { chatWithTextAI } from '../AI/GPT4';
 import { User } from '../mysqlModal/user';
 import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
-import { EventMessage, ImageMessage, Product, TextMessage, WeChatMessage } from '../types';
+import { EventMessage, ImageMessage, Product, TextMessage, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
   downloadImage,
+  downloadVoiceFile,
   getAiGroupText,
   getDanText,
   getReplyBaseInfo,
@@ -14,7 +15,8 @@ import {
   sendDanText,
   sendMessage,
   sendServiceQRcode,
-  uploadTemporaryImageMedia
+  uploadTemporaryImageMedia,
+  voiceToText
 } from '../util';
 import { menuEvent } from './create';
 import { subscribe } from './subscribe';
@@ -182,6 +184,14 @@ const handleEvent = async (message: EventMessage, res: any) => {
   }
 };
 
+const handleVoice = async (message: VoiceMessage, res: any) => {
+  const voicePath = await downloadVoiceFile(message.MediaId);
+  console.log('voicePath==========', voicePath);
+
+  const transformText = await voiceToText(voicePath);
+  console.log('transformText==========', transformText);
+};
+
 const handleMessage = async (message: WeChatMessage, res: any) => {
   const type = message.MsgType;
 
@@ -189,12 +199,19 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
     case 'event':
       handleEvent(message, res);
       break;
+
     case 'text':
       await handleText(message, res);
       break;
+
     case 'image':
       handleImage(message, res);
       break;
+
+    case 'voice':
+      handleVoice(message, res);
+      break;
+
     default:
       break;
   }
