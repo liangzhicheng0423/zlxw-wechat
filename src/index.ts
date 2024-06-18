@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cron from 'node-cron';
 import path from 'path';
 import { sequelize } from './db';
+import { syncClearanceCode } from './mysqlModal/clearanceCode';
 import { syncOrder } from './mysqlModal/order';
 import { syncUser } from './mysqlModal/user';
 import { initRedis, redisScheduleTaskStart } from './redis';
@@ -53,15 +54,16 @@ async function bootstrap() {
   app.listen(port, async () => {
     console.log('启动成功', port);
     // 创建菜单
-    create();
+    // create();
 
     // 同步数据库
     try {
-      // await sequelize.authenticate();
+      await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();
 
       await initRedis();
+      await syncClearanceCode();
 
       // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
       // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');

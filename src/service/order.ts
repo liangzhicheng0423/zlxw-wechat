@@ -1,6 +1,8 @@
 import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { PayBody, PayLevel } from '../constant';
+import { encrypt } from '../crypto';
+import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
 import { getVipKey, updateUserVipStatus } from '../redis';
@@ -145,7 +147,15 @@ export const unifiedorderCb = async (req: any, res: any) => {
       await updateUserVipStatus(userId, true);
     }
 
-    await sendMessage(userId, '会员开通成功，请扫码添加客服，并向客服发送“激活”');
+    // 生成兑换码
+    const clearanceCode = `${userId}-${product}-${level}-${message.totalFee}`;
+    // 加密
+    const encrypted = encrypt(clearanceCode);
+
+    // 存储核销码
+    await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, status: false });
+
+    await sendMessage(userId, `会员开通成功，请扫码添加客服，并向客服核销码\n\n🔑 核销码: ${encrypted}`);
     await sendServiceQRcode(userId);
 
     res.send({ errcode: 0, errmsg: '' });

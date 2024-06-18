@@ -196,9 +196,9 @@ export const getLevelAndProduct = (tradeNo: string) => {
   return { level, product };
 };
 
-export const getTextReplyUrl = (text: string) => {
+export const getTextReplyUrl = (text: string, name?: string) => {
   const msgMenUid = Date.now() + '_' + Math.floor(100000 + Math.random() * 900000);
-  return `<a href="weixin://bizmsgmenu?msgmenucontent=${text}&msgmenuid=${msgMenUid}">${text}</a>`;
+  return `<a href="weixin://bizmsgmenu?msgmenucontent=${text}&msgmenuid=${msgMenUid}">${name ?? text}</a>`;
 };
 
 export const getOrderUrl = (name: string, params?: OrderBody) => {

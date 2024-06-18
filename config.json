@@ -7,6 +7,7 @@
   "use_context": true,
   "max_context": 3,
   "max_context_time": 10,
+  "admins": ["oHBuD6evwpLpv9MSr9xflzXi10Ks", "oHBuD6bgIDb7LlS8_6l90aGlUXGs"],
 
   "max_messages_per_second": 1,
   "second_interval": 1,

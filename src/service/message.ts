@@ -1,5 +1,8 @@
+import moment from 'moment';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
+import { decrypt } from '../crypto';
+import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
 import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
 import { EventMessage, ImageMessage, Product, TextMessage, VoiceMessage, WeChatMessage } from '../types';
@@ -8,8 +11,10 @@ import {
   downloadImage,
   downloadVoiceFile,
   getAiGroupText,
+  getConfig,
   getDanText,
   getReplyBaseInfo,
+  getTextReplyUrl,
   getWelcome,
   mergeImages,
   sendAiGroupText,
@@ -21,6 +26,8 @@ import {
 } from '../util';
 import { menuEvent } from './create';
 import { subscribe } from './subscribe';
+
+const { admins } = getConfig();
 
 const chatWithAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -69,6 +76,61 @@ const chatWithAI = async (message: TextMessage, res: any) => {
 const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
   const userId = message.FromUserName;
+
+  const isAdmin = admins.includes(userId);
+  const isClearance = message.Content.startsWith('核销');
+  const isConfirmClearance = message.Content.startsWith('确认核销');
+
+  if (isAdmin) {
+    const [cmd, code] = message.Content.split(' ');
+
+    // 二次确认核销码信息
+    if (isClearance) {
+      if (cmd !== '核销' || !code) {
+        await sendMessage(userId, '命令格式错误');
+        return;
+      }
+
+      // 解密
+      const decryptedText = decrypt(code);
+      const [, product, level, fee] = decryptedText.split('-');
+      const reply = [
+        '请您确认一下核对信息',
+        `产品：${product}`,
+        `会员等级：${level}`,
+        `订单金额：${Number(fee) / 100}`,
+        `核对无误后请点击 ${getTextReplyUrl(`确认核销 ${code}`, '确认核对无误')}`
+      ];
+      await sendMessage(userId, reply.join('\n\n'));
+      return;
+    }
+
+    if (isConfirmClearance) {
+      if (cmd !== '确认核销' || !code) {
+        await sendMessage(userId, '命令格式错误');
+        return;
+      }
+      // 解密
+      const decryptedText = decrypt(code);
+      const [customerId] = decryptedText.split('-');
+      const clearance = await ClearanceCode.findOne({ where: { user_id: customerId, clearance_code: code } });
+      if (!clearance) {
+        await sendMessage(userId, '抱歉，核销码不存在～');
+        return;
+      }
+
+      const formatClearance = clearance.toJSON();
+      console.log('formatClearance.status: ', formatClearance.status);
+      if (formatClearance.status === true) {
+        await sendMessage(userId, '抱歉，核销码已经被核销');
+        return;
+      }
+
+      await clearance.update({ status: true, check_date: moment() });
+      await sendMessage(userId, '核销成功');
+      return;
+    }
+  }
 
   switch (message.Content) {
     case '获取我的专属分享海报':

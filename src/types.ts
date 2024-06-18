@@ -96,6 +96,8 @@ export type Config = {
   tts_voice_id: 'alloy'; // 语音id
   black_name_list: string[]; // 黑名单列表
 
+  admins: string[];
+
   use_context: boolean; // 是否开启上下文
   max_context: number; // 上下文最大长度
   max_context_time: number; // 上下文保留时间
