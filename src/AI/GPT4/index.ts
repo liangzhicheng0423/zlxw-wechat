@@ -1,7 +1,7 @@
 import { TaskStatus, TextMessage } from '../../types';
-import { getReplyBaseInfo, sendMessage } from '../../util';
+import { getReplyBaseInfo, sendMessage, sendVoiceMessage, uploadTemporaryMedia } from '../../util';
 import { check } from './check';
-import { getLinkAIReply } from './linkAI';
+import { getLinkAIReply, textToVoice } from './linkAI';
 import taskManager from './taskManager';
 
 // 文字聊天
@@ -9,7 +9,7 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
   const userId = baseReply.ToUserName;
   const text = message.Content;
-  const quoteId = baseReply.ToUserName + '_' + baseReply.CreateTime;
+  const quoteId = userId + '_' + baseReply.CreateTime;
 
   try {
     const pass = await check(text);
@@ -34,9 +34,17 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
     const reply = await getLinkAIReply(text, userId);
 
     if (!reply) return;
-    console.log('回复', reply, userId);
 
-    await sendMessage(userId, reply);
+    if (message.ReplyWithVoice) {
+      // 将文字转换为音频
+      const mp3Path = await textToVoice(reply);
+      // 上传临时素材
+      const updateRes = await uploadTemporaryMedia(mp3Path, 'voice');
+
+      await sendVoiceMessage(userId, updateRes.media_id);
+    } else {
+      await sendMessage(userId, reply);
+    }
   } catch (error) {
     console.log('gpt4 reply error: ', error);
     res.send({ ...baseReply, MsgType: 'text', Content: '[ERROR]\n由于神秘力量，本次操作失败，请重新尝试' });

@@ -10,6 +10,7 @@ interface BaseMessage {
 export interface TextMessage extends BaseMessage {
   MsgType: 'text';
   Content: string; // 文本消息内容
+  ReplyWithVoice?: boolean; // 是否以音频形式回复
 }
 
 // 图片消息

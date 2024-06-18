@@ -15,7 +15,7 @@ import {
   sendDanText,
   sendMessage,
   sendServiceQRcode,
-  uploadTemporaryImageMedia,
+  uploadTemporaryMedia,
   voiceToText
 } from '../util';
 import { menuEvent } from './create';
@@ -23,13 +23,10 @@ import { subscribe } from './subscribe';
 
 const chatWithAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
-  console.info('转入AI对话');
 
   const userId = message.FromUserName;
-
   const mode = await getMode(userId);
 
-  console.log('mode: ', mode);
   if (!mode) {
     res.send({
       ...baseReply,
@@ -85,7 +82,7 @@ const handleText = async (message: TextMessage, res: any) => {
       const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
 
       // 上传至素材库
-      const updateRes = await uploadTemporaryImageMedia(path);
+      const updateRes = await uploadTemporaryMedia(path, 'image');
 
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
@@ -185,11 +182,32 @@ const handleEvent = async (message: EventMessage, res: any) => {
 };
 
 const handleVoice = async (message: VoiceMessage, res: any) => {
+  const baseReply = getReplyBaseInfo(message);
+  const userId = message.FromUserName;
+  const mode = await getMode(userId);
+
+  if (!mode) {
+    res.send({
+      ...baseReply,
+      MsgType: 'text',
+      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"按钮切换模式）'
+    });
+    return;
+  }
+
   const voicePath = await downloadVoiceFile(message.MediaId);
-  console.log('voicePath==========', voicePath);
 
   const transformText = await voiceToText(voicePath);
-  console.log('transformText==========', transformText);
+  if (!transformText) {
+    res.send({
+      ...baseReply,
+      MsgType: 'text',
+      Content: '抱歉，请再说一次吧'
+    });
+    return;
+  }
+  const granMessage = { ...message, MsgType: 'text', Content: transformText, ReplyWithVoice: true };
+  await chatWithAI(granMessage as TextMessage, res);
 };
 
 const handleMessage = async (message: WeChatMessage, res: any) => {

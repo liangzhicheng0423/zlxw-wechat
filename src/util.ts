@@ -5,6 +5,7 @@ import fs from 'fs';
 import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
 import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
 import { BonusTypeEnum, Config, OrderBody, Product, VipLevel, WeChatMessage } from './types';
@@ -80,7 +81,7 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
 };
 
 // 上传临时图片素材函数
-export const uploadTemporaryImageMedia = async (filePath: string) => {
+export const uploadTemporaryMedia = async (filePath: string, type: 'image' | 'voice' | 'video') => {
   const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/media/upload';
 
   try {
@@ -89,15 +90,15 @@ export const uploadTemporaryImageMedia = async (filePath: string) => {
 
     // 发送请求
     const response = await axios.post(uploadUrl, formData, {
-      // 媒体文件类型，图片类型为 image
-      params: { type: 'image' },
+      // 媒体文件类型
+      params: { type },
       headers: { 'Content-Type': 'multipart/form-data' }
     });
 
     // 返回上传结果
     return response.data;
   } catch (error: any) {
-    console.error('Error uploading image:', error.message);
+    console.error('Error uploading:', error.message);
     throw error;
   }
 };
@@ -315,7 +316,7 @@ export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> 
   });
 };
 
-export const voiceToText = async (voiceFile: string) => {
+export const voiceToText = async (voiceFile: string): Promise<null | string> => {
   const { linkAI } = getConfig();
   try {
     const url = `https://api.link-ai.chat/v1/audio/transcriptions`;
@@ -329,8 +330,9 @@ export const voiceToText = async (voiceFile: string) => {
         await anyToMp3(voiceFile, mp3File);
 
         voiceFile = mp3File;
-        console.log('mp3File === ', mp3File);
-      } catch (e) {}
+      } catch (e) {
+        return null;
+      }
     }
 
     const file = fs.createReadStream(voiceFile);
@@ -341,15 +343,53 @@ export const voiceToText = async (voiceFile: string) => {
 
     const res = await axios.post(url, formData, { headers, timeout: 60000 });
 
-    if (res.status === 200) {
-      const text = res.data.text;
-      console.log('text: =====', text);
-      return text;
-    } else {
-      console.log('接口调用失败', res.status);
-      return null;
-    }
+    if (res.status === 200) return res.data.text;
+    else return null;
   } catch (e) {
     return null;
+  }
+};
+
+export const textToVoice = async (input: string): Promise<string | null> => {
+  const { linkAI } = getConfig();
+  try {
+    const url = `https://api.link-ai.chat/v1/audio/speech`;
+    const headers = {
+      Authorization: `Bearer ${linkAI.api_key}`,
+      'Content-Type': 'application/json'
+    };
+    const model = 'tts-1';
+    const data = { model, input, voice: 'onyx', app_code: linkAI.app_code };
+
+    const res = await axios.post(url, data, { headers: headers, responseType: 'arraybuffer' });
+
+    if (res.status === 200) {
+      const key = `${moment().format('YYYYMMDDHHmmss')}${uuidv4()}`;
+      const mp3Path = path.join('./tmp/voice/', `${key}.mp3`);
+      fs.writeFileSync(mp3Path, res.data);
+
+      return mp3Path;
+    } else {
+      const resJson = res.data;
+      console.error(`[LinkVoice] textToVoice error, status_code=${res.status}, msg=${resJson.message}`);
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+};
+
+/** 发送音频消息 */
+export const sendVoiceMessage = async (userId: string, mediaId: string) => {
+  try {
+    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/send`;
+    const data = {
+      touser: userId,
+      msgtype: 'voice',
+      voice: { media_id: mediaId }
+    };
+    await axios.post(url, data);
+  } catch (error) {
+    console.error(`Failed to send voice message`);
   }
 };
