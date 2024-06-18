@@ -324,18 +324,18 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
     const headers = { Authorization: `Bearer ${linkAI.api_key}` };
     const model = 'whisper-1';
 
-    if (voiceFile.endsWith('.amr')) {
-      try {
-        const mp3File = path.basename(voiceFile, '.amr') + '.mp3';
+    // if (voiceFile.endsWith('.amr')) {
+    //   try {
+    //     const mp3File = path.basename(voiceFile, '.amr') + '.mp3';
 
-        await anyToMp3(voiceFile, mp3File);
+    //     await anyToMp3(voiceFile, mp3File);
 
-        voiceFile = mp3File;
-      } catch (e) {
-        console.log('anyToMp3 error', e);
-        return null;
-      }
-    }
+    //     voiceFile = mp3File;
+    //   } catch (e) {
+    //     console.log('anyToMp3 error', e);
+    //     return null;
+    //   }
+    // }
 
     const file = fs.createReadStream(voiceFile);
     const formData = new FormData();
