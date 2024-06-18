@@ -69,9 +69,10 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
         maxBodyLength: Infinity
       })
       .then(response => {
-        const path = `./tmp/image_${user_id}_${Date.now()}.jpg`;
-        fs.writeFileSync(path, Buffer.from(response.data, 'binary'));
-        resolve(path);
+        const filePath = path.join(__dirname, `../tmp/image/image_${user_id}_${Date.now()}.jpg`);
+
+        fs.writeFileSync(filePath, Buffer.from(response.data, 'binary'));
+        resolve(filePath);
       })
       .catch(error => {
         console.error(`[WX] Error downloading image: ${error}`);
@@ -290,7 +291,7 @@ export const downloadVoiceFile = async (mediaId: string): Promise<string> => {
   // 下载语音文件
   const url = `https://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
   const response = await axios.get(url, { responseType: 'arraybuffer' });
-  const filePath = path.join(__dirname, `../tmp/${mediaId}.amr`);
+  const filePath = path.join(__dirname, `../tmp/voice/${mediaId}.amr`);
   console.log('filePath,', filePath);
   fs.writeFileSync(filePath, response.data);
   return filePath;

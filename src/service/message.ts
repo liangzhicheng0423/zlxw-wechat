@@ -1,3 +1,4 @@
+import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { User } from '../mysqlModal/user';
 import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
@@ -77,12 +78,13 @@ const handleText = async (message: TextMessage, res: any) => {
       // 下载二维码
       const qrCodePath = await downloadImage(qrCodeUrl, userId);
 
-      const outPath = `./tmp/image_qrcode_${Date.now()}.jpeg`;
+      const outPath = path.join(__dirname, `../tmp/image/image_qrcode_${Date.now()}.jpeg`);
+
       // 合成背景图
-      const path = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
+      const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
 
       // 上传至素材库
-      const updateRes = await uploadTemporaryMedia(path, 'image');
+      const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;

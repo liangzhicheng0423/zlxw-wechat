@@ -1,6 +1,8 @@
+import { exec } from 'child_process';
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
+import cron from 'node-cron';
 import path from 'path';
 import { sequelize } from './db';
 import { syncOrder } from './mysqlModal/order';
@@ -43,6 +45,11 @@ app.post('create', create);
 const port = process.env.PORT || 80;
 
 async function bootstrap() {
+  cron.schedule('0 4 * * *', () => {
+    exec(`rm -rf ./tmp/voice/*`);
+    exec(`rm -rf ./tmp/image/*`);
+  });
+
   app.listen(port, async () => {
     console.log('启动成功', port);
     // 创建菜单
