@@ -1,7 +1,7 @@
 import { TaskStatus, TextMessage } from '../../types';
-import { getReplyBaseInfo, sendMessage, sendVoiceMessage, uploadTemporaryMedia } from '../../util';
+import { getReplyBaseInfo, sendMessage, sendVoiceMessage, textToVoice, uploadTemporaryMedia } from '../../util';
 import { check } from './check';
-import { getLinkAIReply, textToVoice } from './linkAI';
+import { getLinkAIReply } from './linkAI';
 import taskManager from './taskManager';
 
 // 文字聊天
@@ -41,6 +41,10 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       // 将文字转换为音频
       const mp3Path = await textToVoice(reply);
       console.log('mp3Path', mp3Path);
+      if (!mp3Path) {
+        await sendMessage(userId, '抱歉，请再说一次吧～');
+        return;
+      }
 
       // 上传临时素材
       const updateRes = await uploadTemporaryMedia(mp3Path, 'voice');

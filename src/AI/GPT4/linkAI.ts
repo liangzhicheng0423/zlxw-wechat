@@ -46,30 +46,3 @@ export const getLinkAIReply = async (content: string, userId: string): Promise<s
       });
   });
 };
-
-export const textToVoice = async (text: string): Promise<string> => {
-  const url = `${api_base}/audio/speech`;
-  const options = {
-    method: 'POST',
-    url,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${api_key}` },
-    data: { model: 'tts-1', input: text, voice: tts_voice_id, app_code }
-  };
-
-  return new Promise((resolve, reject) => {
-    axios
-      .request(options)
-      .then(response => {
-        console.log('response.data', response.data);
-        const tmp_file_name = 'tmp/' + Date.now() + Math.random() * 1000 + '.mp3';
-        fs.writeFile(tmp_file_name, response.data, err => {
-          console.log('writeFile error', err);
-        });
-        resolve(tmp_file_name);
-      })
-      .catch(error => {
-        console.log('textToVoice error', error);
-        reject('error: ' + error);
-      });
-  });
-};
