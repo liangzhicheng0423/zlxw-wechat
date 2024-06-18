@@ -105,7 +105,7 @@ export const updateUserVipStatus = async (userId: string, status: boolean) => {
   await redis?.set(getVipKey(userId), status.toString());
 };
 
-const getAllKeysValues = async () => {
+export const getAllKeysValues = async () => {
   const redis = getRedisClient();
   if (!redis) return;
 
@@ -142,10 +142,6 @@ const updateKeysWithPipeline = async (keyValuePairs: { [key: string]: string }) 
 
   try {
     await pipeline.exec();
-    console.log('Keys updated successfully with PIPELINE');
-
-    const allKeyValues = await getAllKeysValues();
-    console.log('allKeyValues: ', allKeyValues);
   } catch (err) {
     console.error('Failed to update keys with PIPELINE', err);
   }
@@ -172,15 +168,12 @@ export const updateRedis = async () => {
     update[getFreeCountKey(formatUser.user_id)] = freeCount.toString();
   });
 
-  console.log('updateRedis 要更新的信息', update);
-
   await updateKeysWithPipeline(update);
 };
 
 export const redisScheduleTaskStart = () => {
   // 定义一个定时任务，每1分钟执行一次
   cron.schedule('* * * * *', () => {
-    console.log('Running a task every minute 每1分钟执行一次');
     updateRedis();
   });
 };

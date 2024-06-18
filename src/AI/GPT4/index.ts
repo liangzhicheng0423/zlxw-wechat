@@ -35,11 +35,17 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
 
     if (!reply) return;
 
+    console.log('message.ReplyWithVoice', message.ReplyWithVoice);
+
     if (message.ReplyWithVoice) {
       // 将文字转换为音频
       const mp3Path = await textToVoice(reply);
+      console.log('mp3Path', mp3Path);
+
       // 上传临时素材
       const updateRes = await uploadTemporaryMedia(mp3Path, 'voice');
+
+      console.log('updateRes', updateRes);
 
       await sendVoiceMessage(userId, updateRes.media_id);
     } else {
