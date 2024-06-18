@@ -62,13 +62,13 @@ export const PayBody = {
   [Product.GPT4]: {
     [VipLevel.Ten]: '10份年卡 2480元/年',
     [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（16元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（66元/月）',
     [VipLevel.Month]: '购买月卡 79元/月'
   },
   [Product.Midjourney]: {
     [VipLevel.Ten]: '10份年卡 2480元/年',
     [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（16元/月）',
+    [VipLevel.Quarter]: '购买季卡 199元/季（66元/月）',
     [VipLevel.Month]: '购买月卡 79元/月'
   }
 };

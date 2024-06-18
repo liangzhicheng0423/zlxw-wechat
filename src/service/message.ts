@@ -95,8 +95,8 @@ const handleText = async (message: TextMessage, res: any) => {
       const decryptedText = decrypt(code);
       const [, product, level, fee] = decryptedText.split('-');
       const reply = [
-        '请您确认一下核对信息',
-        `产品：${product}`,
+        '请您确认以下订单信息',
+        `订单产品：${product}`,
         `会员等级：${level}`,
         `订单金额：${Number(fee) / 100}`,
         `核对无误后请点击 ${getTextReplyUrl(`确认核销 ${code}`, '确认核对无误')}`
