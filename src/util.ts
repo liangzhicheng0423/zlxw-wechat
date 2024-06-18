@@ -369,7 +369,7 @@ export const textToVoice = async (input: string): Promise<string | null> => {
 
     if (res.status === 200) {
       const key = `${moment().format('YYYYMMDDHHmmss')}${uuidv4()}`;
-      const mp3Path = path.join('../tmp/voice/', `${key}.mp3`);
+      const mp3Path = path.join(__dirname, `../tmp/voice/${key}.mp3`);
       fs.writeFileSync(mp3Path, res.data);
 
       return mp3Path;
@@ -379,6 +379,7 @@ export const textToVoice = async (input: string): Promise<string | null> => {
       return null;
     }
   } catch (error) {
+    console.log('textToVoice error', error);
     return null;
   }
 };
