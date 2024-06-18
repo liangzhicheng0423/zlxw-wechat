@@ -302,6 +302,7 @@ export const downloadVoiceFile = async (mediaId: string): Promise<string> => {
 
 // 音频转换函数
 export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> => {
+  console.log('anyPath: ', anyPath);
   if (anyPath.endsWith('.mp3')) {
     await fs.promises.copyFile(anyPath, mp3Path);
     return;
