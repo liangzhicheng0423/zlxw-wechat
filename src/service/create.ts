@@ -78,6 +78,7 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
         MsgType: 'image',
         Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128oPxsNIfLLoGv1nncqrwLGeVJLVmJzITudarkzzPz0TI' }
       });
+      break;
 
     case MenuKey.GPT4:
       if (!welcome_enable) return;
