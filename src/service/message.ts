@@ -1,6 +1,7 @@
 import moment from 'moment';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
+import { chatWithDrawAI } from '../AI/MJ';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
@@ -11,8 +12,8 @@ import {
   downloadImage,
   downloadVoiceFile,
   getAiGroupText,
-  getConfig,
   getDanText,
+  getGptConfig,
   getReplyBaseInfo,
   getTextReplyUrl,
   getWelcome,
@@ -27,7 +28,7 @@ import {
 import { menuEvent } from './create';
 import { subscribe } from './subscribe';
 
-const { admins } = getConfig();
+const { admins } = getGptConfig();
 
 const chatWithAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -70,6 +71,10 @@ const chatWithAI = async (message: TextMessage, res: any) => {
 
   if (mode === Product.GPT4) {
     await chatWithTextAI(message, res);
+  }
+
+  if (mode === Product.Midjourney) {
+    await chatWithDrawAI(message, res);
   }
 };
 

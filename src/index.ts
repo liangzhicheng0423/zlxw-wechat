@@ -6,13 +6,10 @@ import cron from 'node-cron';
 import path from 'path';
 import { sequelize } from './db';
 import { syncClearanceCode } from './mysqlModal/clearanceCode';
-import { syncOrder } from './mysqlModal/order';
-import { syncUser } from './mysqlModal/user';
-import { initRedis, redisScheduleTaskStart } from './redis';
+import { initRedis } from './redis';
 import { create } from './service/create';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
-import { uploadPermanentImageMedia } from './util';
 
 const logger = morgan('tiny');
 
@@ -63,7 +60,7 @@ async function bootstrap() {
       // await syncOrder();
 
       await initRedis();
-      await syncClearanceCode();
+      // await syncClearanceCode();
 
       // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
       // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');

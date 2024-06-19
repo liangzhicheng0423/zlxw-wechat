@@ -1,10 +1,10 @@
 import axios from 'axios';
 import fs from 'fs';
 import { Role } from '../../types';
-import { getConfig } from '../../util';
+import { getGptConfig } from '../../util';
 import taskManager from './taskManager';
 
-const { tts_voice_id, linkAI } = getConfig();
+const { tts_voice_id, linkAI } = getGptConfig();
 
 const { api_base, api_key, app_code } = linkAI;
 

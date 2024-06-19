@@ -4,7 +4,8 @@ import { User } from '../mysqlModal/user';
 import { setMode } from '../redis';
 import { Product, WeChatMessage } from '../types';
 import {
-  getConfig,
+  getGptConfig,
+  getMjConfig,
   getReplyBaseInfo,
   getTextReplyUrl,
   sendAiGroupText,
@@ -24,7 +25,9 @@ export const create = () => {
     });
 };
 
-const { welcome, welcome_enable } = getConfig();
+const { welcome, welcome_enable } = getGptConfig();
+
+const { welcome: mj_welcome, welcome_enable: mj_welcome_enable } = getMjConfig();
 
 export const menuEvent = async (message: WeChatMessage, eventKey: string, res: any) => {
   const baseReply = getReplyBaseInfo(message);
@@ -84,6 +87,12 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       if (!welcome_enable) return;
       await sendMessage(message.FromUserName, welcome);
       await setMode(message.FromUserName, Product.GPT4);
+      break;
+
+    case MenuKey.MJ:
+      if (!mj_welcome_enable) return;
+      await sendMessage(message.FromUserName, mj_welcome);
+      await setMode(message.FromUserName, Product.Midjourney);
       break;
 
     case MenuKey.ContactCustomerService:

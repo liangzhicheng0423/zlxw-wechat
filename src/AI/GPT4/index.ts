@@ -1,6 +1,6 @@
 import { TaskStatus, TextMessage } from '../../types';
 import { getReplyBaseInfo, sendMessage, sendVoiceMessage, textToVoice, uploadTemporaryMedia } from '../../util';
-import { check } from './check';
+import { check } from '../check';
 import { getLinkAIReply } from './linkAI';
 import taskManager from './taskManager';
 

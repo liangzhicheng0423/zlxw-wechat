@@ -1,8 +1,8 @@
 import cron from 'node-cron';
 import { Role, TaskStatus } from '../../types';
-import { getConfig } from '../../util';
+import { getGptConfig } from '../../util';
 
-const { max_context, max_context_time } = getConfig();
+const { max_context, max_context_time } = getGptConfig();
 
 class TaskManager {
   private maxUserTask = 3;

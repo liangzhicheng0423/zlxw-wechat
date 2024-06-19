@@ -7,12 +7,15 @@ import moment, { Moment } from 'moment';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
+import { MJConfig } from './AI/MJ/types';
 import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
-import { BonusTypeEnum, Config, OrderBody, Product, VipLevel, WeChatMessage } from './types';
+import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
-const config = require('../config.json');
+const gptConfig = require('../config-gpt.json');
+const mjConfig = require('../config-mj.json');
 
-export const getConfig = () => config as Config;
+export const getGptConfig = () => gptConfig as GPTConfig;
+export const getMjConfig = () => mjConfig as MJConfig;
 
 const appId = 'gh_c1c4f430f4a9'; // 替换为你的微信公众号的 appId
 const appSecret = 'wxd00871cb6294c27462b8813d70c473a5f5e537e1728eb408'; // 替换为你的微信公众号的 appSecret
@@ -320,7 +323,7 @@ export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> 
 };
 
 export const voiceToText = async (voiceFile: string): Promise<null | string> => {
-  const { linkAI } = getConfig();
+  const { linkAI } = getGptConfig();
   try {
     const url = `https://api.link-ai.chat/v1/audio/transcriptions`;
     const headers = { Authorization: `Bearer ${linkAI.api_key}` };
@@ -356,7 +359,7 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
 };
 
 export const textToVoice = async (input: string): Promise<string | null> => {
-  const { linkAI } = getConfig();
+  const { linkAI } = getGptConfig();
   try {
     const url = `https://api.link-ai.chat/v1/audio/speech`;
     const headers = {
@@ -398,4 +401,8 @@ export const sendVoiceMessage = async (userId: string, mediaId: string) => {
   } catch (error) {
     console.error(`Failed to send voice message`);
   }
+};
+
+export const getNow = () => {
+  return Math.floor(Date.now() / 1000);
 };

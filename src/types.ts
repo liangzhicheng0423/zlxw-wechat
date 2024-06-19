@@ -89,7 +89,7 @@ export enum VipLevel {
 
 export type OrderBody = { level: VipLevel; product: Product };
 
-export type Config = {
+export type GPTConfig = {
   factory: 'linkAI'; // 默认策略
   welcome: string; // 欢迎语
   welcome_enable: boolean; // 是否开启欢迎语

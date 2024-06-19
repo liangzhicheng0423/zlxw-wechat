@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
-import { getConfig } from '../../util';
+import { getGptConfig } from '../util';
 
 const detectAndReplace = (text: string[], sensitiveWords: string[]) => {
   const result: string[] = [];
@@ -85,7 +85,7 @@ const conclusionType = [
 const InvalidType = 11; // 百度官方违禁词库
 
 const getBaiduReview = () => {
-  const { baiduReview } = getConfig();
+  const { baiduReview } = getGptConfig();
   const options = {
     method: 'POST',
     url: `https://aip.baidubce.com/oauth/2.0/token?client_id=${baiduReview.api_key}&client_secret=${baiduReview.secret_key}&grant_type=client_credentials`,

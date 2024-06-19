@@ -12,6 +12,7 @@ export const OrderLadderRewards = [{ level: 1000, [BonusTypeEnum.Integral]: 500,
 
 export enum MenuKey {
   GPT4 = 'mode_gpt4',
+  MJ = 'mode_mj',
   Dan = 'get_dan',
   AIGroup = 'ai_group',
   Instructions = 'instructions_for_use',
@@ -29,7 +30,8 @@ export const Menu = {
       sub_button: [
         { type: 'click', name: 'AI群聊', key: MenuKey.AIGroup },
         { type: 'click', name: 'Dan', key: MenuKey.Dan },
-        { type: 'click', name: 'GPT4', key: MenuKey.GPT4 }
+        { type: 'click', name: 'GPT4', key: MenuKey.GPT4 },
+        { type: 'click', name: 'MJ绘图', key: MenuKey.MJ }
       ]
     },
     {
