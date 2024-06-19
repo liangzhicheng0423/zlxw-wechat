@@ -40,7 +40,7 @@ const chatWithAI = async (message: TextMessage, res: any) => {
     res.send({
       ...baseReply,
       MsgType: 'text',
-      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"按钮切换模式）'
+      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"或"MJ绘图"按钮切换模式）'
     });
     return;
   }
@@ -50,7 +50,7 @@ const chatWithAI = async (message: TextMessage, res: any) => {
 
   if (isVip === 'false') {
     // 消耗免费额度
-    const freeCount = await getFreeCount(userId);
+    const freeCount = await getFreeCount(userId, mode);
 
     console.log('freeCount: ', freeCount);
 
@@ -65,7 +65,7 @@ const chatWithAI = async (message: TextMessage, res: any) => {
       });
       return;
     } else {
-      await useFreeCount(userId);
+      await useFreeCount(userId, mode);
     }
   }
 

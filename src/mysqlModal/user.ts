@@ -70,9 +70,15 @@ User.init(
       allowNull: true
     },
     // 免费额度剩余
-    free_count: {
+    gpt4_free_count: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      defaultValue: 10
+    },
+    midjourney_free_count: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 10
     },
     // 到期时间
     expire_date_dan: {

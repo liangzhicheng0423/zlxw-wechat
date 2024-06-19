@@ -48,7 +48,7 @@ export const getModeKey = (userId: string) => `${userId}_mode`;
 
 export const getVipKey = (userId: string) => `${userId}_is_vip`;
 
-export const getFreeCountKey = (userId: string) => `${userId}_free_count`;
+export const getFreeCountKey = (userId: string, mode: Product) => `${userId}_${mode}_free_count`;
 
 /** 获取当前的模式 */
 export const getMode = async (userId: string) => {
@@ -65,9 +65,9 @@ export const getIsVip = async (userId: string) => {
 };
 
 /** 免费额度 */
-export const getFreeCount = async (userId: string) => {
+export const getFreeCount = async (userId: string, mode: Product) => {
   const redis = getRedisClient();
-  const value = await redis?.get(getFreeCountKey(userId));
+  const value = await redis?.get(getFreeCountKey(userId, mode));
 
   console.log('getFreeCount ', userId, value);
 
@@ -75,16 +75,16 @@ export const getFreeCount = async (userId: string) => {
 };
 
 // 消耗免费额度
-export const useFreeCount = async (userId: string) => {
+export const useFreeCount = async (userId: string, mode: Product) => {
   const redis = getRedisClient();
-  const count = await getFreeCount(userId);
+  const count = await getFreeCount(userId, mode);
   if (count !== null) {
-    await redis?.set(getFreeCountKey(userId), Math.max(count - 1, 0));
+    await redis?.set(getFreeCountKey(userId, mode), Math.max(count - 1, 0));
 
     const user = await User.findOne({ where: { user_id: userId } });
     if (user) {
       console.log('扣掉免费额度');
-      user.update({ free_count: Math.max(count - 1, 0) });
+      user.update({ [`${mode}_free_count`]: Math.max(count - 1, 0) });
     }
   }
 };
@@ -163,9 +163,12 @@ export const updateRedis = async () => {
     if (userGroupExpireDate && now.isBefore(userGroupExpireDate)) isVip = true;
 
     // 免费额度
-    const freeCount = formatUser.free_count ?? 0;
+    const gpt4FreeCount = formatUser.gpt4_free_count ?? 0;
+    const mjFreeCount = formatUser.midjourney_free_count ?? 0;
+
     update[getVipKey(formatUser.user_id)] = isVip.toString();
-    update[getFreeCountKey(formatUser.user_id)] = freeCount.toString();
+    update[getFreeCountKey(formatUser.user_id, Product.GPT4)] = gpt4FreeCount.toString();
+    update[getFreeCountKey(formatUser.user_id, Product.Midjourney)] = mjFreeCount.toString();
   });
 
   await updateKeysWithPipeline(update);

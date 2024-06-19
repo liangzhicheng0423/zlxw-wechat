@@ -252,16 +252,3 @@ export const clientConfig = {
     httpProfile: { endpoint: 'tmt.tencentcloudapi.com' }
   }
 };
-
-(() => {
-  const client = new TmtClient(clientConfig);
-  const params = { SourceText: '星空', Source: 'auto', Target: 'en', ProjectId: 0 };
-  client.TextTranslate(params).then(
-    (data: any) => {
-      console.log(data);
-    },
-    (err: any) => {
-      console.error('error', err);
-    }
-  );
-})();

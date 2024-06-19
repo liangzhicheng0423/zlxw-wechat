@@ -6,6 +6,7 @@ import cron from 'node-cron';
 import path from 'path';
 import { sequelize } from './db';
 import { syncClearanceCode } from './mysqlModal/clearanceCode';
+import { syncUser } from './mysqlModal/user';
 import { initRedis } from './redis';
 import { create } from './service/create';
 import { onMessage } from './service/message';
