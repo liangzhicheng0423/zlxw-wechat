@@ -16,7 +16,7 @@ import {
 
 export const create = () => {
   axios
-    .post(`https://api.weixin.qq.com/cgi-bin/menu/create`, Menu)
+    .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, Menu)
     .then(response => {
       console.log('Menu created:', response.data);
     })
