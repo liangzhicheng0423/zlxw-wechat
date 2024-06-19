@@ -74,7 +74,7 @@ export const getErrorText = (text: string) => '[ERROR]\n' + text;
 
 export const getRequestInterval = (count: number) => {
   const { fast_count, fast_request_interval, slow_request_interval } = getMjConfig();
-  return count >= fast_count ? fast_request_interval : slow_request_interval;
+  return count >= fast_count ? slow_request_interval : fast_request_interval;
 };
 
 // 不合规的图片分类

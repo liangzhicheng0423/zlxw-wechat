@@ -266,13 +266,22 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       hash
     });
 
-    const path = await getImage(result.url, taskId, userId);
-    console.log('图片下载完成: ', path);
+    const jumpRes = await axios.post(
+      'http://api.ai-xiaowu.com:3000/download',
+      { url: result.url, taskId, userId, hash },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
 
-    console.log('开始上传图片...');
-    await uploadFile(cosInstance, path, hash);
-    const url = `${cdn_url}/${hash}/image`;
-    console.log('图片完成：', url);
+    // const path = await getImage(result.url, taskId, userId);
+    // console.log('图片下载完成: ', path);
+
+    // console.log('开始上传图片...');
+    // await uploadFile(cosInstance, path, hash);
+    // const url = `${cdn_url}/${hash}/image`;
+    // console.log('图片完成：', url);
+
+    const url = jumpRes.data.imageUrl;
+    const path = await getImage(url, taskId, userId);
 
     const access_token = await getBaiduReviewToken();
 
