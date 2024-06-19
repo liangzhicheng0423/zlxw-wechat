@@ -18,9 +18,10 @@ import {
   uploadFile
 } from './util';
 
+const { MJ_USER_API_KEY, COS_SECRET_ID = '', COS_SECRET_KEY } = process.env;
+
 const chinesePattern = /[\u4e00-\u9fa5]/;
-const { UserAPI, cos: CosConfig, cdn_url } = getMjConfig();
-const { api_key } = UserAPI;
+const { cdn_url } = getMjConfig();
 
 const base_api_url = 'https://api.userapi.ai/midjourney/v2';
 
@@ -152,8 +153,8 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   const cosInstance = new COS({
     UseAccelerate: true, // 指定 true，使用全球加速域名请求
     Protocol: 'http:', // 请求协议： 'https:' 或 'http:'
-    SecretId: CosConfig.secretId.toString(),
-    SecretKey: CosConfig.SecretKey
+    SecretId: COS_SECRET_ID,
+    SecretKey: COS_SECRET_KEY
   });
 
   const prompt = message.Content;
@@ -178,7 +179,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     response = await axios.post(
       base_api_url + '/imagine',
       { prompt: real_prompt || prompt },
-      { headers: { 'Content-Type': 'application/json', 'api-key': api_key } }
+      { headers: { 'Content-Type': 'application/json', 'api-key': MJ_USER_API_KEY } }
     );
   } catch (error: any) {
     send(`图片生成失败，请检查参数\n错误原因：${error.response.data.error}`);

@@ -11,13 +11,10 @@
   "Administrator": "大大大大大大大大大成成💪",
 
   "cdn_url": "http://cdn.ai-xiaowu.com",
-  "dwz_token": "44a73d14180259e3882f0ef07d039214",
 
   "fast_count": 30,
   "fast_request_interval": 5000,
   "slow_request_interval": 120000,
-
-  "tinify_key": "GSC2dbcf7FNrQgk7PNJycp864XQDhQ3G",
 
   "midjourney": {
     "api_base": "https://api.link-ai.chat/v1/img/midjourney",
@@ -96,17 +93,6 @@
     ]
   },
   "linkAI": {
-    "api_base": "https://api.link-ai.chat/v1",
-    "api_key": "Link_Xgx7qjUphnrX0VORKreRVFrX8mx7VtDeIxB5tRB3ej",
-    "app_code": "JL97zyL8"
-  },
-
-  "UserAPI": {
-    "api_key": "5f1ca9d4-61b0-4ae4-8a51-f8de4a4fd3e4"
-  },
-
-  "baiduReview": {
-    "api_key": "XntuDVdXbJlG66EijJ1IZzfQ",
-    "secret_key": "ofi7iFTVxfcfPJAly8942OlcBU3poUY8"
+    "api_base": "https://api.link-ai.chat/v1"
   }
 }

@@ -6,6 +6,8 @@ import path from 'path';
 import { getMjConfig } from '../../util';
 import { Task, TaskType } from './types';
 
+const { BAIDU_REVIEW_API_KEY, BAIDU_REVIEW_SECRET_KEY } = process.env;
+
 /** 匹配相似度 */
 export const jaroWinklerDistance = (text1: string, text2: string) => natural.JaroWinklerDistance(text1, text2);
 
@@ -186,10 +188,9 @@ export const uploadFile = (cos: COS, filePath: string, key: string): Promise<COS
 };
 
 export const getBaiduReviewToken = async (): Promise<string> => {
-  const { baiduReview } = getMjConfig();
   const options = {
     method: 'POST',
-    url: `https://aip.baidubce.com/oauth/2.0/token?client_id=${baiduReview.api_key}&client_secret=${baiduReview.secret_key}&grant_type=client_credentials`,
+    url: `https://aip.baidubce.com/oauth/2.0/token?client_id=${BAIDU_REVIEW_API_KEY}&client_secret=${BAIDU_REVIEW_SECRET_KEY}&grant_type=client_credentials`,
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
   };
 

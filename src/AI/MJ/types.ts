@@ -34,23 +34,13 @@ export type Task = {
 export type MJConfig = {
   welcome: string; // 新人进群欢迎语
   welcome_enable: boolean; // 是否开启欢迎语
-  tinify_key: string; // 图片压缩鉴权
   cdn_url: string; // 图片存储桶加速域名
-  dwz_token: string; // 百度短链鉴权token
 
   fast_count: number; // 每日快速任务上限
   fast_request_interval: number; // 快速模式MJ轮询任务时间间隔 (毫秒)
   slow_request_interval: number; // 慢速模式MJ轮询任务时间间隔 (毫秒)
 
-  baiduReview: { api_key: string; secret_key: string }; // 百度审核鉴权
-
-  cos: { secretId: string; SecretKey: string }; // 腾讯存储桶鉴权
-
-  linkAI: {
-    api_base: string;
-    api_key: string;
-    app_code: string;
-  };
+  linkAI: { api_base: string };
 
   midjourney: {
     api_base: string;
@@ -70,8 +60,6 @@ export type MJConfig = {
     max_file_size: number;
     type: Array<'FILE' | 'SHARING'>;
   };
-
-  UserAPI: { api_key: string };
 };
 
 export type CmdData = {

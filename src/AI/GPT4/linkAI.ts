@@ -1,12 +1,8 @@
 import axios from 'axios';
-import fs from 'fs';
 import { Role } from '../../types';
-import { getGptConfig } from '../../util';
 import taskManager from './taskManager';
 
-const { tts_voice_id, linkAI } = getGptConfig();
-
-const { api_base, api_key, app_code } = linkAI;
+const { LINK_AI_APP_KEY, LINK_AI_APP_CODE } = process.env;
 
 const api_url = 'https://api.link-ai.chat/v1/chat/completions';
 
@@ -25,8 +21,8 @@ export const getLinkAIReply = async (content: string, userId: string): Promise<s
     const options = {
       method: 'POST',
       url: api_url,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${api_key}-${app_code}` },
-      data: { app_code, messages: flatMessage }
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${LINK_AI_APP_KEY}-${LINK_AI_APP_CODE}` },
+      data: { app_code: LINK_AI_APP_CODE, messages: flatMessage }
     };
 
     console.log('请求：', options);

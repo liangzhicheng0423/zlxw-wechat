@@ -40,25 +40,16 @@
 
   "linkAI": {
     "temperature": 0.5,
-    "api_base": "https://api.link-ai.chat/v1",
-    "api_key": "Link_Xgx7qjUphnrX0VORKreRVFrX8mx7VtDeIxB5tRB3ej",
-    "app_code": "JL97zyL8"
+    "api_base": "https://api.link-ai.chat/v1"
   },
 
   "GPTAI": {
     "temperature": 0.5,
-    "max_tokens": 2500,
-    "api_key": "sk-2b9M5TEtCvff2ori07760668F9D241DdBa6aB42c2aD3E51d"
+    "max_tokens": 2500
   },
 
   "DUCKAI": {
     "temperature": 0.5,
-    "max_tokens": 2500,
-    "api_key": "sk-BsEVyEuBJJDOyzdhA8EbFa6e94Eb4029Ae565b8bB30731C0"
-  },
-
-  "baiduReview": {
-    "api_key": "XntuDVdXbJlG66EijJ1IZzfQ",
-    "secret_key": "ofi7iFTVxfcfPJAly8942OlcBU3poUY8"
+    "max_tokens": 2500
   }
 }

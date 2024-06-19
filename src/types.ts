@@ -112,13 +112,10 @@ export type GPTConfig = {
   common_msg: string; // 通用消息
   administrator: string; // 管理员name
 
-  linkAI: { temperature: number; api_base: string; api_key: string; app_code: string };
+  linkAI: { temperature: number; api_base: string };
   summary: { enabled: boolean; group_enabled: boolean; max_file_size: number; type: Array<'FILE' | 'SHARING'> };
-  GPTAI: { temperature: number; max_tokens: number; api_key: string };
-  DUCKAI: { temperature: number; max_tokens: number; api_key: string };
-  tutujin: { api_key: string };
-
-  baiduReview: { api_key: string; secret_key: string };
+  GPTAI: { temperature: number; max_tokens: number };
+  DUCKAI: { temperature: number; max_tokens: number };
 };
 
 export enum TaskStatus {

@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { parentPort } from 'worker_threads';
-import { getMjConfig } from '../../util';
+
+const { MJ_USER_API_KEY } = process.env;
 
 async function pollUserAPITask(taskId: string, timeout: number) {
-  const { UserAPI } = getMjConfig();
-
   console.log('=========== pollUserAPITask task_id', taskId);
 
   let maxRetryTimes = 40;
@@ -15,7 +14,7 @@ async function pollUserAPITask(taskId: string, timeout: number) {
 
     try {
       const res = await axios.get(url, {
-        headers: { 'Content-Type': 'application/json', 'api-key': UserAPI.api_key }
+        headers: { 'Content-Type': 'application/json', 'api-key': MJ_USER_API_KEY }
       });
 
       if (res.status === 200) {
