@@ -50,11 +50,12 @@ async function bootstrap() {
 
   app.listen(port, async () => {
     console.log('启动成功', port);
-    // 创建菜单
-    create();
 
     // 同步数据库
     try {
+      // 创建菜单
+      console.log('创建菜单');
+      create();
       // await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();
