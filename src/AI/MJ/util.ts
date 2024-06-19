@@ -157,7 +157,6 @@ export const getImage = (img_url: string, task_id: string, user_id: string): Pro
       })
       .catch(error => {
         console.error(`[WX] Error downloading image: ${error}`);
-        reject();
       });
   });
 };

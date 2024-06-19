@@ -259,7 +259,13 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     const task = taskManager.getTask(taskId, userId);
     console.log('获取当前轮询任务: ', task);
 
-    console.log('开始下载图片...');
+    console.log('开始下载图片...', {
+      url: result.url,
+      taskId,
+      userId,
+      hash
+    });
+
     const path = await getImage(result.url, taskId, userId);
     console.log('图片下载完成: ', path);
 
