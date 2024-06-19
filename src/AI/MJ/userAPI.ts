@@ -171,24 +171,14 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     const client = new TmtClient(clientConfig);
     const params = { SourceText: prompt, Source: 'auto', Target: 'en', ProjectId: 0 };
     client.TextTranslate(params).then(
-      data => {
+      (data: any) => {
         real_prompt = data.TargetText ?? '';
       },
-      err => {
+      (err: any) => {
         console.error('error', err);
       }
     );
   }
-
-  // if (chinesePattern.test(prompt)) {
-  //   try {
-  //     console.log('开始翻译');
-  //     const res = await translate(prompt, { to: 'en' });
-  //     real_prompt = res.text;
-  //   } catch (error) {
-  //     console.error(`[User API] 翻译出错: ${error}`);
-  //   }
-  // }
 
   console.log('翻译prompt');
 

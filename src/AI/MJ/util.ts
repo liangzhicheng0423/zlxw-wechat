@@ -3,9 +3,10 @@ import COS from 'cos-nodejs-sdk-v5';
 import fs from 'fs';
 import natural from 'natural';
 import path from 'path';
-import tencentcloud from 'tencentcloud-sdk-nodejs-tmt';
 import { getMjConfig } from '../../util';
 import { Task, TaskType } from './types';
+
+const tencentcloud = require('tencentcloud-sdk-nodejs-tmt');
 
 const { BAIDU_REVIEW_API_KEY, BAIDU_REVIEW_SECRET_KEY, COS_SECRET_ID, COS_SECRET_KEY } = process.env;
 
@@ -251,3 +252,16 @@ export const clientConfig = {
     httpProfile: { endpoint: 'tmt.tencentcloudapi.com' }
   }
 };
+
+(() => {
+  const client = new TmtClient(clientConfig);
+  const params = { SourceText: '星空', Source: 'auto', Target: 'en', ProjectId: 0 };
+  client.TextTranslate(params).then(
+    (data: any) => {
+      console.log(data);
+    },
+    (err: any) => {
+      console.error('error', err);
+    }
+  );
+})();
