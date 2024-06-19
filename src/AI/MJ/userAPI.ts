@@ -163,15 +163,15 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   const baseReply = getReplyBaseInfo(message);
 
   let real_prompt = '';
-  if (chinesePattern.test(prompt)) {
-    try {
-      console.log('开始翻译');
-      const res = await translate(prompt, { to: 'en' });
-      real_prompt = res.text;
-    } catch (error) {
-      console.error(`[User API] 翻译出错: ${error}`);
-    }
-  }
+  // if (chinesePattern.test(prompt)) {
+  //   try {
+  //     console.log('开始翻译');
+  //     const res = await translate(prompt, { to: 'en' });
+  //     real_prompt = res.text;
+  //   } catch (error) {
+  //     console.error(`[User API] 翻译出错: ${error}`);
+  //   }
+  // }
 
   console.log('翻译prompt');
 
@@ -207,7 +207,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   }
 
   // 创建一个新的Worker线程
-  const workerPath = path.join(__dirname, `/app/src/AI/MJ/painThread.ts`);
+  const workerPath = path.join(__dirname, `./painThread.ts`);
   console.log('创建轮询线程: ', workerPath);
   const worker = new Worker(workerPath);
 
