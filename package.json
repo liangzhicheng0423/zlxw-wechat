@@ -1,7 +1,7 @@
 {
-  "name": "wxcloudrun-express",
+  "name": "zlxw_public",
   "version": "1.0.0",
-  "description": "微信云托管 express 框架模版",
+  "description": "助理小吴公众号",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
