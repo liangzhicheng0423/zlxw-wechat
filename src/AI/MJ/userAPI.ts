@@ -214,7 +214,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   }
 
   // 创建一个新的Worker线程
-  const workerPath = path.join(__dirname, `./painThread.ts`);
+  const workerPath = path.join(__dirname, `./painThread.js`);
   console.log('创建轮询线程: ', workerPath);
   const worker = new Worker(workerPath);
 

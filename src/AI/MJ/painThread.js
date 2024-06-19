@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const { MJ_USER_API_KEY } = process.env;
 
-async function pollUserAPITask(taskId: string, timeout: number) {
+async function pollUserAPITask(taskId, timeout) {
   console.log('=========== pollUserAPITask task_id', taskId);
 
   let maxRetryTimes = 40;
@@ -49,7 +49,7 @@ async function pollUserAPITask(taskId: string, timeout: number) {
 }
 
 // 监听主线程发送的消息
-parentPort?.on('message', async (data: { task_id: string; user_id: string; timeout: number }) => {
+parentPort?.on('message', async data => {
   console.info(`[WX] start MJ draw task`);
 
   const result = await pollUserAPITask(data.task_id, data.timeout ?? 5000);
