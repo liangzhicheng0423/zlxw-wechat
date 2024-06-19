@@ -38,7 +38,7 @@ app.post('/unifiedorder', unifiedorder);
 app.post('/payRes', unifiedorderCb);
 
 /** 自定义菜单 */
-app.post('create', create);
+app.post('/create', create);
 
 const port = process.env.PORT || 80;
 
