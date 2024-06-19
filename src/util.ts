@@ -14,6 +14,8 @@ import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage }
 const gptConfig = require('../config-gpt.json');
 const mjConfig = require('../config-mj.json');
 
+const { LINK_AI_APP_KEY, LINK_AI_APP_CODE } = process.env;
+
 export const getGptConfig = () => gptConfig as GPTConfig;
 export const getMjConfig = () => mjConfig as MJConfig;
 
@@ -323,10 +325,9 @@ export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> 
 };
 
 export const voiceToText = async (voiceFile: string): Promise<null | string> => {
-  const { linkAI } = getGptConfig();
   try {
     const url = `https://api.link-ai.chat/v1/audio/transcriptions`;
-    const headers = { Authorization: `Bearer ${linkAI.api_key}` };
+    const headers = { Authorization: `Bearer ${LINK_AI_APP_KEY}` };
     const model = 'whisper-1';
 
     // if (voiceFile.endsWith('.amr')) {
@@ -359,15 +360,14 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
 };
 
 export const textToVoice = async (input: string): Promise<string | null> => {
-  const { linkAI } = getGptConfig();
   try {
     const url = `https://api.link-ai.chat/v1/audio/speech`;
     const headers = {
-      Authorization: `Bearer ${linkAI.api_key}`,
+      Authorization: `Bearer ${LINK_AI_APP_KEY}`,
       'Content-Type': 'application/json'
     };
     const model = 'tts-1';
-    const data = { model, input, voice: 'onyx', app_code: linkAI.app_code };
+    const data = { model, input, voice: 'onyx', app_code: LINK_AI_APP_CODE };
 
     const res = await axios.post(url, data, { headers: headers, responseType: 'arraybuffer' });
 
