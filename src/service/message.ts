@@ -25,7 +25,7 @@ import {
   uploadTemporaryMedia,
   voiceToText
 } from '../util';
-import { menuEvent } from './create';
+import { create, menuEvent } from './create';
 import { subscribe } from './subscribe';
 
 const { admins } = getGptConfig();
@@ -138,6 +138,9 @@ const handleText = async (message: TextMessage, res: any) => {
   }
 
   switch (message.Content) {
+    case '更新菜单':
+      create();
+      break;
     case '获取我的专属分享海报':
       // 获取二维码
       const qrCodeUrl = await createQRCode(userId);
