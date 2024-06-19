@@ -108,7 +108,7 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
 
 // 上传临时图片素材函数
 export const uploadTemporaryMedia = async (filePath: string, type: 'image' | 'voice' | 'video') => {
-  const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/media/upload';
+  const uploadUrl = 'http://api.weixin.qq.com/cgi-bin/media/upload';
 
   try {
     // 构造上传参数
