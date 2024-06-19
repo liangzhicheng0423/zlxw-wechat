@@ -25,7 +25,7 @@ export const create = () => {
     });
 };
 
-const { welcome, welcome_enable } = getGptConfig();
+const { welcome: gpt_welcome, welcome_enable: gpt_welcome_enable } = getGptConfig();
 
 const { welcome: mj_welcome, welcome_enable: mj_welcome_enable } = getMjConfig();
 
@@ -84,8 +84,8 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       break;
 
     case MenuKey.GPT4:
-      if (!welcome_enable) return;
-      await sendMessage(message.FromUserName, welcome);
+      if (!gpt_welcome_enable) return;
+      await sendMessage(message.FromUserName, gpt_welcome);
       await setMode(message.FromUserName, Product.GPT4);
       break;
 
