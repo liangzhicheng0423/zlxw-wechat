@@ -141,26 +141,6 @@ export const getDrawSuccessText = (task: Task) => {
   return text;
 };
 
-export const getImage = (img_url: string, task_id: string, user_id: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    // 使用axios下载图片
-    axios
-      .get(img_url, {
-        responseType: 'arraybuffer',
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity
-      })
-      .then(response => {
-        const filePath = path.join(__dirname, `../tmp/image/image_${user_id}_${task_id}.jpg`);
-        fs.writeFileSync(filePath, Buffer.from(response.data, 'binary'));
-        resolve(filePath);
-      })
-      .catch(error => {
-        console.error(`[WX] Error downloading image: ${error}`);
-      });
-  });
-};
-
 export const uploadFile = (cos: COS, filePath: string, key: string): Promise<COS.UploadFileItemResult> => {
   return new Promise((resolve, reject) => {
     cos.uploadFile({

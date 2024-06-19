@@ -4,7 +4,7 @@ import COS from 'cos-nodejs-sdk-v5';
 import path from 'path';
 import { Worker } from 'worker_threads';
 import { TextMessage } from '../../types';
-import { getMjConfig, getReplyBaseInfo, sendImage, sendMessage, uploadTemporaryMedia } from '../../util';
+import { getImage, getMjConfig, getReplyBaseInfo, sendImage, sendMessage, uploadTemporaryMedia } from '../../util';
 import taskManager from './taskManager';
 import { CmdData, Factory, IconMap, TaskStatus, TaskType, taskNameMapping } from './types';
 import {
@@ -14,10 +14,8 @@ import {
   getBaiduReviewToken,
   getDrawSuccessText,
   getErrorText,
-  getImage,
   getRequestInterval,
-  imgCensor,
-  uploadFile
+  imgCensor
 } from './util';
 
 const { MJ_USER_API_KEY, COS_SECRET_ID = '', COS_SECRET_KEY } = process.env;
@@ -280,6 +278,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     // const url = `${cdn_url}/${hash}/image`;
     // console.log('图片完成：', url);
 
+    console.log('jumpRes', jumpRes.data);
     const url = jumpRes.data.imageUrl;
     const path = await getImage(url, taskId, userId);
 
