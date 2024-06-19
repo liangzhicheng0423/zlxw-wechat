@@ -55,7 +55,7 @@ async function bootstrap() {
 
     // 同步数据库
     try {
-      await sequelize.authenticate();
+      // await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();
 
