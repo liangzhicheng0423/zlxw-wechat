@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { parentPort } from 'worker_threads';
+
+const axios = require('axios');
 
 const { MJ_USER_API_KEY } = process.env;
 

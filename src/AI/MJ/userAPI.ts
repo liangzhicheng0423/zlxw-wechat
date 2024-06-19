@@ -8,6 +8,8 @@ import { getMjConfig, getReplyBaseInfo, sendImage, sendMessage, uploadTemporaryM
 import taskManager from './taskManager';
 import { CmdData, Factory, IconMap, TaskStatus, TaskType, taskNameMapping } from './types';
 import {
+  TmtClient,
+  clientConfig,
   generateUnique11DigitNumberFromString,
   getBaiduReviewToken,
   getDrawSuccessText,
@@ -163,6 +165,21 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   const baseReply = getReplyBaseInfo(message);
 
   let real_prompt = '';
+
+  // 实例化要请求产品的client对象,clientProfile是可选的
+  if (chinesePattern.test(prompt)) {
+    const client = new TmtClient(clientConfig);
+    const params = { SourceText: prompt, Source: 'auto', Target: 'en', ProjectId: 0 };
+    client.TextTranslate(params).then(
+      data => {
+        real_prompt = data.TargetText ?? '';
+      },
+      err => {
+        console.error('error', err);
+      }
+    );
+  }
+
   // if (chinesePattern.test(prompt)) {
   //   try {
   //     console.log('开始翻译');
