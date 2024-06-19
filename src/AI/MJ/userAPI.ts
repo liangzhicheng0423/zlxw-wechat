@@ -141,7 +141,9 @@ const base_api_url = 'https://api.userapi.ai/midjourney/v2';
 // };
 
 export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: CmdData) => {
+  console.log('进入 getUserAPIGenerate');
   if (!!cmd) {
+    console.log('！！cmd return');
     // getUserAPIOperation(cmd);
     return;
   }
@@ -163,6 +165,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   let real_prompt = '';
   if (chinesePattern.test(prompt)) {
     try {
+      console.log('开始翻译');
       const res = await translate(prompt, { to: 'en' });
       real_prompt = res.text;
     } catch (error) {
