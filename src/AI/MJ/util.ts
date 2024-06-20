@@ -118,10 +118,10 @@ export const getDrawSuccessText = (imageId: number) => {
   const reply = [
     '🎉 图像绘制成功～',
     '您可以点击下方按钮获取对应的高清大图',
-    `1. 👉 ${getTextReplyUrl(`获取 左上 (${imageId})`, '左上')}`,
-    `2. 👉 ${getTextReplyUrl(`获取 右上 (${imageId})`, '右上')}`,
-    `3. 👉 ${getTextReplyUrl(`获取 左下 (${imageId})`, '左下')}`,
-    `4. 👉 ${getTextReplyUrl(`获取 右下 (${imageId})`, '右下')}`
+    `1. 👉 ${getTextReplyUrl(`获取 左上 ${imageId}`, '左上')}`,
+    `2. 👉 ${getTextReplyUrl(`获取 右上 ${imageId}`, '右上')}`,
+    `3. 👉 ${getTextReplyUrl(`获取 左下 ${imageId}`, '左下')}`,
+    `4. 👉 ${getTextReplyUrl(`获取 右下 ${imageId}`, '右下')}`
   ];
   return reply.join('\n\n');
 };
