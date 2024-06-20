@@ -196,11 +196,12 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     console.log('获取当前轮询任务: ', task);
 
     try {
-      await axios.post(
+      const jumpRes = await axios.post(
         'http://api.ai-xiaowu.com:3000/download',
         { originUrl: result.url, taskId, userId, type: 'generate' },
         { headers: { 'Content-Type': 'application/json' } }
       );
+      console.log('代理下载完成: ', jumpRes.data);
     } catch (error) {
       console.log('发送下载任务失败');
     }
