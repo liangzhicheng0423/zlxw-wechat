@@ -28,9 +28,14 @@ export const modeProcess = (message: TextMessage, res: any) => {
   // 模式
   const userMode = taskManager.getMode(userId);
 
+  console.log('【mode】 userMode: ', userMode);
+
   const text = message.Content;
+  console.log('【mode】 text: ', text);
 
   const operateType = isOperate(text);
+
+  console.log('【mode】 operateType: ', operateType);
 
   const send = (content: string) => {
     res.send({ ...baseReply, MsgType: 'text', Content: content });
@@ -83,6 +88,7 @@ export const modeProcess = (message: TextMessage, res: any) => {
     send(OperateReplayMap[operateType]);
     return true;
   }
+  console.log('【mode】 return false');
 
   return false;
 };
