@@ -230,6 +230,8 @@ class TaskManager {
 
   updateTask(user_id: string, task_id: string, img_url?: string, img_id?: string, status = TaskStatus.FINISHED) {
     try {
+      if (!this.tasks[user_id]) return;
+
       const currentTask = this.tasks[user_id].filter(v => v.task_id === task_id);
       if (!currentTask) return;
 
