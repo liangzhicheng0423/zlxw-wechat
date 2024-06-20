@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cron from 'node-cron';
 import path from 'path';
+import { drawSuccess } from './AI/MJ/drawSuccess';
 import { sequelize } from './db';
 import { syncClearanceCode } from './mysqlModal/clearanceCode';
 import { syncUser } from './mysqlModal/user';
@@ -36,7 +37,16 @@ app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
 app.post('/unifiedorder', unifiedorder);
 
 /** 支付成回调 */
-app.post('/payRes', unifiedorderCb);
+app.post('/payRes', async (req, res) => {
+  await unifiedorderCb(req, res);
+  res.send({ errcode: 0, errmsg: '' });
+});
+
+/** 接受绘制完成的回调 */
+app.post('/drawSuccess', async (req, res) => {
+  await drawSuccess(req, res);
+  res.send('ok');
+});
 
 /** 自定义菜单 */
 app.post('/create', create);

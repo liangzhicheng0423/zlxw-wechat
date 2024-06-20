@@ -74,28 +74,28 @@ export const unifiedorder = async (req: any, res: any) => {
 
 /** 支付成功 */
 export const unifiedorderCb = async (req: any, res: any) => {
-  const message: WeChatPayCallback = req.body;
-
-  console.info('支付成功回调:', message);
-
-  const userId = message.subOpenid;
-
-  const tradeNo = message.outTradeNo;
-
-  const { level, product } = getLevelAndProduct(tradeNo);
-
-  if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
-
-  let is_award = false;
-
-  // 已有订单号
-  const beforeOrder = await Order.findOne({ where: { user_id: userId, out_trade_no: tradeNo } });
-  if (beforeOrder) {
-    console.info('订单号已经存在');
-    return;
-  }
-
   try {
+    const message: WeChatPayCallback = req.body;
+
+    console.info('支付成功回调:', message);
+
+    const userId = message.subOpenid;
+
+    const tradeNo = message.outTradeNo;
+
+    const { level, product } = getLevelAndProduct(tradeNo);
+
+    if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
+
+    let is_award = false;
+
+    // 已有订单号
+    const beforeOrder = await Order.findOne({ where: { user_id: userId, out_trade_no: tradeNo } });
+    if (beforeOrder) {
+      console.info('订单号已经存在');
+      return;
+    }
+
     // 奖励其父用户
     const [user] = await User.findOrCreate({
       where: { user_id: userId },

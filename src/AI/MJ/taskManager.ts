@@ -1,6 +1,29 @@
+import { getRedisClient } from '../../redis';
 import { getNow } from '../../util';
 import { Nill } from './constant';
 import { OPERATE, Task, TaskStatus, TaskType } from './types';
+
+const getHashKey = (userId: string, imageId: number) => {
+  return `image-hash-map-${userId}-${imageId}`;
+};
+
+async function getMatchingKeys(pattern: string): Promise<string[] | undefined> {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  let cursor = '0';
+  const matchingKeys: string[] = [];
+
+  do {
+    const [newCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+    cursor = newCursor;
+    matchingKeys.push(...keys);
+  } while (cursor !== '0');
+
+  return matchingKeys;
+}
+
+const expirationSeconds = 60 * 60 * 24;
 
 class TaskManager {
   private maxUserTask = 1;
@@ -48,16 +71,28 @@ class TaskManager {
     };
   } = {};
 
-  getHashNumbers() {
-    return Object.keys(this.hashNumberMap) ?? [];
+  async getHashNumbers(userId: string) {
+    const keys = await getMatchingKeys(`image-hash-map-${userId}-*`);
+    return keys ?? [];
   }
 
-  getHashWithNumber(n: number) {
-    return this.hashNumberMap[n];
+  async getHashWithNumber(userId: string, imageId: number) {
+    const redis = getRedisClient();
+    if (!redis) return;
+    const hash = await redis.get(getHashKey(userId, imageId));
+    return hash;
   }
 
-  updateHashNumbers(n: number, hash: string) {
-    this.hashNumberMap[n] = hash;
+  async updateHashNumbers(userId: string, imageId: number, hash: string) {
+    // 缓存到redis中
+    const redis = getRedisClient();
+    if (!redis) return;
+
+    const key = getHashKey(userId, imageId);
+    await redis.set(key, hash);
+
+    // 缓存24小时
+    await redis.expire(key, expirationSeconds);
   }
 
   isModing(userId: string) {
@@ -161,13 +196,13 @@ class TaskManager {
     return this.tasks[user_id]?.filter(v => v.status === TaskStatus.FINISHED)?.length ?? 0;
   }
 
-  getTask(task_id: number, user_id: string) {
+  getTask(task_id: string, user_id: string) {
     console.info('[TaskManager] get all task:', this.tasks);
     return this.tasks[user_id]?.find(v => v.task_id === task_id);
   }
 
   /** 新增任务 */
-  addTask(task_id: number, user_id: string, raw_prompt: string, task_type = TaskType.GENERATE) {
+  addTask(task_id: string, user_id: string, raw_prompt: string, task_type = TaskType.GENERATE) {
     try {
       const check = this.checkTask(user_id);
       if (check?.status === 'error') return check;
@@ -193,7 +228,7 @@ class TaskManager {
     }
   }
 
-  updateTask(user_id: string, task_id: number, img_url?: string, img_id?: string, status = TaskStatus.FINISHED) {
+  updateTask(user_id: string, task_id: string, img_url?: string, img_id?: string, status = TaskStatus.FINISHED) {
     try {
       const currentTask = this.tasks[user_id].filter(v => v.task_id === task_id);
       if (!currentTask) return;

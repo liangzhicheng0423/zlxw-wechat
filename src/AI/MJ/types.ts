@@ -21,7 +21,7 @@ export enum TaskType {
 }
 
 export type Task = {
-  task_id: number; // 任务id
+  task_id: string; // 任务id
   user_id: string; // 用户id
   task_type: TaskType; // 任务类型
   raw_prompt: string; // 原始描述
@@ -50,7 +50,7 @@ export type MJConfig = {
     max_tasks: number;
     max_tasks_per_user: number;
     plugin_trigger_prefix: string[];
-    ingore_prefix: { key: string; reply: string }[];
+    ignore_prefix: { key: string; reply: string }[];
     similar: number;
   };
 
@@ -85,4 +85,14 @@ export const IconMap = {
   [TaskType.VARIATION]: '🪄',
   [TaskType.RESET]: '🔄',
   [TaskType.GENERATE]: '🪄'
+};
+
+export type DrawSuccess = {
+  status: 'failed' | 'success';
+  type: 'generate' | 'operate';
+  message?: string;
+  userId: string;
+  originUrl: string;
+  taskId: string;
+  imageUrl?: string;
 };

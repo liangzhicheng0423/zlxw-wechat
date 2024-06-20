@@ -3,7 +3,7 @@ import COS from 'cos-nodejs-sdk-v5';
 import fs from 'fs';
 import natural from 'natural';
 import path from 'path';
-import { getMjConfig } from '../../util';
+import { getMjConfig, getTextReplyUrl } from '../../util';
 import { Task, TaskType } from './types';
 
 const tencentcloud = require('tencentcloud-sdk-nodejs-tmt');
@@ -14,59 +14,50 @@ const { BAIDU_REVIEW_API_KEY, BAIDU_REVIEW_SECRET_KEY, COS_SECRET_ID, COS_SECRET
 export const jaroWinklerDistance = (text1: string, text2: string) => natural.JaroWinklerDistance(text1, text2);
 
 export const startsWithPrefixes = (str: string) => {
+  const cmds = str.split(' ');
+
   const { midjourney } = getMjConfig();
   const { plugin_trigger_prefix = [] } = midjourney;
 
-  for (let prefix of plugin_trigger_prefix) {
-    if (str.startsWith(prefix)) return true;
+  if (cmds[0] === '获取' && plugin_trigger_prefix.includes(cmds[1])) {
+    return true;
   }
+
   return false;
 };
 
-export const judgeMjTaskType = (text: string): TaskType | null => {
-  // 如果文本以 ${plugin_trigger_prefix } 开头, 判断是否为合法命令
-  const cmd = text[0];
-  if (cmd === '1') return TaskType.UPSCALE;
-  if (cmd === '2') return TaskType.VARIATION;
-  if (cmd === '3') return TaskType.RESET;
-  return null;
-};
-
 export const check_cmd = (cmd: string) => {
-  let reply = '';
-  const mj_type = judgeMjTaskType(cmd);
-  // 收到非法命令
-  if (mj_type == null) {
-    reply = '抱歉，命令输入有误，请您输入正确的命令。';
-    return { status: 'error', reply };
+  const cmds = cmd.split(' ');
+  if (cmds.length !== 3) {
+    return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
   }
 
-  const content = cmd.split(' ').filter(v => v !== '');
+  const type = cmds[1];
 
-  if (mj_type !== TaskType.RESET && content.length !== 3) {
-    reply = '抱歉，命令输入格式有误，请您输入正确的命令。';
-    return { status: 'error', reply };
+  let imgIndex = 0;
+
+  switch (type) {
+    case '左上':
+      imgIndex = 1;
+      break;
+    case '右上':
+      imgIndex = 2;
+      break;
+    case '左下':
+      imgIndex = 3;
+      break;
+    case '右下':
+      imgIndex = 4;
+      break;
+    default:
+      break;
   }
 
-  if (mj_type === TaskType.RESET && content.length !== 2) {
-    reply = '抱歉，命令输入格式有误，请您输入正确的命令。';
-    return { status: 'error', reply };
-  }
-
-  // 图片id
-  const img_id = content[1];
-
-  // 图片序号
-  const img_index = Number(content[2]);
-
-  if (img_index > 4 || img_index < 1) {
-    reply = `图片序号 ${img_index} 错误，应在 1 至 4 之间`;
-    return { status: 'error', reply };
-  }
+  const imageId = cmds[2];
 
   return {
     status: 'success',
-    data: { img_id, img_index, mj_type }
+    data: { img_id: imageId, img_index: imgIndex, mj_type: TaskType.UPSCALE }
   };
 };
 
@@ -123,22 +114,16 @@ export const imgCensor = async (
 };
 
 /** 获取绘制成功后的消息文本 */
-export const getDrawSuccessText = (task: Task) => {
-  let text = '';
-  text += '🎨绘画完成!\n';
-  if (task.raw_prompt) text += `prompt: ${task.raw_prompt}\n`;
-  text += `- - - - - - - - -\n图片ID: ${task?.img_id}`;
-
-  text += `\n\n🔎使用 1 命令放大图片\n`;
-  text += `例如：\n1 ${task.img_id} 1`;
-
-  text += `\n\n🪄使用 2 命令变换图片\n`;
-  text += `例如：\n2 ${task.img_id} 1`;
-
-  text += `\n\n🔄使用 3 命令重新生成图片\n`;
-  text += `例如：\n3 ${task.img_id}`;
-
-  return text;
+export const getDrawSuccessText = (imageId: number) => {
+  const reply = [
+    '🎉 图像绘制成功～',
+    '您可以点击下方按钮获取对应的高清大图',
+    `1. 👉 ${getTextReplyUrl(`获取 左上 (${imageId})`, '左上')}`,
+    `2. 👉 ${getTextReplyUrl(`获取 右上 (${imageId})`, '右上')}`,
+    `3. 👉 ${getTextReplyUrl(`获取 左下 (${imageId})`, '左下')}`,
+    `4. 👉 ${getTextReplyUrl(`获取 右下 (${imageId})`, '右下')}`
+  ];
+  return reply.join('\n\n');
 };
 
 export const uploadFile = (cos: COS, filePath: string, key: string): Promise<COS.UploadFileItemResult> => {

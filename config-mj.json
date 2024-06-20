@@ -23,9 +23,9 @@
     "img_proxy": true,
     "max_tasks": 3,
     "max_tasks_per_user": 1,
-    "plugin_trigger_prefix": ["1 ", "2 ", "3 "],
+    "plugin_trigger_prefix": ["左上", "右上", "左下", "右下"],
     "similar": 0.7,
-    "ingore_prefix": [
+    "ignore_prefix": [
       {
         "key": "你好",
         "reply": "你好！需要我帮你绘制什么样的图像吗？你可以直接告诉我你的想法，例如'一张夕阳下的海滩'或者'一个梦幻般的星空'。"

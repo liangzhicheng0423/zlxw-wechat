@@ -13,9 +13,17 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
   const text = message.Content;
 
   const { midjourney } = getMjConfig();
-  const { similar = 0.5, ingore_prefix = [] } = midjourney;
+  const { similar = 0.5, ignore_prefix = [] } = midjourney;
 
   try {
+    // QA匹配
+    const hasSimilar = ignore_prefix.find(v => jaroWinklerDistance(v.key, text) > similar);
+    if (hasSimilar) {
+      res.send({ ...baseReply, MsgType: 'text', Content: hasSimilar.reply });
+      return;
+    }
+    console.log('QA匹配: 未命中');
+
     // 限流策略
     const { status, message: msg = '[Error]' } = taskManager.checkTask(userId);
     if (status === 'error') {
@@ -23,15 +31,6 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
       return;
     }
     console.log('限流策略: pass');
-
-    // QA匹配
-    const hasSimilar = ingore_prefix.find(v => jaroWinklerDistance(v.key, text) > similar);
-    if (hasSimilar) {
-      console.log('QA匹配: 命中');
-      res.send({ ...baseReply, MsgType: 'text', Content: hasSimilar.reply });
-      return;
-    }
-    console.log('QA匹配: 未命中');
 
     const pass = await check(text);
     console.log('敏感词检测： ', pass);
@@ -54,7 +53,7 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
       }
 
       if (check_result.status === 'success' && check_result.data) {
-        const img_id = taskManager.getHashWithNumber(Number(check_result.data.img_id));
+        const img_id = await taskManager.getHashWithNumber(userId, Number(check_result.data.img_id));
         if (!img_id) {
           res.send({ ...baseReply, MsgType: 'text', Content: '图片id不存在，请重新生成' });
           return;
