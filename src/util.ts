@@ -26,7 +26,7 @@ const appSecret = 'wxd00871cb6294c27462b8813d70c473a5f5e537e1728eb408'; // 替�
 export const getAccessToken = async () => {
   try {
     const response = await axios.get(
-      `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appId}&secret=${appSecret}`
+      `http://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appId}&secret=${appSecret}`
     );
     const { access_token } = response.data;
     return access_token;
@@ -45,11 +45,11 @@ export const createQRCode = async (sceneStr: string) => {
       action_info: { scene: { scene_str: sceneStr } }
     };
 
-    const response = await axios.post(`https://api.weixin.qq.com/cgi-bin/qrcode/create`, qrCodeData);
+    const response = await axios.post(`http://api.weixin.qq.com/cgi-bin/qrcode/create`, qrCodeData);
     const { ticket } = response.data;
 
     // 通过 ticket 换取二维码
-    const qrCodeUrl = `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${encodeURIComponent(ticket)}`;
+    const qrCodeUrl = `http://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${encodeURIComponent(ticket)}`;
     return qrCodeUrl;
   } catch (error) {
     console.error('Error creating QR code:', error);
@@ -131,7 +131,7 @@ export const uploadTemporaryMedia = async (filePath: string, type: 'image' | 'vo
 
 // 上传永久图片素材函数
 export const uploadPermanentImageMedia = async (filePath: string) => {
-  const uploadUrl = 'https://api.weixin.qq.com/cgi-bin/material/add_material';
+  const uploadUrl = 'http://api.weixin.qq.com/cgi-bin/material/add_material';
 
   try {
     // 构造上传参数
@@ -314,7 +314,7 @@ export const sendServiceQRcode = async (userId: string) => {
 /** 获取音频临时文件 */
 export const downloadVoiceFile = async (mediaId: string): Promise<string> => {
   // 下载语音文件
-  const url = `https://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
+  const url = `http://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
   const response = await axios.get(url, { responseType: 'arraybuffer' });
   const filePath = path.join(__dirname, `../tmp/voice/${mediaId}.amr`);
   console.log('filePath,', filePath);
@@ -411,7 +411,7 @@ export const textToVoice = async (input: string): Promise<string | null> => {
 /** 发送音频消息 */
 export const sendVoiceMessage = async (userId: string, mediaId: string) => {
   try {
-    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/send`;
+    const url = `http://api.weixin.qq.com/cgi-bin/message/custom/send`;
     const data = {
       touser: userId,
       msgtype: 'voice',
