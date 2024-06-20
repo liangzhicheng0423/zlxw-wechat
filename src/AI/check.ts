@@ -85,21 +85,21 @@ const conclusionType = [
 
 const InvalidType = 11; // 百度官方违禁词库
 
-const getBaiduReview = () => {
+export const getBaiduReview = (): Promise<string> => {
   const options = {
     method: 'POST',
     url: `https://aip.baidubce.com/oauth/2.0/token?client_id=${BAIDU_REVIEW_API_KEY}&client_secret=${BAIDU_REVIEW_SECRET_KEY}&grant_type=client_credentials`,
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
   };
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     axios
       .request(options)
       .then(response => {
         if (response.status === 200) resolve(response.data.access_token);
-        else reject(response.status);
+        else resolve('');
       })
-      .catch(reject);
+      .catch(() => resolve(''));
   });
 };
 

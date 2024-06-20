@@ -1,6 +1,7 @@
 import { TextMessage } from '../../types';
 import { getMjConfig, getReplyBaseInfo } from '../../util';
 import { check } from '../check';
+import { modeProcess } from './mode';
 import taskManager from './taskManager';
 import { CmdData } from './types';
 import { getUserAPIGenerate } from './userAPI';
@@ -23,6 +24,8 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
       return;
     }
     console.log('QA匹配: 未命中');
+
+    if (modeProcess(message, res)) return;
 
     // 限流策略
     const { status, message: msg = '[Error]' } = taskManager.checkTask(userId);

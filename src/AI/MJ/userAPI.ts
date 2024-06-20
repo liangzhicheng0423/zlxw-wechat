@@ -179,10 +179,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
 
       if (res.status === 'error') {
         await sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试\n${res.status_reason}`);
-        if (task_id !== undefined) {
-          taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
-        }
-
+        taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
         return;
       }
     } catch (error) {
@@ -203,6 +200,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       );
       console.log('代理下载完成: ', jumpRes.data);
     } catch (error) {
+      taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
       console.log('发送下载任务失败');
     }
   });

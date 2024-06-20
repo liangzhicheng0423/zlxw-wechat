@@ -2,11 +2,12 @@ import moment from 'moment';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
+import { doImageMode } from '../AI/MJ/doImageMode';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
 import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
-import { EventMessage, ImageMessage, Product, TextMessage, VoiceMessage, WeChatMessage } from '../types';
+import { EventMessage, Product, TextMessage, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
   downloadImage,
@@ -224,8 +225,6 @@ const handleText = async (message: TextMessage, res: any) => {
   }
 };
 
-const handleImage = (message: ImageMessage, res: any) => {};
-
 const handleEvent = async (message: EventMessage, res: any) => {
   const { FromUserName, Event, EventKey } = message;
 
@@ -270,14 +269,9 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
   const voicePath = await downloadVoiceFile(message.MediaId);
 
   const transformText = await voiceToText(voicePath);
-  console.log('transformText======== ', transformText);
 
   if (!transformText) {
-    res.send({
-      ...baseReply,
-      MsgType: 'text',
-      Content: '抱歉，请再说一次吧'
-    });
+    res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧' });
     return;
   }
 
@@ -298,7 +292,7 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
       break;
 
     case 'image':
-      handleImage(message, res);
+      await doImageMode(message, res);
       break;
 
     case 'voice':

@@ -214,15 +214,18 @@ export const clientConfig = {
   }
 };
 
-(() => {
-  const client = new TmtClient(clientConfig);
-  const params = { SourceText: '你好', Source: 'auto', Target: 'en', ProjectId: 0 };
-  client.TextTranslate(params).then(
-    (data: any) => {
-      console.log(data.TargetText);
-    },
-    (err: any) => {
-      console.error('error', err);
+export const imageReview = async (access_token: string, url: string) => {
+  try {
+    const imgCensorResult = await imgCensor(url, access_token);
+    if (imgCensorResult.status === 'error') {
+      const errorMsg =
+        `[ERROR] 生成图像违规，存在以下问题 👇\n` + imgCensorResult.messages.map(item => '⚠️ ' + item).join('\n');
+      return { pass: false, message: errorMsg };
     }
-  );
-})();
+
+    return { pass: true, message: 'SUCCESS' };
+  } catch (error) {
+    console.error('[LinkAI] img censor error: ', error);
+    return { pass: true, message: 'SUCCESS' };
+  }
+};

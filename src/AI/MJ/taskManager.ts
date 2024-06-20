@@ -29,9 +29,6 @@ class TaskManager {
   private maxUserTask = 1;
   private maxTask = 3;
 
-  // 图片id和数字之间的对应关系
-  private hashNumberMap: { [key in number]: string } = {};
-
   /** 绘图任务 */
   private tasks: { [key in string]: Task[] } = {};
 
@@ -269,12 +266,6 @@ class TaskManager {
   getOperRecord(key: string) {
     console.info('[TaskManager] get all operRecord:', this.operRecord);
     return this.operRecord[key];
-  }
-
-  run() {
-    setInterval(() => {
-      console.log(this.tasks);
-    }, 3000);
   }
 }
 
