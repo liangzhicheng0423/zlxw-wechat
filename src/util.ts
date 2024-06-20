@@ -85,7 +85,7 @@ export const getImage = (img_url: string, task_id: string, user_id: string): Pro
 };
 
 export const downloadImage = (img_url: string, user_id: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     // 使用axios下载图片
     axios
       .get(img_url, {
@@ -101,7 +101,7 @@ export const downloadImage = (img_url: string, user_id: string): Promise<string>
       })
       .catch(error => {
         console.error(`[WX] Error downloading image: ${error}`);
-        reject();
+        resolve('');
       });
   });
 };

@@ -34,12 +34,13 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
 
   const { PicUrl, MediaId } = message;
 
-  const imagePath = path.join(__dirname, `../../../tmp/image/image-mode-${MediaId}`);
-
-  console.log('========== imagePath: ', imagePath);
-
   try {
-    await downloadImage(PicUrl, imagePath);
+    const imagePath = await downloadImage(PicUrl, userId + '-' + MediaId);
+
+    if (!imagePath) {
+      send('抱歉，图片下载失败，请稍后再试～');
+      return;
+    }
 
     const cosInstance = new COS({
       UseAccelerate: true, // 指定 true，使用全球加速域名请求
