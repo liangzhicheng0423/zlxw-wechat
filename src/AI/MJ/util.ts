@@ -1,12 +1,9 @@
+import * as tencentcloud from 'tencentcloud-sdk-nodejs';
 import axios from 'axios';
 import COS from 'cos-nodejs-sdk-v5';
-import fs from 'fs';
 import natural from 'natural';
-import path from 'path';
 import { getMjConfig, getTextReplyUrl } from '../../util';
-import { Task, TaskType } from './types';
-
-const tencentcloud = require('tencentcloud-sdk-nodejs-tmt');
+import { TaskType } from './types';
 
 const { BAIDU_REVIEW_API_KEY, BAIDU_REVIEW_SECRET_KEY, COS_SECRET_ID, COS_SECRET_KEY } = process.env;
 
@@ -211,8 +208,21 @@ export const TmtClient = tencentcloud.tmt.v20180321.Client;
 // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
 export const clientConfig = {
   credential: { secretId: COS_SECRET_ID, secretKey: COS_SECRET_KEY },
-  region: '',
+  region: 'ap-hongkong',
   profile: {
     httpProfile: { endpoint: 'tmt.tencentcloudapi.com' }
   }
 };
+
+(() => {
+  const client = new TmtClient(clientConfig);
+  const params = { SourceText: '你好', Source: 'auto', Target: 'en', ProjectId: 0 };
+  client.TextTranslate(params).then(
+    (data: any) => {
+      console.log(data.TargetText);
+    },
+    (err: any) => {
+      console.error('error', err);
+    }
+  );
+})();
