@@ -170,7 +170,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       console.info('[info] UserAPI: Worker 返回结果: ', res);
 
       if (res === null) {
-        sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试\n`);
+        await sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试\n`);
         if (task_id !== undefined) {
           taskManager.updateTask(user_id, task_id, undefined, undefined, TaskStatus.ABORTED);
         }
@@ -178,7 +178,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       }
 
       if (res.status === 'error') {
-        sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试\n${res.status_reason}`);
+        await sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试\n${res.status_reason}`);
         if (task_id !== undefined) {
           taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
         }
@@ -187,7 +187,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       }
     } catch (error) {
       taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
-      sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试`);
+      await sendMessage(user_id, `[ERROR]\n由于神秘力量，本次操作失败，请重新尝试`);
     }
 
     const { user_id: userId, task_id: taskId, result, hash } = res;
