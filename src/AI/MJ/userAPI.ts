@@ -108,9 +108,11 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
   if (chinesePattern.test(prompt)) {
     const client = new TmtClient(clientConfig);
     const params = { SourceText: prompt, Source: 'auto', Target: 'en', ProjectId: 0 };
+    console.log('开始翻译=========');
     client.TextTranslate(params).then(
       (data: any) => {
-        real_prompt = data.TargetText ?? '';
+        console.log('翻译成功=== data.TargetText', data.TargetText);
+        real_prompt = data.TargetText || '';
       },
       (err: any) => {
         console.error('error', err);
@@ -118,7 +120,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     );
   }
 
-  console.log('翻译prompt');
+  console.log('翻译prompt: ', real_prompt);
 
   const user_id = message.FromUserName;
 
