@@ -1,3 +1,5 @@
+import { getTextReplyUrl } from '../../util';
+
 export enum OPERATE {
   Url,
   Blend,
@@ -106,11 +108,9 @@ export const OperateModeMap: { [key in OPERATE]: string } = {
 };
 
 export const OperateReplayMap: { [key in OPERATE]: string } = {
-  [OPERATE.Url]:
-    '🎉 开启成功，上传图片后我将为你返回图片链接（每次支持1张图片）\n\n未发送图片5分钟后自动退出，你也可以发送"关闭"提前退出',
-  [OPERATE.Blend]:
-    '🎉 已开启融图模式，将想要合成的图片上传即可\n\n可上传2-5张图片，上传完成后请告诉我"开始合成"，你也发送"关闭"提前退出',
-  [OPERATE.Describe]: '🎉 已开启图生文，将想要了解信息的图片发送给我即可\n\n5分钟后自动退出，你也发送"关闭"提前退出',
+  [OPERATE.Url]: `🎉 开启成功，上传图片后我将为你返回链接（每次1张）\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
+  [OPERATE.Blend]: `🎉 已开启融图模式，可上传2-5张图片，上传完成后发送“开始合成”\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
+  [OPERATE.Describe]: ` 🎉 已开启图生文模式，可上传1张图片\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
   [OPERATE.Close]: '已关闭当前模式',
   [OPERATE.StartBlend]: ''
 };

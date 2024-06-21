@@ -114,7 +114,10 @@ export const imgCensor = async (
 export const getDrawSuccessText = (imageId: number) => {
   const reply = [
     '🎉 图像绘制成功～',
-    '您可以点击下方按钮获取对应的高清大图',
+    '您可以点击下方按钮来操作图像',
+    '选择：1️⃣     2️⃣     3️⃣     4️⃣',
+    '变化：1️⃣     2️⃣     3️⃣     4️⃣',
+    '重制：🔄',
     `1. 👉 ${getTextReplyUrl(`获取 左上 ${imageId}`, '左上')}`,
     `2. 👉 ${getTextReplyUrl(`获取 右上 ${imageId}`, '右上')}`,
     `3. 👉 ${getTextReplyUrl(`获取 左下 ${imageId}`, '左下')}`,

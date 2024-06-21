@@ -25,7 +25,9 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
     }
     console.log('QA匹配: 未命中');
 
-    if (modeProcess(message, res)) return;
+    const isModeProcess = await modeProcess(message, res);
+
+    if (isModeProcess) return;
 
     // 限流策略
     const { status, message: msg = '[Error]' } = taskManager.checkTask(userId);

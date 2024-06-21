@@ -426,3 +426,5 @@ export const sendVoiceMessage = async (userId: string, mediaId: string) => {
 export const getNow = () => {
   return Math.floor(Date.now() / 1000);
 };
+
+export const exitText = () => `（回复“${getTextReplyUrl('退出')}”可离开当前模式）`;

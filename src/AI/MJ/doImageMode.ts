@@ -19,7 +19,7 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
   // 判断是否在模式中，如果不在模式中，则退出
   const userMode = taskManager.isModing(userId);
   console.log('========== userMode: ', userMode);
-  if (userMode !== OPERATE.Url) return;
+  if (userMode === undefined) return;
 
   const send = (content: string) => {
     res.send({ ...baseReply, MsgType: 'text', Content: content });
@@ -69,13 +69,15 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
           send(`🎉 图片地址: ${url}`);
           taskManager.updateMode(userId, OPERATE.Close);
           break;
-        // case OPERATE.Blend:
-        //   taskManager.updateMode(userId, OPERATE.Blend, url);
-        //   break;
-        // case OPERATE.Describe:
-        //   // 图生文，走单独的接口
-        //   taskManager.updateMode(userId, OPERATE.Blend, url);
-        //   break;
+
+        case OPERATE.Blend:
+          taskManager.updateMode(userId, OPERATE.Blend, url);
+          break;
+
+        case OPERATE.Describe:
+          // 图生文，走单独的接口
+          taskManager.updateMode(userId, OPERATE.Blend, url);
+          break;
 
         default:
           break;

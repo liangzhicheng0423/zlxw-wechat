@@ -4,6 +4,7 @@ import { User } from '../mysqlModal/user';
 import { setMode } from '../redis';
 import { Product, WeChatMessage } from '../types';
 import {
+  exitText,
   getGptConfig,
   getMjConfig,
   getReplyBaseInfo,
@@ -85,13 +86,23 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
     case MenuKey.GPT4:
       if (!gpt_welcome_enable) return;
-      await sendMessage(message.FromUserName, gpt_welcome);
+      await sendMessage(message.FromUserName, gpt_welcome + exitText());
       await setMode(message.FromUserName, Product.GPT4);
       break;
 
     case MenuKey.MJ:
       if (!mj_welcome_enable) return;
-      await sendMessage(message.FromUserName, mj_welcome);
+
+      const reply = [
+        mj_welcome + exitText(),
+        getTextReplyUrl(
+          '3D卡通风格渲染，女孩，春季流行时尚服装，糖果色服装，装满鲜花的透明背包，新的流行肖像，时尚插图，鲜艳的色彩，霓虹现实，由 POP-Mart 制作，光滑细腻，全身效果，干净背景，3D 渲染，OC 渲染，8K --ar 3:4 --niji 5'
+        ),
+        getTextReplyUrl(
+          'Very simple, minimalist, cartoon graffiti, line art, cute black line little girl, various poses and expressions. Crying, running away, shy, Smile, eating, kneeling, surprised, laughing, etc. --niji 5'
+        )
+      ];
+      await sendMessage(message.FromUserName, reply.join('\n\n'));
       await setMode(message.FromUserName, Product.Midjourney);
       break;
 
