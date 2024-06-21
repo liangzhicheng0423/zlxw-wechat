@@ -152,7 +152,7 @@ const handleText = async (message: TextMessage, res: any) => {
       const outPath = path.join(__dirname, `../tmp/image/image_qrcode_${Date.now()}.jpeg`);
 
       // 合成背景图
-      const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.jpeg', outPath);
+      const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.png', outPath);
 
       // 上传至素材库
       const updateRes = await uploadTemporaryMedia(bgPath, 'image');

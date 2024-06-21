@@ -73,6 +73,7 @@ export const modeProcess = async (message: TextMessage, res: any) => {
 
     // 开始融图
     await blendImage(message, res);
+    return;
   }
 
   const canStartMode = taskManager.canStartMode(userId, operateType);

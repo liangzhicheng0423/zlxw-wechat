@@ -35,54 +35,54 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
   const { PicUrl, MediaId } = message;
 
   try {
-    const imagePath = await downloadImage(PicUrl, userId + '-' + MediaId);
+    // const imagePath = await downloadImage(PicUrl, userId + '-' + MediaId);
 
-    if (!imagePath) {
-      send('抱歉，图片下载失败，请稍后再试～');
-      return;
+    // if (!imagePath) {
+    //   send('抱歉，图片下载失败，请稍后再试～');
+    //   return;
+    // }
+
+    // const cosInstance = new COS({
+    //   UseAccelerate: true, // 指定 true，使用全球加速域名请求
+    //   Protocol: 'http:', // 请求协议： 'https:' 或 'http:'
+    //   SecretId: COS_SECRET_ID,
+    //   SecretKey: COS_SECRET_KEY
+    // });
+
+    // const data = await uploadFile(cosInstance, imagePath, MediaId);
+    // if (data.statusCode === 200) {
+    // const url = `${cdn_url}/${MediaId}`;
+    // console.log('========== url: ', url);
+
+    // 图片审核
+    // const access_token = await getBaiduReview();
+    // if (access_token) {
+    //   const { pass, message: reviewMessage } = await imageReview(access_token, url);
+    //   if (!pass) {
+    //     send(reviewMessage);
+    //     return;
+    //   }
+    // }
+
+    switch (userMode) {
+      case OPERATE.Url:
+        send(`🎉 图片地址: ${PicUrl}`);
+        taskManager.updateMode(userId, OPERATE.Close);
+        break;
+
+      case OPERATE.Blend:
+        taskManager.updateMode(userId, OPERATE.Blend, PicUrl);
+        break;
+
+      case OPERATE.Describe:
+        // 图生文，走单独的接口
+        taskManager.updateMode(userId, OPERATE.Blend, PicUrl);
+        break;
+
+      default:
+        break;
     }
-
-    const cosInstance = new COS({
-      UseAccelerate: true, // 指定 true，使用全球加速域名请求
-      Protocol: 'http:', // 请求协议： 'https:' 或 'http:'
-      SecretId: COS_SECRET_ID,
-      SecretKey: COS_SECRET_KEY
-    });
-
-    const data = await uploadFile(cosInstance, imagePath, MediaId);
-    if (data.statusCode === 200) {
-      const url = `${cdn_url}/${MediaId}`;
-      console.log('========== url: ', url);
-
-      // 图片审核
-      const access_token = await getBaiduReview();
-      if (access_token) {
-        const { pass, message: reviewMessage } = await imageReview(access_token, url);
-        if (!pass) {
-          send(reviewMessage);
-          return;
-        }
-      }
-
-      switch (userMode) {
-        case OPERATE.Url:
-          send(`🎉 图片地址: ${url}`);
-          taskManager.updateMode(userId, OPERATE.Close);
-          break;
-
-        case OPERATE.Blend:
-          taskManager.updateMode(userId, OPERATE.Blend, url);
-          break;
-
-        case OPERATE.Describe:
-          // 图生文，走单独的接口
-          taskManager.updateMode(userId, OPERATE.Blend, url);
-          break;
-
-        default:
-          break;
-      }
-    }
+    // }
   } catch (error) {
     console.log('uploadFile error');
   }
