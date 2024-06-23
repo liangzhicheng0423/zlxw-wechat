@@ -149,14 +149,19 @@ const handleText = async (message: TextMessage, res: any) => {
       // 下载二维码
       const qrCodePath = await downloadImage(qrCodeUrl, userId);
 
+      console.log('下载二维码', qrCodePath);
       const outPath = path.join(__dirname, `../tmp/image/image_qrcode_${Date.now()}.jpeg`);
+      console.log('组合图片:', outPath);
 
       // 合成背景图
       const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.png', outPath);
 
+      console.log('合成背景图：', bgPath);
+
       // 上传至素材库
       const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
+      console.log('上传至素材库: ', updateRes);
       res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
 

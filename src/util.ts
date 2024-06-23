@@ -188,8 +188,6 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
   try {
     const [image1, image2] = await Promise.all([Jimp.read(image1Path), Jimp.read(image2Path)]);
 
-    console.log('image1  ', image1, 'image2  ', image2);
-
     const combinedWidth = image2.bitmap.width;
     console.log('combinedWidth ', combinedWidth);
     const combinedHeight = image2.bitmap.height;
@@ -303,13 +301,13 @@ export const getAiGroupText = () => {
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）')}`;
+  const danText = `Dan ${getTextReplyUrl('马上抢', '马上抢（Dan）')}`;
   await sendMessage(userId, danText);
   await sendMessage(userId, '【Dan产品介绍页】');
 };
 
 export const sendAiGroupText = async (userId: string) => {
-  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）')}`);
+  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢', '马上抢（助理小吴AI群）')}`);
   await sendMessage(userId, '【AI群产品介绍页】');
 };
 

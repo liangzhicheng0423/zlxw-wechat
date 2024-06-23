@@ -1,5 +1,5 @@
 {
-  "welcome": "是Midjourney，你可以通过我来生成图像。发送对图像的描述即可开始，英文prompt效果更稳定哦～",
+  "welcome": "我是Midjourney，你可以通过我来生成图像。发送对图像的描述即可开始，英文prompt效果更稳定哦～",
   "welcome_enable": true,
   "summary": {
     "enabled": true,
