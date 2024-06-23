@@ -203,7 +203,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 
     console.log('combinedImage:  ', combinedImage);
     combinedImage.composite(image2, 0, 0);
-    combinedImage.composite(image1, 890, 1950);
+    combinedImage.composite(image1, 898, 1950);
 
     await combinedImage.writeAsync(outputImagePath);
 
