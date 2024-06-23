@@ -194,7 +194,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 
     console.log('combinedHeight ', combinedHeight);
 
-    image1.resize(176, 176); // 也可以使用 image.resize(Jimp.AUTO, height) 保持宽高比
+    image1.resize(300, 300); // 也可以使用 image.resize(Jimp.AUTO, height) 保持宽高比
 
     // 设置压缩质量（仅适用于 JPEG 图片）
     image1.quality(100); // 质量范围是 0-100
@@ -203,7 +203,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 
     console.log('combinedImage:  ', combinedImage);
     combinedImage.composite(image2, 0, 0);
-    combinedImage.composite(image1, 506, 1106);
+    combinedImage.composite(image1, 890, 1950);
 
     await combinedImage.writeAsync(outputImagePath);
 
