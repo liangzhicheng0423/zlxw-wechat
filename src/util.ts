@@ -188,8 +188,12 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
   try {
     const [image1, image2] = await Promise.all([Jimp.read(image1Path), Jimp.read(image2Path)]);
 
+    console.log('image1  ', image1, 'image2  ', image2);
     const combinedWidth = image2.bitmap.width;
+    console.log('combinedWidth ', combinedWidth);
     const combinedHeight = image2.bitmap.height;
+
+    console.log('combinedHeight ', combinedHeight);
 
     image1.resize(176, 176); // 也可以使用 image.resize(Jimp.AUTO, height) 保持宽高比
 
@@ -198,6 +202,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
 
     const combinedImage = new Jimp(combinedWidth, combinedHeight);
 
+    console.log('combinedImage:  ', combinedImage);
     combinedImage.composite(image2, 0, 0);
     combinedImage.composite(image1, 506, 1106);
 

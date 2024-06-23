@@ -55,14 +55,14 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
     // console.log('========== url: ', url);
 
     // 图片审核
-    // const access_token = await getBaiduReview();
-    // if (access_token) {
-    //   const { pass, message: reviewMessage } = await imageReview(access_token, url);
-    //   if (!pass) {
-    //     send(reviewMessage);
-    //     return;
-    //   }
-    // }
+    const access_token = await getBaiduReview();
+    if (access_token) {
+      const { pass, message: reviewMessage } = await imageReview(access_token, PicUrl);
+      if (!pass) {
+        send(reviewMessage);
+        return;
+      }
+    }
 
     switch (userMode) {
       case OPERATE.Url:
