@@ -108,9 +108,9 @@ export const OperateModeMap: { [key in OPERATE]: string } = {
 };
 
 export const OperateReplayMap: { [key in OPERATE]: string } = {
-  [OPERATE.Url]: `🎉 开启成功，上传图片后我将为你返回链接（每次1张）\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
-  [OPERATE.Blend]: `🎉 已开启融图模式，可上传2-5张图片，上传完成后发送“开始合成”\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
-  [OPERATE.Describe]: ` 🎉 已开启图生文模式，可上传1张图片\n\n⏱️ 5分钟后自动退出，你也可以发送“${getTextReplyUrl('关闭')}”提前退出`,
+  [OPERATE.Url]: `🎉 开启成功，上传图片后我将为你返回链接（每次1张）\n\n⏱️ 5分钟后自动退出，你也可以发送 ${getTextReplyUrl('关闭')} 提前退出`,
+  [OPERATE.Blend]: `🎉 已开启融图模式，可上传2-5张图片，上传完成后发送 ${getTextReplyUrl('开始合成')}\n\n⏱️ 5分钟后自动退出，你也可以发送 ${getTextReplyUrl('关闭')} 提前退出`,
+  [OPERATE.Describe]: ` 🎉 已开启图生文模式，可上传1张图片\n\n⏱️ 5分钟后自动退出，你也可以发送 ${getTextReplyUrl('关闭')} 提前退出`,
   [OPERATE.Close]: '已关闭当前模式',
   [OPERATE.StartBlend]: ''
 };
