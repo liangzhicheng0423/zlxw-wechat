@@ -21,6 +21,7 @@ import {
   mergeImages,
   sendAiGroupText,
   sendDanText,
+  sendImage,
   sendMessage,
   sendServiceQRcode,
   uploadTemporaryMedia,
@@ -162,7 +163,8 @@ const handleText = async (message: TextMessage, res: any) => {
       const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
       console.log('上传至素材库: ', updateRes);
-      res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+      await sendImage(userId, updateRes.media_id);
+      // res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       break;
 
     case '查询':
