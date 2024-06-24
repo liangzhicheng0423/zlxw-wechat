@@ -59,10 +59,12 @@ export const chatWithDrawAI = async (message: TextMessage, res: any) => {
 
       if (check_result.status === 'success' && check_result.data) {
         const img_id = await taskManager.getHashWithNumber(userId, Number(check_result.data.img_id));
+
         if (!img_id) {
           res.send({ ...baseReply, MsgType: 'text', Content: '图片id不存在，请重新生成' });
           return;
         }
+
         cmd_data = { ...check_result.data, img_id };
       }
     }

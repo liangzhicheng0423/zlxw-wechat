@@ -53,7 +53,7 @@ export const check_cmd = (cmd: string) => {
   if (mj_type === TaskType.RESET) {
     if (cmds.length !== 2) return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
 
-    return { status: 'success', data: { img_id: imageId, mj_type } };
+    return { status: 'success', data: { img_id: cmds[1], mj_type } };
   }
 
   if (cmds.length !== 3) return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
