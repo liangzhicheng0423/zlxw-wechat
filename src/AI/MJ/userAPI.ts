@@ -320,5 +320,5 @@ export const blendImage = async (message: TextMessage, res: any) => {
     }
   });
 
-  send('🚀 正在为您加速生成图像，请耐心等待...');
+  send('🚀 正在生成图像，请耐心等待...');
 };

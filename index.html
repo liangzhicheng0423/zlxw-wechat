@@ -1,131 +1,135 @@
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>支付页面</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付页面</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
-<body>
-  <div id="loading" class="loading-container">
-    <div class="loading-spinner"></div>
-  </div>
+  <body>
+    <div id="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+    </div>
 
-  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script
+      src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 
-  <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
-  <script
-    src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.0/cloud.js"></script>
-  <script
-    src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.1/mplogin.min.js">
-  </script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script
+      src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.0/cloud.js"></script>
+    <script
+      src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.1/mplogin.min.js">
+    </script>
 
-  <script>
+    <script>
 
-    let isLoading = true;
+      async function order() {
+        const res = await callAPI('unifiedorder')
 
-    async function order() {
-      const res = await callAPI('unifiedorder')
+        if ((res.respdata || {}).payment != null) {
+          const { timeStamp, signType, paySign, package, nonceStr } = res.respdata.payment
+          wx.chooseWXPay({ // 微信SDK传入支付信息
+            timestamp: parseInt(timeStamp),
+            nonceStr: nonceStr,
+            package: package,
+            signType: signType,
+            paySign: paySign,
+            success: function (res) {
+              console.log('支付成功：', res)
+            }
+          })
+        }
+      }
 
-      if ((res.respdata || {}).payment != null) {
-        const { timeStamp, signType, paySign, package, nonceStr } = res.respdata.payment
-        wx.chooseWXPay({ // 微信SDK传入支付信息
-          timestamp: parseInt(timeStamp),
-          nonceStr: nonceStr,
-          package: package,
-          signType: signType,
-          paySign: paySign,
-          success: function (res) {
-            console.log('支付成功：', res)
-          }
+      async function callAPI(api = null) {
+
+        console.log('api: ', api)
+        if (!api) return null;
+        // 向云托管服务发起调用
+
+        console.log('getUrl')
+        // 获取当前页面的 URL
+        const url = new URL(window.location.href);
+
+        console.log('url', url)
+
+        // 创建 URLSearchParams 对象
+        const params = new URLSearchParams(url.search);
+
+
+        console.log('params', params)
+        // 获取参数值
+        const level = params.get('level');
+        console.log('level', level)
+        const product = params.get('product');
+        console.log('product', product)
+
+        const response = await window.app.callContainer({
+          path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
+          method: 'POST',               // 按照自己的业务开发，选择对应的方法
+          header: { 'X-WX-SERVICE': 'express-nvni' },
+          data: { level, product }
         })
+        console.log('response', response)
+        return response.data || {}
       }
-    }
 
-    async function callAPI(api = null) {
+      window.onload = async function () {
+        let isLoading = true;
 
-      console.log('api: ', api)
-      if (!api) return null;
-      // 向云托管服务发起调用
+        const loadingContainer = document.getElementById('loading');
 
-      console.log('getUrl')
-      // 获取当前页面的 URL
-      const url = new URL(window.location.href);
+        const vConsole = new window.VConsole();
+        // 使用登录模块，传入信息开始授权登录过程
+        // 如果首次登录，页面会经历一系列跳转过程，请不要在登录前加业务处理代码，以免登录被中断。
+        const result = await window.mplogin({
+          scope: "snsapi_base",                 // 必填，登录方式：snsapi_userinfo、snsapi_base
+          appid: 'wxd00871cb6294c274',          // 必填，公众号appid，将以此 appid 名义进行请求
+          envid: 'prod-0g0wjgnwbf66fcf0',       // 选填，资源方微信云托管环境，如果传递此参数则会返回初始化的 cloud 操作对象
+          signature: window.location.href,      // 选填，如果需要微信 SDK 的API方法，则填写要使用的地址，会返回 signature 签名对象，envid参数不填则无效。
+        })
 
-      console.log('url', url)
+        console.log({ result });
 
-      // 创建 URLSearchParams 对象
-      const params = new URLSearchParams(url.search);
+        if (result.ret !== 0) {
+          return
+        }
 
+        window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
-      console.log('params', params)
-      // 获取参数值
-      const level = params.get('level');
-      console.log('level', level)
-      const product = params.get('product');
-      console.log('product', product)
+        function setLoading(loading) {
+          isLoading = loading;
+          if (isLoading) {
+            loadingContainer.style.display = 'flex';
+          } else {
+            loadingContainer.style.display = 'none';
+          }
+        }
 
-      const response = await window.app.callContainer({
-        path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
-        method: 'POST',               // 按照自己的业务开发，选择对应的方法
-        header: { 'X-WX-SERVICE': 'express-nvni' },
-        data: { level, product }
-      })
-      console.log('response', response)
-      return response.data || {}
-    }
+        setLoading(true);
 
-    window.onload = async function () {
-    const vConsole = new window.VConsole();
-    // 使用登录模块，传入信息开始授权登录过程
-    // 如果首次登录，页面会经历一系列跳转过程，请不要在登录前加业务处理代码，以免登录被中断。
-    const result = await window.mplogin({
-      scope: "snsapi_base",                 // 必填，登录方式：snsapi_userinfo、snsapi_base
-      appid: 'wxd00871cb6294c274',          // 必填，公众号appid，将以此 appid 名义进行请求
-      envid: 'prod-0g0wjgnwbf66fcf0',       // 选填，资源方微信云托管环境，如果传递此参数则会返回初始化的 cloud 操作对象
-      signature: window.location.href,      // 选填，如果需要微信 SDK 的API方法，则填写要使用的地址，会返回 signature 签名对象，envid参数不填则无效。
-    })
+        // 监听签名注册成功
+        wx.ready(() => {
+          setLoading(false);
+          console.log('WX监听完成');
+          order();
+        });
 
-    console.log({ result });
+        // 发起签名注册，是一个异步操作，成功会触发wx.ready
+        wx.config({
+          debug: true,
+          appId: 'wxd00871cb6294c274',                   // 微信公众号appid
+          timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
+          nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取
+          signature: result.signature.signature,        // 签名，从返回 result.signature 中获取
+          jsApiList: ['chooseWXPay']                    // 注册的 api 列表，在这里选择chooseWXPay
+        })
 
-    if (result.ret !== 0) {
-      return
-    }
-
-    window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
-
-    const loadingContainer = document.getElementById('loading');
-
-    function setLoading(loading) {
-      isLoading = loading;
-      if (isLoading) {
-        loadingContainer.style.display = 'flex';
-      } else {
-        loadingContainer.style.display = 'none';
       }
-    }
 
-    setLoading(true);
+    </script>
 
-    // 监听签名注册成功
-    wx.ready(() => {
-      setLoading(false);
-      console.log('WX监听完成');
-      order();
-    });
-
-    // 发起签名注册，是一个异步操作，成功会触发wx.ready
-    wx.config({
-      debug: true,
-      appId: 'wxd00871cb6294c274',                   // 微信公众号appid
-      timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
-      nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取
-      signature: result.signature.signature,        // 签名，从返回 result.signature 中获取
-      jsApiList: ['chooseWXPay']                    // 注册的 api 列表，在这里选择chooseWXPay
-    })
-
-  }
-
-  </script>
-
-</body>
+  </body>
+</html>
