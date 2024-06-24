@@ -1,6 +1,6 @@
 import { getImage, sendImage, sendMessage, uploadTemporaryMedia } from '../../util';
 import taskManager from './taskManager';
-import { DrawSuccess, TaskStatus } from './types';
+import { DrawSuccess, TaskStatus, TaskType } from './types';
 import {
   generateUnique11DigitNumberFromString,
   getBaiduReviewToken,
@@ -12,7 +12,7 @@ import {
 export const drawSuccess = async (req: any, res: any) => {
   try {
     const result: DrawSuccess = req.body;
-    const { userId, taskId, imageUrl } = result;
+    const { userId, taskId, imageUrl, mjType } = result;
 
     if (result.status === 'failed') {
       taskManager.updateTask(userId, taskId, '', '', TaskStatus.ABORTED);
@@ -65,7 +65,7 @@ export const drawSuccess = async (req: any, res: any) => {
 
       // 将本次图片id对应起来
       console.log('获取task: ', task);
-      if (task) {
+      if (task && mjType !== TaskType.UPSCALE) {
         const text = getDrawSuccessText(imageNumberId);
         // 发送任务成功的通知
         await sendMessage(userId, text);

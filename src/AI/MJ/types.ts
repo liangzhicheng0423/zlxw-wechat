@@ -92,6 +92,7 @@ export const IconMap = {
 export type DrawSuccess = {
   status: 'failed' | 'success';
   type: 'generate' | 'operate';
+  mjType: TaskType;
   message?: string;
   userId: string;
   originUrl: string;

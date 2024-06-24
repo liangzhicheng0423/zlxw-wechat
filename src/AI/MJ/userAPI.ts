@@ -35,6 +35,9 @@ const getUserAPIOperation = async (message: TextMessage, res: any, cmd: CmdData)
 
   let response: any;
 
+  console.log('type: ', type);
+  console.log('data: ', data);
+
   try {
     response = await axios.post(base_api_url + '/' + type, data, {
       headers: { 'Content-Type': 'application/json', 'api-key': MJ_USER_API_KEY }
@@ -77,7 +80,7 @@ const getUserAPIOperation = async (message: TextMessage, res: any, cmd: CmdData)
       try {
         await axios.post(
           'http://api.ai-xiaowu.com:3000/download',
-          { originUrl: res.result.url, taskId, userId, type: 'operate' },
+          { originUrl: res.result.url, taskId, userId, type: 'operate', mjType: cmd.mj_type },
           { headers: { 'Content-Type': 'application/json' } }
         );
       } catch (error) {
@@ -196,7 +199,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     try {
       const jumpRes = await axios.post(
         'http://api.ai-xiaowu.com:3000/download',
-        { originUrl: result.url, taskId, userId, type: 'generate' },
+        { originUrl: result.url, taskId, userId, type: 'generate', mjType: TaskType.GENERATE },
         { headers: { 'Content-Type': 'application/json' } }
       );
       console.log('代理下载完成: ', jumpRes.data);
