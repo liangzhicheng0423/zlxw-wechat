@@ -12,7 +12,7 @@ import {
 export const drawSuccess = async (req: any, res: any) => {
   try {
     const result: DrawSuccess = req.body;
-    const { userId, taskId, imageUrl, type } = result;
+    const { userId, taskId, imageUrl } = result;
 
     if (result.status === 'failed') {
       taskManager.updateTask(userId, taskId, '', '', TaskStatus.ABORTED);
@@ -64,7 +64,8 @@ export const drawSuccess = async (req: any, res: any) => {
       const task = taskManager.getTask(taskId, userId);
 
       // 将本次图片id对应起来
-      if (task && type === 'generate') {
+      console.log('获取task: ', task);
+      if (task) {
         const text = getDrawSuccessText(imageNumberId);
         // 发送任务成功的通知
         await sendMessage(userId, text);
