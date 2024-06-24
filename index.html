@@ -53,8 +53,7 @@
       <div class="loading-spinner"></div>
     </div>
 
-    <script
-      src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
 
     <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script
@@ -121,7 +120,7 @@
 
         const loadingContainer = document.getElementById('loading');
 
-        const vConsole = new window.VConsole();
+        // const vConsole = new window.VConsole();
         // 使用登录模块，传入信息开始授权登录过程
         // 如果首次登录，页面会经历一系列跳转过程，请不要在登录前加业务处理代码，以免登录被中断。
         const result = await window.mplogin({
@@ -160,7 +159,7 @@
 
         // 发起签名注册，是一个异步操作，成功会触发wx.ready
         wx.config({
-          debug: true,
+          debug: false,
           appId: 'wxd00871cb6294c274',                   // 微信公众号appid
           timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
           nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取
