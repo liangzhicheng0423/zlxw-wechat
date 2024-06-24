@@ -65,7 +65,7 @@ export const drawSuccess = async (req: any, res: any) => {
 
       // 将本次图片id对应起来
       console.log('获取task: ', task);
-      if (task && mjType !== TaskType.UPSCALE) {
+      if (mjType !== TaskType.UPSCALE) {
         const text = getDrawSuccessText(imageNumberId);
         // 发送任务成功的通知
         await sendMessage(userId, text);
