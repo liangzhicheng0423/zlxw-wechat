@@ -100,6 +100,7 @@
         window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
         function setLoading(loading) {
+          console.log('设置loading: ', loading)
           isLoading = loading;
           if (isLoading) {
             loadingContainer.style.display = 'flex';
@@ -112,7 +113,7 @@
 
         // 监听签名注册成功
         wx.ready(() => {
-          setLoading(false);
+          // setLoading(false);
           console.log('WX监听完成');
           order();
         });
