@@ -315,7 +315,10 @@ export const blendImage = async (message: TextMessage, res: any) => {
       taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
       console.log('发送下载任务失败');
     } finally {
+      taskManager.updateTask(user_id, task_id, undefined, undefined, TaskStatus.FINISHED);
       taskManager.updateMode(user_id, OPERATE.Close);
     }
   });
+
+  send('🚀 正在为您加速生成图像，请耐心等待...');
 };
