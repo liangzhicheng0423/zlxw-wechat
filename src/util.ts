@@ -301,13 +301,13 @@ export const getAiGroupText = () => {
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = `Dan ${getTextReplyUrl('马上抢', '马上抢（Dan）')}`;
+  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`;
   await sendMessage(userId, danText);
   await sendMessage(userId, '【Dan产品介绍页】');
 };
 
 export const sendAiGroupText = async (userId: string) => {
-  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢', '马上抢（助理小吴AI群）')}`);
+  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
   await sendMessage(userId, '【AI群产品介绍页】');
 };
 
