@@ -232,6 +232,7 @@ export const blendImage = async (message: TextMessage, res: any) => {
     return;
   }
 
+  console.log('【mode -2】 urls: ', urls);
   let response: any;
   try {
     response = await axios.post(
@@ -250,6 +251,7 @@ export const blendImage = async (message: TextMessage, res: any) => {
 
   const task_id = response.data.hash as string;
 
+  console.log('【mode -3】 add task');
   const status = taskManager.addTask(task_id, user_id, message.Content, TaskType.GENERATE);
 
   console.log('新增用户融图任务: ', status.status);

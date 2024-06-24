@@ -29,14 +29,9 @@ export const modeProcess = async (message: TextMessage, res: any) => {
   // 模式
   const userMode = taskManager.getMode(userId);
 
-  console.log('【mode】 userMode: ', userMode);
-
   const text = message.Content;
-  console.log('【mode】 text: ', text);
 
   const operateType = isOperate(text);
-
-  console.log('【mode】 operateType: ', operateType);
 
   const send = (content: string) => {
     res.send({ ...baseReply, MsgType: 'text', Content: content });
@@ -71,8 +66,10 @@ export const modeProcess = async (message: TextMessage, res: any) => {
       return;
     }
 
+    console.log('【mode -1】 开始融图');
     // 开始融图
     await blendImage(message, res);
+    taskManager.updateMode(userId, OPERATE.Close);
     return;
   }
 

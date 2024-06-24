@@ -180,6 +180,7 @@ class TaskManager {
 
   /** 检查任务是否超出上限 */
   checkTask(user_id: string) {
+    console.log('【mode -3】 check task: ', this.tasks[user_id]);
     const currentTask = this.tasks[user_id]?.filter(v => v.status === TaskStatus.PENDING) ?? [];
 
     if (currentTask.length >= this.maxUserTask) {
