@@ -58,19 +58,19 @@ export const modeProcess = async (message: TextMessage, res: any) => {
   if (operateType === OPERATE.StartBlend) {
     if (userMode?.operate !== OPERATE.Blend) {
       send(`⚠️ 当前未开启${OperateModeMap[OPERATE.Blend]}模式`);
-      return;
+      return true;
     }
 
     if (userMode?.imageUrls.length <= 1) {
       send(`⚠️ 请上传2-5张图片`);
-      return;
+      return true;
     }
 
     console.log('【mode -1】 开始融图');
     // 开始融图
     await blendImage(message, res);
     taskManager.updateMode(userId, OPERATE.Close);
-    return;
+    return true;
   }
 
   const canStartMode = taskManager.canStartMode(userId, operateType);
