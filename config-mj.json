@@ -23,7 +23,7 @@
     "img_proxy": true,
     "max_tasks": 3,
     "max_tasks_per_user": 1,
-    "plugin_trigger_prefix": ["左上", "右上", "左下", "右下"],
+    "plugin_trigger_prefix": ["选择图像", "变化图像", "重新绘制"],
     "similar": 0.7,
     "ignore_prefix": [
       {

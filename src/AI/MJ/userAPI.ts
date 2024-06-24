@@ -27,14 +27,18 @@ const getUserAPIOperation = async (message: TextMessage, res: any, cmd: CmdData)
     res.send({ ...baseReply, MsgType: 'text', Content: content });
   };
 
+  const data: any = { hash: cmd.img_id };
+
+  if (cmd.mj_type === TaskType.UPSCALE || cmd.mj_type === TaskType.VARIATION) {
+    data.choice = cmd.img_index;
+  }
+
   let response: any;
 
   try {
-    response = await axios.post(
-      base_api_url + '/' + type,
-      { hash: cmd.img_id, choice: cmd.img_index },
-      { headers: { 'Content-Type': 'application/json', 'api-key': MJ_USER_API_KEY } }
-    );
+    response = await axios.post(base_api_url + '/' + type, data, {
+      headers: { 'Content-Type': 'application/json', 'api-key': MJ_USER_API_KEY }
+    });
   } catch (error) {
     send(getErrorText('由于神秘力量，本次操作失败，请重新尝试'));
     return;

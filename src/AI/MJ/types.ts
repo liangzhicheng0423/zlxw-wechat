@@ -66,7 +66,7 @@ export type MJConfig = {
 
 export type CmdData = {
   img_id: string;
-  img_index: number;
+  img_index?: number;
   mj_type: TaskType;
 };
 

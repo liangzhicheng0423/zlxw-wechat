@@ -16,7 +16,7 @@ export const startsWithPrefixes = (str: string) => {
   const { midjourney } = getMjConfig();
   const { plugin_trigger_prefix = [] } = midjourney;
 
-  if (cmds[0] === '获取' && plugin_trigger_prefix.includes(cmds[1])) {
+  if (plugin_trigger_prefix.includes(cmds[0])) {
     return true;
   }
 
@@ -25,37 +25,44 @@ export const startsWithPrefixes = (str: string) => {
 
 export const check_cmd = (cmd: string) => {
   const cmds = cmd.split(' ');
-  if (cmds.length !== 3) {
-    return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
-  }
 
-  const type = cmds[1];
+  const type = cmds[0];
+  const index = Number(cmds[1]);
+  const imageId = cmds[2];
 
-  let imgIndex = 0;
+  let mj_type: TaskType | undefined = undefined;
 
   switch (type) {
-    case '左上':
-      imgIndex = 1;
+    case '选择图像':
+      mj_type = TaskType.UPSCALE;
       break;
-    case '右上':
-      imgIndex = 2;
+    case '变化图像':
+      mj_type = TaskType.VARIATION;
       break;
-    case '左下':
-      imgIndex = 3;
-      break;
-    case '右下':
-      imgIndex = 4;
+    case '重新绘制':
+      mj_type = TaskType.RESET;
       break;
     default:
       break;
   }
 
-  const imageId = cmds[2];
+  if (mj_type === undefined) {
+    return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
+  }
 
-  return {
-    status: 'success',
-    data: { img_id: imageId, img_index: imgIndex, mj_type: TaskType.UPSCALE }
-  };
+  if (mj_type === TaskType.RESET) {
+    if (cmds.length !== 2) return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
+
+    return { status: 'success', data: { img_id: imageId, mj_type } };
+  }
+
+  if (cmds.length !== 3) return { status: 'error', reply: '抱歉，命令输入有误，请您输入正确的命令。' };
+
+  if (index > 4 || index < 1) {
+    return { status: 'error', reply: `图片序号 ${index} 错误，应在 1 至 4 之间` };
+  }
+
+  return { status: 'success', data: { img_id: imageId, img_index: Number(index), mj_type } };
 };
 
 export const getErrorText = (text: string) => '[ERROR]\n' + text;
@@ -115,14 +122,21 @@ export const getDrawSuccessText = (imageId: number) => {
   const reply = [
     '🎉 图像绘制成功～',
     '您可以点击下方按钮来操作图像',
-    '选择：1️⃣     2️⃣     3️⃣     4️⃣',
-    '变化：1️⃣     2️⃣     3️⃣     4️⃣',
-    '重制：🔄',
-    `1. 👉 ${getTextReplyUrl(`获取 左上 ${imageId}`, '左上')}`,
-    `2. 👉 ${getTextReplyUrl(`获取 右上 ${imageId}`, '右上')}`,
-    `3. 👉 ${getTextReplyUrl(`获取 左下 ${imageId}`, '左下')}`,
-    `4. 👉 ${getTextReplyUrl(`获取 右下 ${imageId}`, '右下')}`
+    [
+      `选择：${getTextReplyUrl(`选择图像 1 ${imageId}`, '1️⃣')}`,
+      `${getTextReplyUrl(`选择图像 2 ${imageId}`, '2️⃣')}`,
+      `${getTextReplyUrl(`选择图像 3 ${imageId}`, '3️⃣')}`,
+      `${getTextReplyUrl(`选择图像 4 ${imageId}`, '4️⃣')}`
+    ].join('     '),
+    [
+      `变化：${getTextReplyUrl(`变化图像 1 ${imageId}`, '1️⃣')}`,
+      `${getTextReplyUrl(`变化图像 2 ${imageId}`, '2️⃣')}`,
+      `${getTextReplyUrl(`变化图像 3 ${imageId}`, '3️⃣')}`,
+      `${getTextReplyUrl(`变化图像 4 ${imageId}`, '4️⃣')}`
+    ].join('     '),
+    `重制：${getTextReplyUrl(`重新绘制 ${imageId}`, '🔄')}`
   ];
+
   return reply.join('\n\n');
 };
 
