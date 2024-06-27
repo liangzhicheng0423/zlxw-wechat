@@ -23,6 +23,11 @@ ClearanceCode.init(
       type: DataTypes.CHAR(255),
       allowNull: false
     },
+    // 短邀请码
+    invitation_code: {
+      type: DataTypes.CHAR(20),
+      allowNull: false
+    },
     // 核销状态
     status: {
       type: DataTypes.BOOLEAN,

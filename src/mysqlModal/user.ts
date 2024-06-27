@@ -23,6 +23,11 @@ User.init(
       type: DataTypes.CHAR(50),
       allowNull: true
     },
+    // wechaty中拿到用户唯一id
+    handle: {
+      type: DataTypes.CHAR(50),
+      allowNull: true
+    },
     // 是否已经奖励了父级用户
     is_award: {
       type: DataTypes.BOOLEAN,

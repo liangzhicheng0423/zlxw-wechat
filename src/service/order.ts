@@ -2,12 +2,21 @@ import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { PayBody, PayLevel } from '../constant';
 import { encrypt } from '../crypto';
+import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
 import { updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
-import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
+import {
+  generateOrderNumber,
+  getExpireDate,
+  getLevelAndProduct,
+  sendImage,
+  sendMessage,
+  sendServiceQRcode,
+  uploadTemporaryMedia
+} from '../util';
 import { award } from './award';
 
 /** 下单 */
@@ -147,16 +156,39 @@ export const unifiedorderCb = async (req: any, res: any) => {
       await updateUserVipStatus(userId, true);
     }
 
-    // 生成兑换码
+    // 生成核销码
     const clearanceCode = `${userId}-${product}-${level}-${message.totalFee}`;
     // 加密
     const encrypted = encrypt(clearanceCode);
 
-    // 存储核销码
-    await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, status: false });
+    // 生成短邀请码，跟核销码唯一绑定
+    const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
+    if (!invitationCode) {
+      // 邀请码短缺了
+      await sendMessage(userId, `邀请码不足，请联系客服`);
+      await sendServiceQRcode(userId);
+      return;
+    }
 
-    await sendMessage(userId, `会员开通成功，请扫码添加客服，并向客服核销码\n\n🔑 核销码: ${encrypted}`);
-    await sendServiceQRcode(userId);
+    // 存储核销码
+    await ClearanceCode.create({
+      user_id: userId,
+      clearance_code: encrypted,
+      invitation_code: invitationCode,
+      status: false
+    });
+
+    // 上传至素材库
+    const updateRes = await uploadTemporaryMedia('../public/images/gpt4_qrcode.png', 'image');
+
+    await sendMessage(
+      userId,
+      `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${invitationCode}`
+    );
+
+    await sendImage(userId, updateRes.media_id);
+
+    await invitationCode.update({ send: true });
 
     res.send({ errcode: 0, errmsg: '' });
   } catch (error) {

@@ -17,3 +17,14 @@ export const decrypt = (encryptedData: string) => {
   decrypted += decipher.final('utf8');
   return decrypted;
 };
+
+export const generateUniqueString = (existingList: string) => {
+  while (true) {
+    // 生成一个8位字符的随机字符串
+    const newString = crypto.randomBytes(4).toString('base64').slice(0, 8).replace(/\W/g, 'A');
+    // 检查该字符串是否在现有列表中
+    if (!existingList.includes(newString)) {
+      return newString;
+    }
+  }
+};
