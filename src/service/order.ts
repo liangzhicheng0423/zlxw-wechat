@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment, { Moment } from 'moment';
+import path from 'path';
 import { PayBody, PayLevel } from '../constant';
 import { encrypt } from '../crypto';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
@@ -181,7 +182,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     });
 
     // 上传至素材库
-    const updateRes = await uploadTemporaryMedia('../public/images/gpt4_qrcode.png', 'image');
+    const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');
 
     await sendMessage(
       userId,
