@@ -170,11 +170,13 @@ export const unifiedorderCb = async (req: any, res: any) => {
       return;
     }
 
+    const code = invitationCode.toJSON().code;
+
     // 存储核销码
     await ClearanceCode.create({
       user_id: userId,
       clearance_code: encrypted,
-      invitation_code: invitationCode,
+      invitation_code: code,
       status: false
     });
 
@@ -183,7 +185,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendMessage(
       userId,
-      `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${invitationCode}`
+      `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     );
 
     await sendImage(userId, updateRes.media_id);
