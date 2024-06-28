@@ -7,7 +7,7 @@ export const getUserInfo = async (req: any, res: any) => {
   const code = req.query.code;
 
   try {
-    console.log('APP_SECRET');
+    console.log('APP_SECRET: ', APP_SECRET);
     // 通过code获取access_token和openid
     const response = await axios.get(
       `http://api.weixin.qq.com/sns/oauth2/access_token?appid=${APP_ID}&secret=${APP_SECRET}&code=${code}&grant_type=authorization_code`
