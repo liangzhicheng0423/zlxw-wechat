@@ -28,7 +28,7 @@
 
       const params = window.location.search;
 
-      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com' + params);
+      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com/authorize' + params);
       const scope = 'snsapi_userinfo';
 
       const state = 'STATE';
@@ -40,15 +40,15 @@
       const urlParams = new URLSearchParams(params);
 
       const code = urlParams.get('code');
-      const stateOrigin = urlParams.get('state');
 
-      if (code && stateOrigin === state) {
+      if (code) {
 
         console.log('code: ', code);
         console.log('用户已授权，获取用户信息');
 
         // 用户已授权，获取用户信息
         fetch(`/getUserInfo?code=${code}`)
+        window.location.href = `https://wechat.ai-xiaowu.com` + params;
           // .then(response => response.json())
           // .then(data => {
           //   console.log('User Info:', data);
