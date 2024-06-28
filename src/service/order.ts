@@ -174,12 +174,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     const code = invitationCode.toJSON().code;
 
     // 存储核销码
-    await ClearanceCode.create({
-      user_id: userId,
-      clearance_code: encrypted,
-      invitation_code: code,
-      status: false
-    });
+    await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, invitation_code: code, status: false });
 
     // 上传至素材库
     const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');

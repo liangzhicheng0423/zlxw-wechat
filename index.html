@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>支付中...</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
     <style>
       .loading-container {
         display: flex; /* Hidden by default */
@@ -63,7 +62,35 @@
     </script>
 
     <script>
+      const appId = 'wxd00871cb6294c274';
+      const redirectUri = encodeURIComponent(window.location.href);
+      const scope = 'snsapi_userinfo';
 
+      const state = 'STATE';
+
+      const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const stateOrigin = urlParams.get('state');
+
+      if (code && stateOrigin === state) {
+        // 用户已授权，获取用户信息
+        fetch(`/getUserInfo?code=${code}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('User Info:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      } else {
+        // 用户未授权，引导用户进行授权
+        window.location.href = authUrl;
+      }
+    </script>
+
+    <script>
       async function order() {
         const res = await callAPI('unifiedorder')
 

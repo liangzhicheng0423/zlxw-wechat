@@ -28,7 +28,9 @@ services:
       - BAIDU_REVIEW_SECRET_KEY=
       - GPT_AI_API_KEY=
       - DUCK_AI_API_KEY=
-      - DWZ_TOKEN
+      - DWZ_TOKEN=
+      - APP_ID=
+      - APP_SECRET=
 networks:
   default:
     external:

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import path from 'path';
-import { finished } from 'stream';
 import { Worker } from 'worker_threads';
 import { TextMessage } from '../../types';
 import { getReplyBaseInfo, sendMessage } from '../../util';

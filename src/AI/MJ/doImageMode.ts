@@ -1,15 +1,9 @@
-import COS from 'cos-nodejs-sdk-v5';
-import path from 'path';
 import { ImageMessage } from '../../types';
-import { downloadImage, getMjConfig, getReplyBaseInfo } from '../../util';
+import { getReplyBaseInfo } from '../../util';
 import { getBaiduReview } from '../check';
 import taskManager from './taskManager';
 import { OPERATE } from './types';
-import { imageReview, uploadFile } from './util';
-
-const { cdn_url } = getMjConfig();
-
-const { COS_SECRET_ID, COS_SECRET_KEY } = process.env;
+import { imageReview } from './util';
 
 export const doImageMode = async (message: ImageMessage, res: any) => {
   const userId = message.FromUserName;
@@ -32,28 +26,9 @@ export const doImageMode = async (message: ImageMessage, res: any) => {
     return;
   }
 
-  const { PicUrl, MediaId } = message;
+  const { PicUrl } = message;
 
   try {
-    // const imagePath = await downloadImage(PicUrl, userId + '-' + MediaId);
-
-    // if (!imagePath) {
-    //   send('抱歉，图片下载失败，请稍后再试～');
-    //   return;
-    // }
-
-    // const cosInstance = new COS({
-    //   UseAccelerate: true, // 指定 true，使用全球加速域名请求
-    //   Protocol: 'http:', // 请求协议： 'https:' 或 'http:'
-    //   SecretId: COS_SECRET_ID,
-    //   SecretKey: COS_SECRET_KEY
-    // });
-
-    // const data = await uploadFile(cosInstance, imagePath, MediaId);
-    // if (data.statusCode === 200) {
-    // const url = `${cdn_url}/${MediaId}`;
-    // console.log('========== url: ', url);
-
     // 图片审核
     const access_token = await getBaiduReview();
     if (access_token) {

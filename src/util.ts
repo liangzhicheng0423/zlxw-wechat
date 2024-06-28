@@ -14,13 +14,13 @@ import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage }
 const gptConfig = require('../config-gpt.json');
 const mjConfig = require('../config-mj.json');
 
-const { LINK_AI_APP_KEY, LINK_AI_APP_CODE } = process.env;
+const { LINK_AI_APP_KEY, LINK_AI_APP_CODE, APP_ID, APP_SECRET } = process.env;
 
 export const getGptConfig = () => gptConfig as GPTConfig;
 export const getMjConfig = () => mjConfig as MJConfig;
 
-const appId = 'gh_c1c4f430f4a9'; // 替换为你的微信公众号的 appId
-const appSecret = 'wxd00871cb6294c27462b8813d70c473a5f5e537e1728eb408'; // 替换为你的微信公众号的 appSecret
+const appId = APP_ID; // 替换为你的微信公众号的 appId
+const appSecret = APP_SECRET; // 替换为你的微信公众号的 appSecret
 
 // 获取 access_token
 export const getAccessToken = async () => {
