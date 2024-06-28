@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { User } from '../mysqlModal/user';
 
-const { APP_ID, APP_SECRET } = process.env;
-
 export const getUserInfo = async (req: any, res: any) => {
   const code = req.query.code;
+
+  const { APP_ID, APP_SECRET } = process.env;
 
   try {
     console.log('APP_SECRET: ', APP_SECRET);
