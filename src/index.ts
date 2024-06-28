@@ -8,12 +8,11 @@ import path from 'path';
 import { drawSuccess } from './AI/MJ/drawSuccess';
 import { initRedis } from './redis';
 import { create } from './service/create';
+import { getUserInfo } from './service/getUserInfo';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
 
 const logger = morgan('tiny');
-
-const { APP_ID, APP_SECRET } = process.env;
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -37,28 +36,7 @@ app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'MP_verify_EvBmWC5rklVARznL.txt'));
 });
 
-app.get('/getUserInfo', async (req, res) => {
-  const code = req.query.code;
-
-  try {
-    // 通过code获取access_token和openid
-    const response = await axios.get(
-      `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${APP_ID}&secret=${APP_SECRET}&code=${code}&grant_type=authorization_code`
-    );
-    const { access_token, openid } = response.data;
-
-    // 使用access_token和openid获取用户信息
-    const userInfo = await axios.get(
-      `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`
-    );
-
-    console.log('userInfo.data: ', userInfo.data);
-    res.json(userInfo.data);
-  } catch (error) {
-    console.error('Error getting user info:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
+app.get('/getUserInfo', getUserInfo);
 
 /** 统一下单 */
 app.post('/unifiedorder', unifiedorder);
