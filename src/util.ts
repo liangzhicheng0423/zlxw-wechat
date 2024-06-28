@@ -231,7 +231,7 @@ export const getTextReplyUrl = (reply: string, display?: string) => {
 };
 
 export const getOrderUrl = (name: string, params?: OrderBody) => {
-  const baseUrl = 'https://wechat.ai-xiaowu.com';
+  const baseUrl = 'https://wechat.ai-xiaowu.com/authorize';
 
   // 将 params 对象转换为查询字符串
   const queryString = params ? new URLSearchParams(params as any).toString() : '';

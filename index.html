@@ -52,7 +52,8 @@
       <div class="loading-spinner"></div>
     </div>
 
-    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script> -->
+    <script
+      src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 
     <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script
@@ -62,35 +63,6 @@
     </script>
 
     <script>
-      const appId = 'wxd00871cb6294c274';
-      const redirectUri = encodeURIComponent(window.location.href);
-      const scope = 'snsapi_userinfo';
-
-      const state = 'STATE';
-
-      const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      const stateOrigin = urlParams.get('state');
-
-      if (code && stateOrigin === state) {
-        // 用户已授权，获取用户信息
-        fetch(`/getUserInfo?code=${code}`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('User Info:', data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      } else {
-        // 用户未授权，引导用户进行授权
-        window.location.href = authUrl;
-      }
-    </script>
-
-    <!-- <script>
       async function order() {
         const res = await callAPI('unifiedorder')
 
@@ -193,10 +165,7 @@
           signature: result.signature.signature,        // 签名，从返回 result.signature 中获取
           jsApiList: ['chooseWXPay']                    // 注册的 api 列表，在这里选择chooseWXPay
         })
-
       }
-
-    </script> -->
-
+    </script>
   </body>
 </html>
