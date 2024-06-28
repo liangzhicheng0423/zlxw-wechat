@@ -51,6 +51,8 @@ app.get('/getUserInfo', async (req, res) => {
     const userInfo = await axios.get(
       `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`
     );
+
+    console.log('userInfo.data: ', userInfo.data);
     res.json(userInfo.data);
   } catch (error) {
     console.error('Error getting user info:', error);
