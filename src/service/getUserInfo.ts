@@ -11,6 +11,8 @@ export const getUserInfo = async (req: any, res: any) => {
     const response = await axios.get(
       `http://api.weixin.qq.com/sns/oauth2/access_token?appid=${APP_ID}&secret=${APP_SECRET}&code=${code}&grant_type=authorization_code`
     );
+
+    console.log('response.data: ', response.data);
     const { access_token, openid } = response.data;
 
     // 使用access_token和openid获取用户信息
@@ -20,7 +22,7 @@ export const getUserInfo = async (req: any, res: any) => {
 
     const user = await User.findOne({ where: { user_id: openid } });
 
-    user?.update({});
+    // user?.update({});
 
     console.log('userInfo.data: ', userInfo.data);
     res.json(userInfo.data);
