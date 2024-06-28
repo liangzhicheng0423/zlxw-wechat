@@ -4,67 +4,23 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>支付中...</title>
-    <style>
-      .loading-container {
-        display: flex; /* Hidden by default */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 1000; /* Ensure it covers other content */
-        justify-content: center;
-        align-items: center;
-      }
-      /* Loading spinner */
-      .loading-spinner {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 2s linear infinite;
-      }
-      /* Animation for loading spinner */
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-      /* Main content (hidden by default) */
-      .content {
-        display: none;
-      }
-      /* Show content when loading is done */
-      .show-content .content {
-        display: block;
-      }
-    </style>
+    <title>助理小吴</title>
   </head>
-
   <body>
-    <!-- <div id="loading" class="loading-container">
-      <div class="loading-spinner"></div>
-    </div> -->
-
     <script
       src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 
-    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <!-- <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script
       src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.0/cloud.js"></script>
     <script
       src="https://web-9gikcbug35bad3a8-1304825656.tcloudbaseapp.com/sdk/1.3.1/mplogin.min.js">
-    </script>
+    </script> -->
 
     <script>
 
       window.onload = async function () {
+        console.log('onload success');
         const vConsole = new window.VConsole();
       }
 
@@ -77,11 +33,18 @@
 
       const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
 
+      console.log('authUrl: ', authUrl);
+
       const urlParams = new URLSearchParams(window.location.search);
+
       const code = urlParams.get('code');
       const stateOrigin = urlParams.get('state');
 
       if (code && stateOrigin === state) {
+
+        console.log('code: ', code);
+        console.log('用户已授权，获取用户信息');
+
         // 用户已授权，获取用户信息
         fetch(`/getUserInfo?code=${code}`)
           .then(response => response.json())
@@ -92,6 +55,9 @@
             console.error('Error:', error);
           });
       } else {
+
+        console.log('用户未授权，引导用户进行授权');
+
         // 用户未授权，引导用户进行授权
         window.location.href = authUrl;
       }
