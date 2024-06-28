@@ -23,7 +23,9 @@ export const getUserInfo = async (req: any, res: any) => {
 
     const user = await User.findOne({ where: { user_id: openid } });
 
+    console.log('openid: ', userInfo.data.openid, openid);
     if (userInfo.data.openid === openid) {
+      console.log('user: ', !!user);
       user?.update({ nickname: userInfo.data.nickname, weixin_info: JSON.stringify(userInfo.data) });
     }
 
