@@ -26,17 +26,18 @@
 
       const appId = 'wxd00871cb6294c274';
 
-      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com/authorize' + window.location.search);
+      const params = window.location.search;
+
+      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com' + params);
       const scope = 'snsapi_userinfo';
 
-      console.log('params:" ====== ', window.location.search);
       const state = 'STATE';
 
       const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
 
       console.log('authUrl: ', authUrl);
 
-      const urlParams = new URLSearchParams(window.location.search);
+      const urlParams = new URLSearchParams(params);
 
       const code = urlParams.get('code');
       const stateOrigin = urlParams.get('state');
@@ -48,13 +49,13 @@
 
         // 用户已授权，获取用户信息
         fetch(`/getUserInfo?code=${code}`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('User Info:', data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
+          // .then(response => response.json())
+          // .then(data => {
+          //   console.log('User Info:', data);
+          // })
+          // .catch(error => {
+          //   console.error('Error:', error);
+          // });
       } else {
 
         console.log('用户未授权，引导用户进行授权');

@@ -28,6 +28,14 @@ User.init(
       type: DataTypes.CHAR(50),
       allowNull: true
     },
+    nickname: {
+      type: DataTypes.CHAR(255),
+      allowNull: true
+    },
+    weixin_info: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     // 是否已经奖励了父级用户
     is_award: {
       type: DataTypes.BOOLEAN,
