@@ -91,16 +91,16 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const userId = message.subOpenid;
 
-    const tradeNo = message.outTradeNo;
+    const out_trade_no = message.outTradeNo;
 
-    const { level, product } = getLevelAndProduct(tradeNo);
+    const { level: vip_level, product } = getLevelAndProduct(out_trade_no);
 
     if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
 
     let is_award = false;
 
     // 已有订单号
-    const beforeOrder = await Order.findOne({ where: { user_id: userId, out_trade_no: tradeNo } });
+    const beforeOrder = await Order.findOne({ where: { user_id: userId, out_trade_no } });
     if (beforeOrder) {
       console.info('订单号已经存在');
       return;
@@ -118,7 +118,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     if (formatUser) {
       const prevExpireDate = product === Product.Dan ? formatUser.expire_date_dan : formatUser.expire_date_group;
-      const userExpireDate = getExpireDate(prevExpireDate ? moment(prevExpireDate) : moment(), level);
+      const userExpireDate = getExpireDate(prevExpireDate ? moment(prevExpireDate) : moment(), vip_level);
 
       if (product === Product.Dan) update.expire_date_dan = userExpireDate;
       else update.expire_date_group = userExpireDate;
@@ -140,17 +140,10 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await user.update({ ...update, is_award, is_vip: true });
 
     // 新增订单
-    const expireDate = getExpireDate(moment(), level);
+    const expire_date = getExpireDate(moment(), vip_level);
 
     console.info('创建订单');
-    await Order.create({
-      user_id: userId,
-      product: product,
-      vip_level: level,
-      out_trade_no: tradeNo,
-      fee: message.totalFee,
-      expire_date: expireDate
-    });
+    await Order.create({ user_id: userId, product, vip_level, out_trade_no, fee: message.totalFee, expire_date });
 
     // 更新redis
     if (product === Product.GPT4 || product === Product.Midjourney) {
@@ -158,7 +151,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     // 生成核销码
-    const clearanceCode = `${userId}-${product}-${level}-${message.totalFee}`;
+    const clearanceCode = `${userId}-${product}-${vip_level}-${message.totalFee}`;
     // 加密
     const encrypted = encrypt(clearanceCode);
 
@@ -184,7 +177,16 @@ export const unifiedorderCb = async (req: any, res: any) => {
       `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     );
 
+    // case 1: 私聊
     await sendImage(userId, updateRes.media_id);
+
+    // case 2: 群聊
+    /**
+     * 1. 找到一个未使用的群聊二维码
+     * 2. 将群聊二维码上传至素材库
+     * 3. 发送群聊二维码至用户
+     *
+     */
 
     await invitationCode.update({ send: true });
 

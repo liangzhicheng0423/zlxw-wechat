@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { exec } from 'child_process';
 import cors from 'cors';
 import express from 'express';
@@ -6,6 +5,9 @@ import morgan from 'morgan';
 import cron from 'node-cron';
 import path from 'path';
 import { drawSuccess } from './AI/MJ/drawSuccess';
+import { sequelize } from './db';
+import { asyncHandler } from './middleware/asyncHandler';
+import { errorHandler } from './middleware/errorHandler';
 import { initRedis } from './redis';
 import { create } from './service/create';
 import { getUserInfo } from './service/getUserInfo';
@@ -21,7 +23,7 @@ app.use(cors());
 app.use(logger);
 
 /** 服务号接收消息 */
-app.post('/message', onMessage);
+app.post('/message', asyncHandler(onMessage));
 
 // 首页
 app.get('/', async (req, res) => {
@@ -36,27 +38,40 @@ app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'MP_verify_EvBmWC5rklVARznL.txt'));
 });
 
-app.get('/getUserInfo', getUserInfo);
+app.get('/getUserInfo', asyncHandler(getUserInfo));
 
 /** 统一下单 */
-app.post('/unifiedorder', unifiedorder);
+app.post('/unifiedorder', asyncHandler(unifiedorder));
 
 /** 支付成回调 */
 app.post('/payRes', async (req, res) => {
-  await unifiedorderCb(req, res);
-  res.send({ errcode: 0, errmsg: '' });
+  try {
+    await unifiedorderCb(req, res);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    res.send({ errcode: 0, errmsg: '' });
+  }
 });
 
 /** 接受绘制完成的回调 */
 app.post('/drawSuccess', async (req, res) => {
-  await drawSuccess(req, res);
-  res.send('ok');
+  try {
+    await drawSuccess(req, res);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    res.send('ok');
+  }
 });
 
 /** 自定义菜单 */
 app.post('/create', create);
 
 const port = process.env.PORT || 80;
+
+// 错误处理中间件
+app.use(errorHandler);
 
 async function bootstrap() {
   cron.schedule('0 4 * * *', () => {
@@ -72,7 +87,7 @@ async function bootstrap() {
       // 创建菜单
       console.log('创建菜单');
       create();
-      // await sequelize.authenticate();
+      await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();
 

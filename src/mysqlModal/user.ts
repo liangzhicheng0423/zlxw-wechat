@@ -32,6 +32,10 @@ User.init(
       type: DataTypes.CHAR(255),
       allowNull: true
     },
+    groupname: {
+      type: DataTypes.CHAR(255),
+      allowNull: true
+    },
     weixin_info: {
       type: DataTypes.TEXT,
       allowNull: true

@@ -18,7 +18,7 @@ export const decrypt = (encryptedData: string) => {
   return decrypted;
 };
 
-export const generateUniqueString = (existingList: string) => {
+export const generateUniqueString = (existingList: string[]) => {
   while (true) {
     // 生成一个8位字符的随机字符串
     const newString = crypto.randomBytes(4).toString('base64').slice(0, 8).replace(/\W/g, 'A');
