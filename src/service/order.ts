@@ -170,15 +170,19 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, invitation_code: code, status: false });
 
     // 上传至素材库
-    const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');
+    // const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');
 
-    await sendMessage(
-      userId,
-      `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
-    );
+    // await sendMessage(
+    //   userId,
+    //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
+    // );
+
+    await sendMessage(userId, '会员开通成功，请添加客服二维码，并发送付款截图');
+
+    await sendServiceQRcode(userId);
 
     // case 1: 私聊
-    await sendImage(userId, updateRes.media_id);
+    // await sendImage(userId, updateRes.media_id);
 
     // case 2: 群聊
     /**
@@ -188,7 +192,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
      *
      */
 
-    await invitationCode.update({ send: true });
+    // await invitationCode.update({ send: true });
 
     res.send({ errcode: 0, errmsg: '' });
   } catch (error) {
