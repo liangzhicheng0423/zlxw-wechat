@@ -40,7 +40,7 @@ export const Menu = {
       name: '发现',
       sub_button: [
         { type: 'view', name: '官网', url: 'https://ai-xiaowu.com' },
-        { type: 'click', name: '使用说明', key: MenuKey.Instructions }
+        { type: 'click', name: '使用说明', url: 'https://i1ze0gf4g8p.feishu.cn/wiki/OdcLwZ3GqiRf3Bk6zgqcmrmunOg' }
         // { type: 'click', name: 'AI接入', key: MenuKey.AIAccess }
       ]
     },

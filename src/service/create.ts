@@ -3,6 +3,7 @@ import { Menu, MenuKey } from '../constant';
 import { User } from '../mysqlModal/user';
 import { WeChatMessage } from '../types';
 import {
+  activityRulesUrl,
   getReplyBaseInfo,
   getTextReplyUrl,
   sendAiGroupText,
@@ -30,7 +31,7 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
   const formatUser = user?.toJSON();
 
   const shareText = [
-    `分享你的专属邀请，获取每单50元现金激励  ${getTextReplyUrl('活动规则')}`,
+    `分享你的专属邀请，获取每单50元现金激励  <a href="${activityRulesUrl}">活动规则</a>}`,
     `${getTextReplyUrl('获取我的专属分享海报')}`,
     `已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换')}`
   ].join('\n\n');
@@ -58,14 +59,6 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
 
     case MenuKey.MyAccount:
       res.send({ ...baseReply, MsgType: 'text', Content: myAccountText });
-      break;
-
-    case MenuKey.Instructions:
-      res.send({
-        ...baseReply,
-        MsgType: 'text',
-        Content: '<a href="https://i1ze0gf4g8p.feishu.cn/wiki/OdcLwZ3GqiRf3Bk6zgqcmrmunOg">使用说明</a>'
-      });
       break;
 
     case MenuKey.AIAccess:

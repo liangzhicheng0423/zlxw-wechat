@@ -78,13 +78,17 @@ export const getFreeCount = async (userId: string, mode: Product) => {
 export const useFreeCount = async (userId: string, mode: Product) => {
   const redis = getRedisClient();
   const count = await getFreeCount(userId, mode);
+
+  console.log('useFreeCount: ', count);
   if (count !== null) {
-    await redis?.set(getFreeCountKey(userId, mode), Math.max(count - 1, 0));
+    const newCount = Math.max(count - 1, 0);
+    console.log('newCount: ', newCount);
+    await redis?.set(getFreeCountKey(userId, mode), newCount);
 
     const user = await User.findOne({ where: { user_id: userId } });
     if (user) {
       console.log('扣掉免费额度');
-      user.update({ [`${mode}_free_count`]: Math.max(count - 1, 0) });
+      await user.update({ [`${mode}_free_count`]: newCount });
     }
   }
 };
@@ -175,8 +179,8 @@ export const updateRedis = async () => {
 };
 
 export const redisScheduleTaskStart = () => {
-  // 定义一个定时任务，每小时执行一次
-  cron.schedule('0 * * * *', () => {
+  // 定义一个定时任务，每分钟执行一次
+  cron.schedule('* * * * *', () => {
     updateRedis();
   });
 };

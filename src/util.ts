@@ -11,9 +11,9 @@ import { MJConfig } from './AI/MJ/types';
 import { BonusStrategy, PayBody } from './constant';
 import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
-const officialWebsite = 'https://ai-xiaowu.com';
-const danUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
-const activityRulesUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/I8WbwG8NSiVD1WkmVzqc1GPTn4e';
+export const officialWebsite = 'https://ai-xiaowu.com';
+export const danUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
+export const activityRulesUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/I8WbwG8NSiVD1WkmVzqc1GPTn4e';
 
 const gptConfig = require('../config-gpt.json');
 const mjConfig = require('../config-mj.json');
@@ -293,7 +293,7 @@ export const getDanText = () => {
 export const getAiGroupText = () => {
   const reply = [
     '助理小吴AI群',
-    '🔥' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
+    '🔥 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
     '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
     '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
     '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
@@ -303,12 +303,12 @@ export const getAiGroupText = () => {
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = ['Dan', `<a href="${danUrl}">Dan是什么？</a>`, `${getTextReplyUrl('马上抢（Dan）', '马上抢')}`];
+  const danText = ['Dan', `👉🏻 <a href="${danUrl}">Dan是什么？</a>`, `👉🏻 ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`];
   await sendMessage(userId, danText.join('\n\n'));
 };
 
 export const sendAiGroupText = async (userId: string) => {
-  await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
+  await sendMessage(userId, [`助理小吴AI群`, `${getTextReplyUrl('马上抢（助理小吴AI群）', '👉🏻 马上抢')}`].join('\n\n'));
   await sendAIGroupIntroduce(userId);
 };
 

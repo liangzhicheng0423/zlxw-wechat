@@ -3,17 +3,15 @@ import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
 import { doImageMode } from '../AI/MJ/doImageMode';
-import { PayBody } from '../constant';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
-import { getFreeCount, getIsVip, getMode, setMode, useFreeCount } from '../redis';
+import { getFreeCount, getIsVip, getMode, setMode, updateRedis, useFreeCount } from '../redis';
 import { EventMessage, Product, TextMessage, VipLevel, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
   downloadImage,
   downloadVoiceFile,
-  getActivityRules,
   getAiGroupText,
   getDanText,
   getGptConfig,
@@ -21,7 +19,6 @@ import {
   getOrderUrl,
   getReplyBaseInfo,
   getTextReplyUrl,
-  getWelcome,
   mergeImages,
   sendAIGroupIntroduce,
   sendAiGroupText,
@@ -185,10 +182,6 @@ const handleText = async (message: TextMessage, res: any) => {
       else res.send({ ...baseReply, MsgType: 'text', Content: `🏆当前剩余N币：${formatUser.integral}` });
       break;
 
-    case '活动规则':
-      res.send({ ...baseReply, MsgType: 'text', Content: getActivityRules() });
-      break;
-
     case '兑换':
       await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
       await sendServiceQRcode(baseReply.ToUserName);
@@ -257,7 +250,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
   switch (Event) {
     case 'subscribe':
-      await sendMessage(FromUserName, getWelcome());
+      await updateRedis();
       await subscribe(message);
       break;
 

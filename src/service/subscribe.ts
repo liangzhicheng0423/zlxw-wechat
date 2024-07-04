@@ -1,5 +1,6 @@
 import { User } from '../mysqlModal/user';
-import { EventMessage } from '../types';
+import { EventMessage, Product, VipLevel } from '../types';
+import { getOrderUrl, getWelcome, sendAIGroupIntroduce, sendMessage } from '../util';
 import { award } from './award';
 
 export const subscribe = async (message: EventMessage) => {
@@ -11,6 +12,24 @@ export const subscribe = async (message: EventMessage) => {
     pid = keys[keys.length - 1];
   }
   if (pid === FromUserName) pid = undefined;
+
+  if (pid) {
+    const reply = [
+      '🎉 成功领取100元限时优惠券',
+      '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
+      '🔥 ' +
+        getOrderUrl('299元/年（24.9元/月）', {
+          level: VipLevel.Year,
+          product: Product.GPT4,
+          isRecommend: true
+        })
+    ];
+    await sendMessage(FromUserName, reply.join('\n\n'));
+
+    await sendAIGroupIntroduce(FromUserName);
+  } else {
+    await sendMessage(FromUserName, getWelcome());
+  }
 
   // 用户订阅
   const [user, created] = await User.findOrCreate({
