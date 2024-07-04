@@ -86,10 +86,10 @@ export const useFreeCount = async (userId: string, mode: Product) => {
     await redis?.set(getFreeCountKey(userId, mode), newCount);
 
     const user = await User.findOne({ where: { user_id: userId } });
-    if (user) {
-      console.log('扣掉免费额度');
-      await user.update({ [`${mode}_free_count`]: newCount });
-    }
+    if (!user) return;
+
+    console.log('扣掉免费额度');
+    await user.update({ [`${mode}_free_count`]: newCount });
   }
 };
 

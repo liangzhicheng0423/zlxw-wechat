@@ -40,34 +40,22 @@ const chatWithAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
   const userId = message.FromUserName;
+
+  const user = await User.findOne({ where: { user_id: userId } });
+
+  if (!user) {
+    res.send({
+      ...baseReply,
+      MsgType: 'text',
+      Content: '抱歉，用户信息丢失，请重新关注公众号'
+    });
+    return;
+  }
   let mode = await getMode(userId);
 
   if (!mode) {
     await setMode(message.FromUserName, Product.GPT4);
     mode = Product.GPT4;
-  }
-
-  const isVip = await getIsVip(userId);
-  console.log('isVip: ', isVip);
-
-  if (isVip === 'false') {
-    // 消耗免费额度
-    const freeCount = await getFreeCount(userId, mode);
-
-    console.log('freeCount: ', freeCount);
-
-    if (!freeCount) {
-      const reply = ['体验对话剩余：0', `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`];
-
-      res.send({
-        ...baseReply,
-        MsgType: 'text',
-        Content: reply.join('\n\n')
-      });
-      return;
-    } else {
-      await useFreeCount(userId, mode);
-    }
   }
 
   if (mode === Product.GPT4) {

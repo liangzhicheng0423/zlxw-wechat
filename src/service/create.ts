@@ -31,7 +31,7 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
   const formatUser = user?.toJSON();
 
   const shareText = [
-    `分享你的专属邀请，获取每单50元现金激励  <a href="${activityRulesUrl}">活动规则</a>}`,
+    `分享你的专属邀请，获取每单50元现金激励  <a href="${activityRulesUrl}">活动规则</a>`,
     `${getTextReplyUrl('获取我的专属分享海报')}`,
     `已获得N币奖励：${formatUser?.integral ?? 0} ${getTextReplyUrl('兑换')}`
   ].join('\n\n');

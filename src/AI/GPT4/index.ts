@@ -1,5 +1,13 @@
-import { TaskStatus, TextMessage } from '../../types';
-import { getReplyBaseInfo, sendMessage, sendVoiceMessage, textToVoice, uploadTemporaryMedia } from '../../util';
+import { getFreeCount, getIsVip, useFreeCount } from '../../redis';
+import { Product, TaskStatus, TextMessage } from '../../types';
+import {
+  getReplyBaseInfo,
+  getTextReplyUrl,
+  sendMessage,
+  sendVoiceMessage,
+  textToVoice,
+  uploadTemporaryMedia
+} from '../../util';
 import { check } from '../check';
 import { getLinkAIReply } from './linkAI';
 import taskManager from './taskManager';
@@ -10,6 +18,14 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
   const userId = baseReply.ToUserName;
   const text = message.Content;
   const quoteId = userId + '_' + baseReply.CreateTime;
+  const isVip = await getIsVip(userId);
+  const freeCount = await getFreeCount(userId, Product.GPT4);
+
+  console.log('isVip: ', isVip);
+
+  const done = () => {
+    taskManager.updateTask(userId, quoteId, TaskStatus.Finished);
+  };
 
   try {
     const pass = await check(text);
@@ -29,11 +45,31 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       return;
     }
 
+    if (isVip === 'false') {
+      // 消耗免费额度
+
+      console.log('freeCount: ', freeCount);
+
+      if (!freeCount) {
+        const reply = ['体验对话剩余：0', `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`];
+
+        res.send({
+          ...baseReply,
+          MsgType: 'text',
+          Content: reply.join('\n\n')
+        });
+        return;
+      }
+    }
+
     taskManager.addTask(userId, quoteId);
 
     const reply = await getLinkAIReply(text, userId);
 
-    if (!reply) return;
+    if (!reply) {
+      done();
+      return;
+    }
 
     console.log('message.ReplyWithVoice', message.ReplyWithVoice);
 
@@ -43,6 +79,7 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       console.log('mp3Path', mp3Path);
       if (!mp3Path) {
         await sendMessage(userId, '抱歉，请再说一次吧～');
+        done();
         return;
       }
 
@@ -55,10 +92,12 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
     } else {
       await sendMessage(userId, reply);
     }
+
+    if (isVip === 'false' && freeCount) await useFreeCount(userId, Product.GPT4);
   } catch (error) {
     console.log('gpt4 reply error: ', error);
     res.send({ ...baseReply, MsgType: 'text', Content: '[ERROR]\n由于神秘力量，本次操作失败，请重新尝试' });
   } finally {
-    taskManager.updateTask(userId, quoteId, TaskStatus.Finished);
+    done();
   }
 };

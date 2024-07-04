@@ -37,7 +37,9 @@ export const subscribe = async (message: EventMessage) => {
     defaults: { subscribe_status: true, p_id: pid }
   });
 
-  if (!created) user.update({ subscribe_status: true, p_id: pid });
+  console.log('[关注公众号] created: ', created, 'pid: ', pid);
+
+  if (!created) await user.update({ subscribe_status: true, p_id: pid });
 
   // 只有新增关注才给予奖励
   if (created && pid) await award(pid, 'subscribe');
