@@ -312,14 +312,12 @@ export const sendAiGroupText = async (userId: string) => {
   await sendAIGroupIntroduce(userId);
 };
 
-// TODO: 发送客服二维码
 export const sendServiceQRcode = async (userId: string) => {
-  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
+  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128hoYUlCcEPAXZGev6Fbjn8UQQmPUFimia3nMO59EXMIf');
 };
 
-// TODO: 发送AI群产品介绍页
 export const sendAIGroupIntroduce = async (userId: string) => {
-  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
+  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128sqSGAIW2Td3L1aM0tns8nE93OlokQr790C8-SoLKujF');
 };
 
 /** 获取音频临时文件 */
