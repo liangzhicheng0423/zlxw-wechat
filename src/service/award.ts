@@ -42,5 +42,5 @@ export const award = async (userId: string, type: 'subscribe' | 'order') => {
   }
 
   console.log('奖励-4', userId, text.join('\n\n'));
-  await sendMessage(userId, '123');
+  await sendMessage(userId, text.join('\n\n'));
 };
