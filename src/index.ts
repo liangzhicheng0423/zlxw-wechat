@@ -95,8 +95,8 @@ async function bootstrap() {
       await initRedis();
       // await syncClearanceCode();
 
-      await uploadPermanentImageMedia('./src/public/images/product.png');
-      await uploadPermanentImageMedia('./src/public/images/contact_customer_service.jpg');
+      // await uploadPermanentImageMedia('./src/public/images/product.png');
+      // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.jpg');
 
       console.log('Connection has been established successfully.');
     } catch (error) {
