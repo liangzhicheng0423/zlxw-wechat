@@ -1,6 +1,6 @@
 {
   "factory": "linkAI",
-  "welcome": "我是GPT-4，请问有什么需要帮助的吗？",
+  "welcome": "今天有什么可以帮你？",
   "welcome_enable": true,
   "tts_voice_id": "alloy",
   "black_name_list": ["GPT4", "GPT-4", "Midjourney", "企业微信团队"],

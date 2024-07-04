@@ -6,50 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>支付中...</title>
     <style>
-      .loading-container {
-        display: flex; /* Hidden by default */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 1000; /* Ensure it covers other content */
-        justify-content: center;
-        align-items: center;
-      }
-      /* Loading spinner */
-      .loading-spinner {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 2s linear infinite;
-      }
-      /* Animation for loading spinner */
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
+        /* 样式定义开始 */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #000428, #004e92); /* 更加深邃的背景渐变色 */
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
         }
-        100% {
-          transform: rotate(360deg);
+
+        .loader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 120px;
+            height: 120px;
         }
-      }
-      /* Main content (hidden by default) */
-      .content {
-        display: none;
-      }
-      /* Show content when loading is done */
-      .show-content .content {
-        display: block;
-      }
+
+        .loader div {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff); /* 科技感渐变色 */
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.6); /* 发光效果 */
+        }
+
+        .loader div:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loader div:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.6;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            animation: text-blink 2s infinite;
+        }
+
+        @keyframes text-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        /* 样式定义结束 */
     </style>
   </head>
 
   <body>
-    <div id="loading" class="loading-container">
-      <div class="loading-spinner"></div>
+    <div id="loading">
+      <div class="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="loading-text">加载中，请稍候...</div>
     </div>
 
     <script
@@ -101,14 +129,18 @@
         // 获取参数值
         const level = params.get('level');
         console.log('level', level)
+
         const product = params.get('product');
-        console.log('product', product)
+        console.log('product', product);
+
+        const isRecommend = params.get('isRecommend');
+        console.log('isRecommend', isRecommend);
 
         const response = await window.app.callContainer({
           path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
           method: 'POST',               // 按照自己的业务开发，选择对应的方法
           header: { 'X-WX-SERVICE': 'express-nvni' },
-          data: { level, product }
+          data: { level, product, isRecommend }
         })
         console.log('response', response)
         return response.data || {}
@@ -119,7 +151,7 @@
 
         const loadingContainer = document.getElementById('loading');
 
-        // const vConsole = new window.VConsole();
+        const vConsole = new window.VConsole();
         // 使用登录模块，传入信息开始授权登录过程
         // 如果首次登录，页面会经历一系列跳转过程，请不要在登录前加业务处理代码，以免登录被中断。
         const result = await window.mplogin({
@@ -158,7 +190,7 @@
 
         // 发起签名注册，是一个异步操作，成功会触发wx.ready
         wx.config({
-          debug: false,
+          debug: true,
           appId: 'wxd00871cb6294c274',                   // 微信公众号appid
           timestamp: result.signature.timestamp + '',   // 时间戳，从返回 result.signature 中获取
           nonceStr: result.signature.nonceStr,          // 随机字符串，从返回 result.signature 中获取

@@ -20,7 +20,8 @@ export enum MenuKey {
   ContactCustomerService = 'contact_customer_service',
   BusinessCooperation = 'business_cooperation',
   SharingIsPolite = 'sharing_is_polite',
-  MyAccount = 'my_account'
+  MyAccount = 'my_account',
+  More = 'more'
 }
 
 export const Menu = {
@@ -30,16 +31,17 @@ export const Menu = {
       sub_button: [
         { type: 'click', name: 'AI群聊', key: MenuKey.AIGroup },
         { type: 'click', name: 'Dan', key: MenuKey.Dan },
-        { type: 'click', name: 'GPT4', key: MenuKey.GPT4 },
-        { type: 'click', name: 'MJ绘图', key: MenuKey.MJ }
+        { type: 'click', name: '更多', key: MenuKey.More }
+        // { type: 'click', name: 'GPT4', key: MenuKey.GPT4 },
+        // { type: 'click', name: 'MJ绘图', key: MenuKey.MJ }
       ]
     },
     {
       name: '发现',
       sub_button: [
         { type: 'view', name: '官网', url: 'https://ai-xiaowu.com' },
-        { type: 'click', name: '使用说明页', key: MenuKey.Instructions },
-        { type: 'click', name: 'AI接入', key: MenuKey.AIAccess }
+        { type: 'click', name: '使用说明', key: MenuKey.Instructions }
+        // { type: 'click', name: 'AI接入', key: MenuKey.AIAccess }
       ]
     },
     {
@@ -57,21 +59,21 @@ export const Menu = {
 export const PayBody = {
   [Product.Dan]: {
     [VipLevel.Ten]: '',
-    [VipLevel.Year]: '购买年卡 899元/年（75元/月）',
-    [VipLevel.Quarter]: '购买季卡 299元/季（100元/月）',
-    [VipLevel.Month]: '购买月卡 129元/月'
+    [VipLevel.Year]: '年卡 899元/年（75元/月）',
+    [VipLevel.Quarter]: '季卡 299元/季（99元/月）',
+    [VipLevel.Month]: '月卡 129元/月'
   },
   [Product.GPT4]: {
-    [VipLevel.Ten]: '10份年卡 2480元/年',
-    [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（66元/月）',
-    [VipLevel.Month]: '购买月卡 79元/月'
+    [VipLevel.Year]: '年卡 399元/年（33元/月）',
+    [VipLevel.Ten]: '10份年卡 3980元/年',
+    [VipLevel.Quarter]: '季卡 199元/季（66元/月）',
+    [VipLevel.Month]: '月卡 79元/月'
   },
   [Product.Midjourney]: {
-    [VipLevel.Ten]: '10份年卡 2480元/年',
-    [VipLevel.Year]: '购买年卡 249元/年（20元/月）',
-    [VipLevel.Quarter]: '购买季卡 199元/季（66元/月）',
-    [VipLevel.Month]: '购买月卡 79元/月'
+    [VipLevel.Year]: '年卡 399元/年（33元/月）',
+    [VipLevel.Ten]: '10份年卡 3980元/年',
+    [VipLevel.Quarter]: '季卡 199元/季（66元/月）',
+    [VipLevel.Month]: '月卡 79元/月'
   }
 };
 
@@ -83,14 +85,14 @@ export const PayLevel = {
     [VipLevel.Month]: 12900
   },
   [Product.GPT4]: {
-    [VipLevel.Ten]: 248000,
-    [VipLevel.Year]: 24900,
+    [VipLevel.Ten]: 398000,
+    [VipLevel.Year]: 39900,
     [VipLevel.Quarter]: 19900,
     [VipLevel.Month]: 7900
   },
   [Product.Midjourney]: {
-    [VipLevel.Ten]: 248000,
-    [VipLevel.Year]: 24900,
+    [VipLevel.Ten]: 398000,
+    [VipLevel.Year]: 39900,
     [VipLevel.Quarter]: 19900,
     [VipLevel.Month]: 7900
   }

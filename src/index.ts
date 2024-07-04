@@ -13,6 +13,7 @@ import { create } from './service/create';
 import { getUserInfo } from './service/getUserInfo';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
+import { uploadPermanentImageMedia } from './util';
 
 const logger = morgan('tiny');
 
@@ -94,8 +95,8 @@ async function bootstrap() {
       await initRedis();
       // await syncClearanceCode();
 
-      // await uploadPermanentImageMedia('./src/public/images/business_cooperation.jpeg');
-      // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.png');
+      await uploadPermanentImageMedia('./src/public/images/product.png');
+      await uploadPermanentImageMedia('./src/public/images/contact_customer_service.jpg');
 
       console.log('Connection has been established successfully.');
     } catch (error) {

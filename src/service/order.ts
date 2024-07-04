@@ -1,6 +1,5 @@
 import axios from 'axios';
 import moment, { Moment } from 'moment';
-import path from 'path';
 import { PayBody, PayLevel } from '../constant';
 import { encrypt } from '../crypto';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
@@ -9,20 +8,12 @@ import { Order } from '../mysqlModal/order';
 import { User } from '../mysqlModal/user';
 import { updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
-import {
-  generateOrderNumber,
-  getExpireDate,
-  getLevelAndProduct,
-  sendImage,
-  sendMessage,
-  sendServiceQRcode,
-  uploadTemporaryMedia
-} from '../util';
+import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
 import { award } from './award';
 
 /** 下单 */
 export const unifiedorder = async (req: any, res: any) => {
-  const { level, product } = req.body as OrderBody;
+  const { level, product, isRecommend } = req.body as OrderBody;
 
   console.info('用户下单:', level, product);
 
@@ -35,8 +26,14 @@ export const unifiedorder = async (req: any, res: any) => {
       break;
 
     case VipLevel.Year:
-      body = PayBody[product][VipLevel.Year];
-      total_fee = PayLevel[product][VipLevel.Year];
+      if (isRecommend && product === Product.GPT4) {
+        body = '299元/年（24.9元/月）';
+        total_fee = 29900;
+      } else {
+        body = PayBody[product][VipLevel.Year];
+        total_fee = PayLevel[product][VipLevel.Year];
+      }
+
       break;
 
     case VipLevel.Quarter:
@@ -129,8 +126,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       const shareUser = await User.findOne({ where: { user_id: p_id } });
       const formatShareUser = shareUser?.toJSON();
 
-      if (formatShareUser && !formatUser.is_award) {
-        console.info('奖励父用户');
+      if (formatShareUser && !formatUser.is_award && product === Product.GPT4 && vip_level === VipLevel.Year) {
         await award(formatShareUser.user_id, 'order');
         is_award = true;
       }
@@ -177,7 +173,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     // );
 
-    await sendMessage(userId, '会员开通成功，请添加客服二维码，并发送付款截图');
+    await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，并向客服发送“激活”'].join('\n\n'));
 
     await sendServiceQRcode(userId);
 

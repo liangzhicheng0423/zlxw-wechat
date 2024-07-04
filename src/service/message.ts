@@ -3,22 +3,27 @@ import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
 import { doImageMode } from '../AI/MJ/doImageMode';
+import { PayBody } from '../constant';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
-import { deleteRedisKey, getFreeCount, getIsVip, getMode, getModeKey, useFreeCount } from '../redis';
-import { EventMessage, Product, TextMessage, VoiceMessage, WeChatMessage } from '../types';
+import { getFreeCount, getIsVip, getMode, setMode, useFreeCount } from '../redis';
+import { EventMessage, Product, TextMessage, VipLevel, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
   downloadImage,
   downloadVoiceFile,
+  getActivityRules,
   getAiGroupText,
   getDanText,
   getGptConfig,
+  getMjConfig,
+  getOrderUrl,
   getReplyBaseInfo,
   getTextReplyUrl,
   getWelcome,
   mergeImages,
+  sendAIGroupIntroduce,
   sendAiGroupText,
   sendDanText,
   sendImage,
@@ -30,21 +35,19 @@ import {
 import { create, menuEvent } from './create';
 import { subscribe } from './subscribe';
 
-const { admins } = getGptConfig();
+const { admins, welcome: gpt_welcome, welcome_enable: gpt_welcome_enable } = getGptConfig();
+
+const { welcome: mj_welcome, welcome_enable: mj_welcome_enable } = getMjConfig();
 
 const chatWithAI = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
   const userId = message.FromUserName;
-  const mode = await getMode(userId);
+  let mode = await getMode(userId);
 
   if (!mode) {
-    res.send({
-      ...baseReply,
-      MsgType: 'text',
-      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"或"MJ绘图"按钮切换模式）'
-    });
-    return;
+    await setMode(message.FromUserName, Product.GPT4);
+    mode = Product.GPT4;
   }
 
   const isVip = await getIsVip(userId);
@@ -57,13 +60,12 @@ const chatWithAI = async (message: TextMessage, res: any) => {
     console.log('freeCount: ', freeCount);
 
     if (!freeCount) {
-      const aiGroupText = getAiGroupText();
-      await sendMessage(baseReply.ToUserName, aiGroupText);
+      const reply = ['体验对话剩余：0', `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`];
 
       res.send({
         ...baseReply,
         MsgType: 'text',
-        Content: '您的免费次数已经用完啦，加入我们的会员，即可享受无限制的AI体验 🎉'
+        Content: reply.join('\n\n')
       });
       return;
     } else {
@@ -144,27 +146,33 @@ const handleText = async (message: TextMessage, res: any) => {
       create();
       break;
     case '获取我的专属分享海报':
-      // 获取二维码
-      const qrCodeUrl = await createQRCode(userId);
+      await sendMessage(userId, '专属海报加速生成中...');
+      try {
+        // 获取二维码
+        const qrCodeUrl = await createQRCode(userId);
 
-      // 下载二维码
-      const qrCodePath = await downloadImage(qrCodeUrl, userId);
+        // 下载二维码
+        const qrCodePath = await downloadImage(qrCodeUrl, userId);
 
-      console.log('下载二维码', qrCodePath);
-      const outPath = path.join(__dirname, `../tmp/image/image_qrcode_${Date.now()}.jpeg`);
-      console.log('组合图片:', outPath);
+        console.log('下载二维码', qrCodePath);
+        const outPath = path.join(__dirname, `../tmp/image/image_qrcode_${Date.now()}.jpeg`);
+        console.log('组合图片:', outPath);
 
-      // 合成背景图
-      const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.png', outPath);
+        // 合成背景图
+        const bgPath = await mergeImages(qrCodePath, './src/public/images/qrcode_bg.png', outPath);
 
-      console.log('合成背景图：', bgPath);
+        console.log('合成背景图：', bgPath);
 
-      // 上传至素材库
-      const updateRes = await uploadTemporaryMedia(bgPath, 'image');
+        // 上传至素材库
+        const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
-      console.log('上传至素材库: ', updateRes);
-      await sendImage(userId, updateRes.media_id);
-      // res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+        console.log('上传至素材库: ', updateRes);
+        await sendImage(userId, updateRes.media_id);
+        // res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+      } catch (error) {
+        await sendMessage(userId, '生成失败，请重新尝试');
+      }
+
       break;
 
     case '查询':
@@ -177,14 +185,8 @@ const handleText = async (message: TextMessage, res: any) => {
       else res.send({ ...baseReply, MsgType: 'text', Content: `🏆当前剩余N币：${formatUser.integral}` });
       break;
 
-    case '奖励规则':
-      // TODO: 后续更换为图片
-      res.send({ ...baseReply, MsgType: 'text', Content: 'N币奖励规则（即将呈现）' });
-      break;
-
     case '活动规则':
-      // TODO: 后续更换为图片
-      res.send({ ...baseReply, MsgType: 'text', Content: '【分享有礼活动规则详情页】' });
+      res.send({ ...baseReply, MsgType: 'text', Content: getActivityRules() });
       break;
 
     case '兑换':
@@ -192,10 +194,10 @@ const handleText = async (message: TextMessage, res: any) => {
       await sendServiceQRcode(baseReply.ToUserName);
       break;
 
-    case '马上接入':
-      await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“AI接入”');
-      await sendServiceQRcode(baseReply.ToUserName);
-      break;
+    // case '马上接入':
+    //   await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“AI接入”');
+    //   await sendServiceQRcode(baseReply.ToUserName);
+    //   break;
 
     case '获取助理小吴AI群':
       await sendAiGroupText(baseReply.ToUserName);
@@ -216,16 +218,34 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     case '企业购买/赠好友':
-      await sendMessage(baseReply.ToUserName, '请扫码添加客服，并向客服发送“企业购买”或“赠好友”');
+      await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”');
       await sendServiceQRcode(baseReply.ToUserName);
       break;
 
-    case '退出':
-      await sendMessage(baseReply.ToUserName, '已退出当前模式');
-      await deleteRedisKey(getModeKey(baseReply.ToUserName));
+    case '对话4o':
+      await setMode(message.FromUserName, Product.GPT4);
+      if (!gpt_welcome_enable) return;
+
+      await sendMessage(message.FromUserName, gpt_welcome);
       break;
 
-    // 转到AI对话
+    case '绘图Midjourney':
+      await setMode(message.FromUserName, Product.Midjourney);
+      if (!mj_welcome_enable) return;
+
+      const reply = [
+        mj_welcome,
+        getTextReplyUrl(
+          '3D卡通风格渲染，女孩，春季流行时尚服装，糖果色服装，装满鲜花的透明背包，新的流行肖像，时尚插图，鲜艳的色彩，霓虹现实，由 POP-Mart 制作，光滑细腻，全身效果，干净背景，3D 渲染，OC 渲染，8K --ar 3:4 --niji 5'
+        ),
+        getTextReplyUrl(
+          'Very simple, minimalist, cartoon graffiti, line art, cute black line little girl, various poses and expressions. Crying, running away, shy, Smile, eating, kneeling, surprised, laughing, etc. --niji 5'
+        )
+      ];
+      await sendMessage(message.FromUserName, reply.join('\n\n'));
+
+      break;
+
     default:
       await chatWithAI(message, res);
       break;
@@ -249,7 +269,21 @@ const handleEvent = async (message: EventMessage, res: any) => {
       if (EventKey === FromUserName) return;
 
       // 二维码中携带了上一个用户的id
-      if (EventKey) await sendMessage(FromUserName, getWelcome());
+      if (EventKey) {
+        const reply = [
+          '🎉 成功领取100元限时优惠券',
+          '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
+          '🔥 ' +
+            getOrderUrl('299元/年（24.9元/月）', {
+              level: VipLevel.Year,
+              product: Product.GPT4,
+              isRecommend: true
+            })
+        ];
+        await sendMessage(FromUserName, reply.join('\n\n'));
+
+        await sendAIGroupIntroduce(FromUserName);
+      }
       break;
 
     case 'CLICK':

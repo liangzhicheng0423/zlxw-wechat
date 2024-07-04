@@ -8,7 +8,6 @@ export const subscribe = async (message: EventMessage) => {
   let pid: string | undefined;
   if (EventKey) {
     const keys = EventKey.split(/_(.+)/).filter(v => !!v);
-    console.log('keys==========', keys);
     pid = keys[keys.length - 1];
   }
   if (pid === FromUserName) pid = undefined;

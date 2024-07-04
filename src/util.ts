@@ -8,8 +8,12 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
 import { MJConfig } from './AI/MJ/types';
-import { BonusStrategy, OrderLadderRewards, PayBody, SubscribeLadderRewards } from './constant';
+import { BonusStrategy, PayBody } from './constant';
 import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage } from './types';
+
+const officialWebsite = 'https://ai-xiaowu.com';
+const danUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
+const activityRulesUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
 
 const gptConfig = require('../config-gpt.json');
 const mjConfig = require('../config-mj.json');
@@ -155,16 +159,12 @@ export const uploadPermanentImageMedia = async (filePath: string) => {
 };
 
 // 获取用户奖励
-export const getBonus = (currentCount: number, strategy: 'subscribe' | 'order') => {
+export const getBonus = (strategy: 'subscribe' | 'order') => {
   // 获取当前定义的奖励类型
   const bonusType = BonusStrategy[strategy]?.bonusType ?? BonusTypeEnum.Integral;
-
-  const LadderRewards = strategy === 'subscribe' ? SubscribeLadderRewards : OrderLadderRewards;
-
-  const currentBonus = LadderRewards.find(v => v.level >= currentCount);
   return {
     type: bonusType,
-    bonus: currentBonus?.[bonusType] ?? 0
+    bonus: strategy === 'subscribe' ? 10 : 500
   };
 };
 
@@ -268,22 +268,24 @@ export const jsonToXml = (json: any): string => {
 
 export const getWelcome = () => {
   const reply = [
-    '你好',
-    '👩🏻‍💻我是你的助理小吴，我可以：',
-    '🥇让排名第一的AI工具，成为你的微信好友',
-    `👉🏻${getTextReplyUrl('获取助理小吴AI群')}`,
-    `👉🏻${getTextReplyUrl('获取Dan')}`,
-    '<a href="https://ai-xiaowu.com">官网</a>'
+    '你好，朋友！',
+    '👩🏻‍💻 我是你的助理小吴，我可以：',
+    '🥇 让排名第一的AI工具，成为你的微信好友',
+    `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`,
+    `👉🏻 ${getTextReplyUrl('获取Dan')}`,
+    `官网 | <a href="${officialWebsite}">ai-xiaowu.com</a>         `
   ];
   return reply.join('\n\n');
 };
 
+export const getActivityRules = () => `<a href="${activityRulesUrl}">助理小吴AI群分享有礼活动规则</a>`;
+
 export const getDanText = () => {
   const reply = [
     'Dan',
-    getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan }),
-    getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan }),
-    getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })
+    '🔥 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan }),
+    '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan }),
+    '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })
   ];
   return reply.join('\n\n');
 };
@@ -292,26 +294,31 @@ export const getAiGroupText = () => {
   const reply = [
     '助理小吴AI群',
     '🔥' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
-    getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
-    getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
-    getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
-    getTextReplyUrl('企业购买/赠好友')
+    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
+    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
+    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
+    '👉🏻 ' + getTextReplyUrl('企业购买/赠好友')
   ];
   return reply.join('\n\n');
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`;
-  await sendMessage(userId, danText);
-  await sendMessage(userId, '【Dan产品介绍页】');
+  const danText = [`<a href="${danUrl}">Dan是什么？</a>`, `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`];
+  await sendMessage(userId, danText.join('\n\n'));
 };
 
 export const sendAiGroupText = async (userId: string) => {
   await sendMessage(userId, `助理小吴AI群 ${getTextReplyUrl('马上抢（助理小吴AI群）', '马上抢')}`);
-  await sendMessage(userId, '【AI群产品介绍页】');
+  await sendAIGroupIntroduce(userId);
 };
 
+// TODO: 发送客服二维码
 export const sendServiceQRcode = async (userId: string) => {
+  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
+};
+
+// TODO: 发送AI群产品介绍页
+export const sendAIGroupIntroduce = async (userId: string) => {
   await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128uLbsMyOhY8kCfA7BpaZIcj0-WZI5wAdHGH8G8-PSSWP');
 };
 
@@ -430,5 +437,3 @@ export const sendVoiceMessage = async (userId: string, mediaId: string) => {
 export const getNow = () => {
   return Math.floor(Date.now() / 1000);
 };
-
-export const exitText = () => `（回复“${getTextReplyUrl('退出')}”可离开当前模式）`;

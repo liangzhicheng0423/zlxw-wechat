@@ -87,7 +87,7 @@ export enum VipLevel {
   Ten = 'ten' // 10份年卡
 }
 
-export type OrderBody = { level: VipLevel; product: Product };
+export type OrderBody = { level: VipLevel; product: Product; isRecommend?: boolean };
 
 export type GPTConfig = {
   factory: 'linkAI'; // 默认策略
