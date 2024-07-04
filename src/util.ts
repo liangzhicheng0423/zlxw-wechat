@@ -13,7 +13,7 @@ import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage }
 
 const officialWebsite = 'https://ai-xiaowu.com';
 const danUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
-const activityRulesUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/L4K5wjFPiib41gkgrszcgqHznXb';
+const activityRulesUrl = 'https://i1ze0gf4g8p.feishu.cn/wiki/I8WbwG8NSiVD1WkmVzqc1GPTn4e';
 
 const gptConfig = require('../config-gpt.json');
 const mjConfig = require('../config-mj.json');
@@ -303,7 +303,7 @@ export const getAiGroupText = () => {
 };
 
 export const sendDanText = async (userId: string) => {
-  const danText = [`<a href="${danUrl}">Dan是什么？</a>`, `Dan ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`];
+  const danText = ['Dan', `<a href="${danUrl}">Dan是什么？</a>`, `${getTextReplyUrl('马上抢（Dan）', '马上抢')}`];
   await sendMessage(userId, danText.join('\n\n'));
 };
 
