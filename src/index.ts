@@ -45,15 +45,7 @@ app.get('/getUserInfo', asyncHandler(getUserInfo));
 app.post('/unifiedorder', asyncHandler(unifiedorder));
 
 /** 支付成回调 */
-app.post('/payRes', async (req, res) => {
-  try {
-    await unifiedorderCb(req, res);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    res.send({ errcode: 0, errmsg: '' });
-  }
-});
+app.post('/payRes', unifiedorderCb);
 
 /** 接受绘制完成的回调 */
 app.post('/drawSuccess', async (req, res) => {

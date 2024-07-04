@@ -23,6 +23,7 @@ export const award = async (userId: string, type: 'subscribe' | 'order') => {
   if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus + (formatUser.integral ?? 0);
 
   await foundUser.update(update);
+
   let text: string[] = [];
   if (type === 'subscribe') {
     text = [
