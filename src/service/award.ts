@@ -3,11 +3,14 @@ import { BonusTypeEnum } from '../types';
 import { activityRulesUrl, getBonus, getTextReplyUrl, sendMessage } from '../util';
 
 export const award = async (userId: string, type: 'subscribe' | 'order') => {
+  console.log('奖励 -1');
   // 查找用户
   const foundUser = await User.findOne({ where: { user_id: userId, subscribe_status: true } });
+  console.log('奖励 -2');
 
   if (!foundUser) return;
 
+  console.log('奖励 -3', type);
   // 更新奖励
   const formatUser = foundUser.toJSON();
 
