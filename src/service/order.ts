@@ -86,7 +86,7 @@ export const unifiedorder = async (req: any, res: any) => {
     body,
     out_trade_no: generateOrderNumber(level, product),
     sub_mch_id: '1678905103', // 微信支付商户号
-    total_fee: 1,
+    total_fee: total_fee,
     openid, // 用户唯一身份ID
     spbill_create_ip: ip, // 用户客户端IP地址
     env_id, // 接收回调的环境ID
