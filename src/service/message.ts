@@ -203,6 +203,11 @@ const handleText = async (message: TextMessage, res: any) => {
       await sendServiceQRcode(baseReply.ToUserName);
       break;
 
+    case '获取10份年卡':
+      await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“获取10份年卡”');
+      await sendServiceQRcode(baseReply.ToUserName);
+      break;
+
     case '对话4o':
       await setMode(message.FromUserName, Product.GPT4);
       if (!gpt_welcome_enable) return;

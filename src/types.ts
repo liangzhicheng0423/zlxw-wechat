@@ -84,8 +84,7 @@ export enum Product {
 export enum VipLevel {
   Year = 'year',
   Quarter = 'quarter',
-  Month = 'month',
-  Ten = 'ten' // 10份年卡
+  Month = 'month'
 }
 
 export type OrderBody = { level: VipLevel; product: Product; isRecommend?: boolean };

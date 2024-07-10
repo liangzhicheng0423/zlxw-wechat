@@ -265,8 +265,7 @@ export const getExpireDate = (date: Moment, level: VipLevel) => {
     case VipLevel.Quarter:
       return date.clone().add(3, 'months');
     case VipLevel.Year:
-    case VipLevel.Ten:
-      return date.clone().add(1, 'years');
+
     default:
       return null;
   }
@@ -330,7 +329,7 @@ export const getAiGroupText = async () => {
     const reply = [
       '助理小吴AI群',
       '🔥 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Year], { level: VipLevel.Year, product: Product.Group }),
-      '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Ten], { level: VipLevel.Ten, product: Product.Group }),
+      '👉🏻 ' + getTextReplyUrl('获取10份年卡', '获取10份年卡 3980元/年'),
       '👉🏻 ' +
         getOrderUrl(PayBody[Product.Group][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Group }),
       '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Month], { level: VipLevel.Month, product: Product.Group }),
@@ -352,7 +351,7 @@ export const getAiGroupText = async () => {
   const reply = [
     '助理小吴AI群',
     '🔥 ' + getOrderUrl(yearText, { level: VipLevel.Year, product: Product.Group }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Ten], { level: VipLevel.Ten, product: Product.Group }),
+    '👉🏻 ' + getTextReplyUrl('获取10份年卡', '获取10份年卡 3980元/年'),
     '👉🏻 ' + getOrderUrl(quarterText, { level: VipLevel.Quarter, product: Product.Group }),
     '👉🏻 ' + getOrderUrl(monthText, { level: VipLevel.Month, product: Product.Group }),
     '👉🏻 ' + getTextReplyUrl('企业购买/赠好友')

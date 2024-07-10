@@ -53,11 +53,6 @@ export const unifiedorder = async (req: any, res: any) => {
   let body = '';
   let total_fee = 0;
   switch (level) {
-    case VipLevel.Ten:
-      body = PayBody[product][VipLevel.Ten];
-      total_fee = PayLevel[product][VipLevel.Ten];
-      break;
-
     case VipLevel.Year:
       if (isRecommend && product === Product.Group) {
         body = '299元/年（24.9元/月）';

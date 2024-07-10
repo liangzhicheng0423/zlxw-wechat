@@ -58,26 +58,22 @@ export const Menu = {
 
 export const PayBody = {
   [Product.Dan]: {
-    [VipLevel.Ten]: '',
     [VipLevel.Year]: '年卡 899元/年（75元/月）',
     [VipLevel.Quarter]: '季卡 299元/季（99元/月）',
     [VipLevel.Month]: '月卡 129元/月'
   },
   [Product.Group]: {
     [VipLevel.Year]: '年卡 399元/年（33元/月）',
-    [VipLevel.Ten]: '10份年卡 3980元/年',
     [VipLevel.Quarter]: '季卡 199元/季（66元/月）',
     [VipLevel.Month]: '月卡 79元/月'
   },
   [Product.GPT4]: {
     [VipLevel.Year]: '年卡 399元/年（33元/月）',
-    [VipLevel.Ten]: '10份年卡 3980元/年',
     [VipLevel.Quarter]: '季卡 199元/季（66元/月）',
     [VipLevel.Month]: '月卡 79元/月'
   },
   [Product.Midjourney]: {
     [VipLevel.Year]: '年卡 399元/年（33元/月）',
-    [VipLevel.Ten]: '10份年卡 3980元/年',
     [VipLevel.Quarter]: '季卡 199元/季（66元/月）',
     [VipLevel.Month]: '月卡 79元/月'
   }
@@ -86,24 +82,20 @@ export const PayBody = {
 export const PayLevel = {
   [Product.Dan]: {
     [VipLevel.Year]: 89900,
-    [VipLevel.Ten]: 0,
     [VipLevel.Quarter]: 29900,
     [VipLevel.Month]: 12900
   },
   [Product.Group]: {
-    [VipLevel.Ten]: 398000,
     [VipLevel.Year]: 39900,
     [VipLevel.Quarter]: 19900,
     [VipLevel.Month]: 7900
   },
   [Product.GPT4]: {
-    [VipLevel.Ten]: 398000,
     [VipLevel.Year]: 39900,
     [VipLevel.Quarter]: 19900,
     [VipLevel.Month]: 7900
   },
   [Product.Midjourney]: {
-    [VipLevel.Ten]: 398000,
     [VipLevel.Year]: 39900,
     [VipLevel.Quarter]: 19900,
     [VipLevel.Month]: 7900
