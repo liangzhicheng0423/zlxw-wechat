@@ -106,6 +106,12 @@ User.init(
     expire_date_group: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    // 是否禁用
+    disabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 1
     }
   },
   {

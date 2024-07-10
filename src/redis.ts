@@ -182,6 +182,8 @@ export const updateRedis = async () => {
 
     if (userGroupExpireDate && now.isBefore(userGroupExpireDate)) isVip = true;
 
+    if (formatUser.disabled) isVip = false;
+
     // 免费额度
     const gpt4FreeCount = formatUser.gpt4_free_count ?? 0;
     const mjFreeCount = formatUser.midjourney_free_count ?? 0;
