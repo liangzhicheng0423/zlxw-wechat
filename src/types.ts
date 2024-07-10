@@ -76,7 +76,7 @@ export type WeChatPayCallback = {
 
 export enum Product {
   GPT4 = 'gpt4',
-  Midjourney = 'midjourney',
+  Midjourney = 'mj',
   Group = 'group',
   Dan = 'dan'
 }
