@@ -215,8 +215,18 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
   }
 };
 
+function generateRandomString(length = 3) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 export const generateOrderNumber = (level: VipLevel, product: Product) => {
-  return `${Date.now()}_${Math.floor(100000 + Math.random() * 900000)}_${level}_${product}`;
+  return `${Date.now()}_${generateRandomString()}_${level}_${product}`;
 };
 
 export const getLevelAndProduct = (tradeNo: string) => {

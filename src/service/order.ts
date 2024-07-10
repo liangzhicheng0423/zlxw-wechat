@@ -28,8 +28,6 @@ export const unifiedorder = async (req: any, res: any) => {
   const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
   const env_id = req.headers['x-wx-env'];
 
-  console.info('用户下单:', level, product);
-
   // 找到上线的产品，获取最近价格
   const onLineProducts = await sqProduct.findAll({ where: { is_online: true } });
 
@@ -103,6 +101,8 @@ export const unifiedorder = async (req: any, res: any) => {
 
   try {
     const response = await axios.post(`http://api.weixin.qq.com/_/pay/unifiedorder`, option);
+
+    console.log('下单成功');
     res.send(response.data);
   } catch (error) {
     console.error(error);
