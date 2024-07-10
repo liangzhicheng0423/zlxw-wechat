@@ -225,6 +225,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const code = invitationCode.toJSON().code;
 
+    await invitationCode.update({ send: 1 });
+
     // 存储核销码
     await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, invitation_code: code, status: false });
 
