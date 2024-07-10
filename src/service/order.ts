@@ -183,7 +183,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const [userProduct, created] = await UserProduct.findOrCreate({
       where: { user_id: userId },
-      defaults: { product_id: currentProduct.toJSON().product_id, last_date: moment() }
+      defaults: { product_id: currentProduct.toJSON().product_id, last_date: moment(), expire_date: moment() }
     });
 
     let userExpireDate: moment.Moment | null = null;

@@ -300,9 +300,9 @@ export const getDanText = async () => {
   const monthFee = isNumber(month_fee) ? Number(month_fee) * 100 : PayLevel[Product.Group][VipLevel.Month];
   const quarterFee = isNumber(quarter_fee) ? Number(quarter_fee) * 100 : PayLevel[Product.Group][VipLevel.Quarter];
 
-  const yearText = `年卡 ${yearFee / 100}元/年（${Math.ceil(yearFee / 100 / 12)}元/月）`;
-  const quarterText = `季卡 ${quarterFee / 100}元/年（${Math.ceil(quarterFee / 100 / 12)}元/月）`;
-  const monthText = `月卡 ${monthFee / 100}元/年`;
+  const yearText = `年卡 ${yearFee / 100}元/年（${Math.floor(yearFee / 100 / 12)}元/月）`;
+  const quarterText = `季卡 ${quarterFee / 100}元/季（${Math.floor(quarterFee / 100 / 3)}元/月）`;
+  const monthText = `月卡 ${monthFee / 100}元/月`;
 
   const reply = [
     'Dan',
@@ -335,9 +335,9 @@ export const getAiGroupText = async () => {
   const monthFee = isNumber(month_fee) ? Number(month_fee) * 100 : PayLevel[Product.Group][VipLevel.Month];
   const quarterFee = isNumber(quarter_fee) ? Number(quarter_fee) * 100 : PayLevel[Product.Group][VipLevel.Quarter];
 
-  const yearText = `年卡 ${yearFee / 100}元/年（${Math.ceil(yearFee / 100 / 12)}元/月）`;
-  const quarterText = `季卡 ${quarterFee / 100}元/年（${Math.ceil(quarterFee / 100 / 12)}元/月）`;
-  const monthText = `月卡 ${monthFee / 100}元/年`;
+  const yearText = `年卡 ${yearFee / 100}元/年（${Math.floor(yearFee / 100 / 12)}元/月）`;
+  const quarterText = `季卡 ${quarterFee / 100}元/季（${Math.floor(quarterFee / 100 / 3)}元/月）`;
+  const monthText = `月卡 ${monthFee / 100}元/月`;
 
   const reply = [
     '助理小吴AI群',
