@@ -20,7 +20,7 @@ export const subscribe = async (message: EventMessage) => {
       '🔥 ' +
         getOrderUrl('299元/年（24.9元/月）', {
           level: VipLevel.Year,
-          product: Product.GPT4,
+          product: Product.Group,
           isRecommend: true
         })
     ];

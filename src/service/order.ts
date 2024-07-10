@@ -5,17 +5,52 @@ import { encrypt } from '../crypto';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { Order } from '../mysqlModal/order';
+import { Product as sqProduct } from '../mysqlModal/product';
 import { User } from '../mysqlModal/user';
+import { UserProduct } from '../mysqlModal/user_product';
 import { updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
-import { generateOrderNumber, getExpireDate, getLevelAndProduct, sendMessage, sendServiceQRcode } from '../util';
+import {
+  generateOrderNumber,
+  getExpireDate,
+  getLevelAndProduct,
+  isNumber,
+  sendMessage,
+  sendServiceQRcode
+} from '../util';
 import { award } from './award';
 
 /** 下单 */
 export const unifiedorder = async (req: any, res: any) => {
   const { level, product, isRecommend } = req.body as OrderBody;
 
+  const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
+  const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
+  const env_id = req.headers['x-wx-env'];
+
   console.info('用户下单:', level, product);
+
+  // 找到上线的产品，获取最近价格
+  const onLineProducts = await sqProduct.findAll({ where: { is_online: true } });
+
+  const jsonOnLineProducts = onLineProducts.map(v => v.toJSON());
+
+  const currentProduct = jsonOnLineProducts.find(v => v.name === product);
+
+  if (!currentProduct) {
+    await sendMessage(openid, '当前购买的产品不存在或已下线，请联系客服');
+    return;
+  }
+
+  const { month_fee, quarter_fee, year_fee } = currentProduct;
+
+  const yearFee = isNumber(year_fee) ? Number(year_fee) * 100 : PayLevel[product][VipLevel.Year];
+  const monthFee = isNumber(month_fee) ? Number(month_fee) * 100 : PayLevel[product][VipLevel.Month];
+  const quarterFee = isNumber(quarter_fee) ? Number(quarter_fee) * 100 : PayLevel[product][VipLevel.Quarter];
+
+  const yearText = `年卡 ${yearFee / 100}元/年（${Math.ceil(yearFee / 100 / 12)}元/月）`;
+  const quarterText = `季卡 ${quarterFee / 100}元/年（${Math.ceil(quarterFee / 100 / 12)}元/月）`;
+  const monthText = `月卡 ${monthFee / 100}元/年`;
 
   let body = '';
   let total_fee = 0;
@@ -26,39 +61,34 @@ export const unifiedorder = async (req: any, res: any) => {
       break;
 
     case VipLevel.Year:
-      if (isRecommend && product === Product.GPT4) {
+      if (isRecommend && product === Product.Group) {
         body = '299元/年（24.9元/月）';
         total_fee = 29900;
       } else {
-        body = PayBody[product][VipLevel.Year];
-        total_fee = PayLevel[product][VipLevel.Year];
+        body = yearText;
+        total_fee = yearFee;
       }
-
       break;
 
     case VipLevel.Quarter:
-      body = PayBody[product][VipLevel.Quarter];
-      total_fee = PayLevel[product][VipLevel.Quarter];
+      body = quarterText;
+      total_fee = quarterFee;
       break;
 
     case VipLevel.Month:
-      body = PayBody[product][VipLevel.Month];
-      total_fee = PayLevel[product][VipLevel.Month];
+      body = monthText;
+      total_fee = monthFee;
       break;
 
     default:
       break;
   }
 
-  const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
-  const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
-  const env_id = req.headers['x-wx-env'];
-
   const option = {
     body,
     out_trade_no: generateOrderNumber(level, product),
     sub_mch_id: '1678905103', // 微信支付商户号
-    total_fee: total_fee,
+    total_fee: 1,
     openid, // 用户唯一身份ID
     spbill_create_ip: ip, // 用户客户端IP地址
     env_id, // 接收回调的环境ID
@@ -121,28 +151,60 @@ export const unifiedorderCb = async (req: any, res: any) => {
       else update.expire_date_group = userExpireDate;
     }
 
+    // 奖励上级用户
     if (formatUser?.p_id) {
       const p_id = formatUser.p_id;
       const shareUser = await User.findOne({ where: { user_id: p_id } });
       const formatShareUser = shareUser?.toJSON();
 
-      if (formatShareUser && !formatUser.is_award && product === Product.GPT4 && vip_level === VipLevel.Year) {
+      // 只有群聊的年卡才会有奖励
+      if (formatShareUser && !formatUser.is_award && product === Product.Group && vip_level === VipLevel.Year) {
         await award(formatShareUser.user_id, 'order');
         is_award = true;
       }
     }
 
     // 更新用户表
-    await user.update({ ...update, is_award, is_vip: true });
+    await user.update({ is_award });
 
-    // 新增订单
     const expire_date = getExpireDate(moment(), vip_level);
 
     console.info('创建订单');
     await Order.create({ user_id: userId, product, vip_level, out_trade_no, fee: message.totalFee, expire_date });
 
+    // START -------- 更新该用户针对该产品的到期时间 ------------
+
+    const currentProduct = await sqProduct.findOne({ where: { name: product } });
+
+    if (!currentProduct) {
+      await sendMessage(userId, [`🎉 会员开通成功：${product}`, '👩🏻‍💻 请扫码添加客服，并向客服发送“激活”'].join('\n\n'));
+      return;
+    }
+
+    const [userProduct, created] = await UserProduct.findOrCreate({
+      where: { user_id: userId },
+      defaults: { product_id: currentProduct.toJSON().product_id, last_date: moment() }
+    });
+
+    let userExpireDate: moment.Moment | null = null;
+
+    const now = moment();
+    if (created) {
+      // 新增购买
+      userExpireDate = getExpireDate(moment(), vip_level);
+    } else {
+      // 查看之前的到期时间是否已经到期，如果到期，从当前开时间始算到期时间，如果未到期，则累加到期时间
+      const isExpire = now.isAfter(moment(userProduct.toJSON().expire_date));
+      if (isExpire) userExpireDate = getExpireDate(moment(), vip_level);
+      else userExpireDate = getExpireDate(moment(userProduct.toJSON().expire_date), vip_level);
+    }
+
+    await userProduct.update({ expire_date: userExpireDate });
+
+    // END -------- 更新该用户针对该产品的到期时间 ------------
+
     // 更新redis
-    if (product === Product.GPT4 || product === Product.Midjourney) {
+    if (product === Product.Group) {
       await updateUserVipStatus(userId, true);
     }
 
@@ -173,7 +235,10 @@ export const unifiedorderCb = async (req: any, res: any) => {
     //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     // );
 
-    await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，并向客服发送“激活”'].join('\n\n'));
+    await sendMessage(
+      userId,
+      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 邀请码：${code}`].join('\n\n')
+    );
 
     await sendServiceQRcode(userId);
 

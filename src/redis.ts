@@ -1,7 +1,9 @@
 import Redis from 'ioredis';
 import moment from 'moment';
 import cron from 'node-cron';
+import { Product as sqProduct } from './mysqlModal/product';
 import { User } from './mysqlModal/user';
+import { UserProduct } from './mysqlModal/user_product';
 import { Product } from './types';
 
 let redisClient: Redis;
@@ -80,9 +82,11 @@ export const useFreeCount = async (userId: string, mode: Product) => {
   const count = await getFreeCount(userId, mode);
 
   console.log('useFreeCount: ', count);
+
   if (count !== null) {
     const newCount = Math.max(count - 1, 0);
     console.log('newCount: ', newCount);
+
     await redis?.set(getFreeCountKey(userId, mode), newCount);
 
     const user = await User.findOne({ where: { user_id: userId } });
@@ -155,6 +159,13 @@ const updateKeysWithPipeline = async (keyValuePairs: { [key: string]: string }) 
 export const updateRedis = async () => {
   // 找到所有的用户
   const users = await User.findAll();
+
+  const userProducts = await UserProduct.findAll();
+  const formatUserProducts = userProducts.map(v => v.toJSON());
+
+  const product = await sqProduct.findOne({ where: { name: Product.Group } });
+  const formatProduct = product?.toJSON();
+
   const update: { [key: string]: string } = {};
 
   const now = moment();
@@ -163,7 +174,12 @@ export const updateRedis = async () => {
 
     // 是否是会员
     let isVip = false;
-    const userGroupExpireDate = formatUser.expire_date_group;
+    const userGroupExpireDate = formatUserProducts.find(
+      v => v.user_id === formatUser.user_id && v.product_id === formatProduct.id
+    )?.expire_date;
+
+    console.log('updateRedis: ', userGroupExpireDate);
+
     if (userGroupExpireDate && now.isBefore(userGroupExpireDate)) isVip = true;
 
     // 免费额度

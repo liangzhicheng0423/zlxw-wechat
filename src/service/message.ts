@@ -6,7 +6,7 @@ import { doImageMode } from '../AI/MJ/doImageMode';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
-import { getFreeCount, getIsVip, getMode, setMode, updateRedis, useFreeCount } from '../redis';
+import { getMode, setMode, updateRedis } from '../redis';
 import { EventMessage, Product, TextMessage, VipLevel, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
@@ -189,12 +189,12 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     case '马上抢（Dan）':
-      const danText = getDanText();
+      const danText = await getDanText();
       await sendMessage(baseReply.ToUserName, danText);
       break;
 
     case '马上抢（助理小吴AI群）':
-      const aiGroupText = getAiGroupText();
+      const aiGroupText = await getAiGroupText();
       await sendMessage(baseReply.ToUserName, aiGroupText);
       break;
 
@@ -257,7 +257,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
           '🔥 ' +
             getOrderUrl('299元/年（24.9元/月）', {
               level: VipLevel.Year,
-              product: Product.GPT4,
+              product: Product.Group,
               isRecommend: true
             })
         ];

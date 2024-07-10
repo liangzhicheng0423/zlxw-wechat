@@ -8,7 +8,8 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
 import { MJConfig } from './AI/MJ/types';
-import { BonusStrategy, PayBody } from './constant';
+import { BonusStrategy, PayBody, PayLevel } from './constant';
+import { Product as sqProduct } from './mysqlModal/product';
 import { BonusTypeEnum, GPTConfig, OrderBody, Product, VipLevel, WeChatMessage } from './types';
 
 export const officialWebsite = 'https://ai-xiaowu.com';
@@ -280,23 +281,70 @@ export const getWelcome = () => {
 
 export const getActivityRules = () => `<a href="${activityRulesUrl}">助理小吴AI群分享有礼活动规则</a>`;
 
-export const getDanText = () => {
+export const getDanText = async () => {
+  const danProduct = await sqProduct.findOne({ where: { is_online: true, name: Product.Dan } });
+
+  if (!danProduct) {
+    const reply = [
+      'Dan',
+      '🔥 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan }),
+      '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan }),
+      '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })
+    ];
+    return reply.join('\n\n');
+  }
+
+  const { month_fee, quarter_fee, year_fee } = danProduct.toJSON();
+
+  const yearFee = isNumber(year_fee) ? Number(year_fee) * 100 : PayLevel[Product.Group][VipLevel.Year];
+  const monthFee = isNumber(month_fee) ? Number(month_fee) * 100 : PayLevel[Product.Group][VipLevel.Month];
+  const quarterFee = isNumber(quarter_fee) ? Number(quarter_fee) * 100 : PayLevel[Product.Group][VipLevel.Quarter];
+
+  const yearText = `年卡 ${yearFee / 100}元/年（${Math.ceil(yearFee / 100 / 12)}元/月）`;
+  const quarterText = `季卡 ${quarterFee / 100}元/年（${Math.ceil(quarterFee / 100 / 12)}元/月）`;
+  const monthText = `月卡 ${monthFee / 100}元/年`;
+
   const reply = [
     'Dan',
-    '🔥 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Year], { level: VipLevel.Year, product: Product.Dan }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Dan }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.Dan][VipLevel.Month], { level: VipLevel.Month, product: Product.Dan })
+    '🔥 ' + getOrderUrl(yearText, { level: VipLevel.Year, product: Product.Dan }),
+    '👉🏻 ' + getOrderUrl(quarterText, { level: VipLevel.Quarter, product: Product.Dan }),
+    '👉🏻 ' + getOrderUrl(monthText, { level: VipLevel.Month, product: Product.Dan })
   ];
   return reply.join('\n\n');
 };
 
-export const getAiGroupText = () => {
+export const getAiGroupText = async () => {
+  const groupProduct = await sqProduct.findOne({ where: { is_online: true, name: Product.Group } });
+
+  if (!groupProduct) {
+    const reply = [
+      '助理小吴AI群',
+      '🔥 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Year], { level: VipLevel.Year, product: Product.Group }),
+      '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Ten], { level: VipLevel.Ten, product: Product.Group }),
+      '👉🏻 ' +
+        getOrderUrl(PayBody[Product.Group][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.Group }),
+      '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Month], { level: VipLevel.Month, product: Product.Group }),
+      '👉🏻 ' + getTextReplyUrl('企业购买/赠好友')
+    ];
+    return reply.join('\n\n');
+  }
+
+  const { month_fee, quarter_fee, year_fee } = groupProduct.toJSON();
+
+  const yearFee = isNumber(year_fee) ? Number(year_fee) * 100 : PayLevel[Product.Group][VipLevel.Year];
+  const monthFee = isNumber(month_fee) ? Number(month_fee) * 100 : PayLevel[Product.Group][VipLevel.Month];
+  const quarterFee = isNumber(quarter_fee) ? Number(quarter_fee) * 100 : PayLevel[Product.Group][VipLevel.Quarter];
+
+  const yearText = `年卡 ${yearFee / 100}元/年（${Math.ceil(yearFee / 100 / 12)}元/月）`;
+  const quarterText = `季卡 ${quarterFee / 100}元/年（${Math.ceil(quarterFee / 100 / 12)}元/月）`;
+  const monthText = `月卡 ${monthFee / 100}元/年`;
+
   const reply = [
     '助理小吴AI群',
-    '🔥 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Year], { level: VipLevel.Year, product: Product.GPT4 }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Ten], { level: VipLevel.Ten, product: Product.GPT4 }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Quarter], { level: VipLevel.Quarter, product: Product.GPT4 }),
-    '👉🏻 ' + getOrderUrl(PayBody[Product.GPT4][VipLevel.Month], { level: VipLevel.Month, product: Product.GPT4 }),
+    '🔥 ' + getOrderUrl(yearText, { level: VipLevel.Year, product: Product.Group }),
+    '👉🏻 ' + getOrderUrl(PayBody[Product.Group][VipLevel.Ten], { level: VipLevel.Ten, product: Product.Group }),
+    '👉🏻 ' + getOrderUrl(quarterText, { level: VipLevel.Quarter, product: Product.Group }),
+    '👉🏻 ' + getOrderUrl(monthText, { level: VipLevel.Month, product: Product.Group }),
     '👉🏻 ' + getTextReplyUrl('企业购买/赠好友')
   ];
   return reply.join('\n\n');
@@ -434,4 +482,8 @@ export const sendVoiceMessage = async (userId: string, mediaId: string) => {
 
 export const getNow = () => {
   return Math.floor(Date.now() / 1000);
+};
+
+export const isNumber = (value: any) => {
+  return !isNaN(parseFloat(value)) && isFinite(value);
 };
