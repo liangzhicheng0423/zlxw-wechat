@@ -32,6 +32,11 @@ Order.init(
       type: DataTypes.CHAR(50),
       allowNull: false
     },
+    // 交易单号
+    transaction_id: {
+      type: DataTypes.CHAR(255),
+      allowNull: false
+    },
     // 订单金额
     fee: {
       type: DataTypes.NUMBER,
