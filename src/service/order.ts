@@ -164,7 +164,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const expire_date = getExpireDate(moment(), vip_level);
 
-    console.info('创建订单');
+    console.info('创建订单', { expire_date });
     await Order.create({ user_id: userId, product, vip_level, out_trade_no, fee: message.totalFee, expire_date });
 
     // START -------- 更新该用户针对该产品的到期时间 ------------

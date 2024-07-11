@@ -265,7 +265,7 @@ export const getExpireDate = (date: Moment, level: VipLevel) => {
     case VipLevel.Quarter:
       return date.clone().add(3, 'months');
     case VipLevel.Year:
-
+      return date.clone().add(12, 'months');
     default:
       return null;
   }
