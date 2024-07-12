@@ -46,6 +46,7 @@ export const createQRCode = async (sceneStr: string) => {
   try {
     // const accessToken = await getAccessToken(); // 云托管服务暂且不需要access token
     const qrCodeData = {
+      expire_seconds: 2592000,
       action_name: 'QR_LIMIT_STR_SCENE',
       action_info: { scene: { scene_str: sceneStr } }
     };

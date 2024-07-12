@@ -18,6 +18,10 @@ User.init(
       unique: true,
       allowNull: false
     },
+    xiaowu_id: {
+      type: DataTypes.CHAR(50),
+      allowNull: false
+    },
     // 父级id
     p_id: {
       type: DataTypes.CHAR(50),

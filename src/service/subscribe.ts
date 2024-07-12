@@ -1,3 +1,4 @@
+import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
 import { EventMessage, Product, VipLevel } from '../types';
 import { getOrderUrl, getWelcome, sendAIGroupIntroduce, sendMessage } from '../util';
@@ -36,6 +37,19 @@ export const subscribe = async (message: EventMessage) => {
     where: { user_id: FromUserName },
     defaults: { subscribe_status: true, p_id: pid }
   });
+
+  if (created) {
+    const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
+    if (!invitationCode) {
+      // 邀请码短缺了
+      await sendMessage(FromUserName, `邀请码不足，请联系客服`);
+      return;
+    }
+
+    const code = invitationCode.toJSON().code;
+    await invitationCode.update({ send: 1, status: 1 });
+    await user.update({ xiaowu_id: code });
+  }
 
   console.log('[关注公众号] created: ', created, 'pid: ', pid);
 

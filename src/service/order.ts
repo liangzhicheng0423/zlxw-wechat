@@ -138,6 +138,18 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const formatUser = user?.toJSON();
 
+    let xiaowu_id = formatUser.xiaowu_id;
+
+    if (xiaowu_id) {
+      const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
+      if (!invitationCode) {
+        // 邀请码短缺了
+        await sendMessage(userId, `邀请码不足，请联系客服`);
+        return;
+      }
+      xiaowu_id = invitationCode.toJSON().code;
+    }
+
     const update: { expire_date_group?: Moment | null; expire_date_dan?: Moment | null } = {};
 
     if (formatUser) {
@@ -228,21 +240,26 @@ export const unifiedorderCb = async (req: any, res: any) => {
     // 加密
     const encrypted = encrypt(clearanceCode);
 
-    // 生成短邀请码，跟核销码唯一绑定
-    const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
-    if (!invitationCode) {
-      // 邀请码短缺了
-      await sendMessage(userId, `邀请码不足，请联系客服`);
-      await sendServiceQRcode(userId);
-      return;
-    }
+    // // 生成短邀请码，跟核销码唯一绑定
+    // const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
+    // if (!invitationCode) {
+    //   // 邀请码短缺了
+    //   await sendMessage(userId, `邀请码不足，请联系客服`);
+    //   await sendServiceQRcode(userId);
+    //   return;
+    // }
 
-    const code = invitationCode.toJSON().code;
+    // const code = invitationCode.toJSON().code;
 
-    await invitationCode.update({ send: 1 });
+    // await invitationCode.update({ send: 1 });
 
     // 存储核销码
-    await ClearanceCode.create({ user_id: userId, clearance_code: encrypted, invitation_code: code, status: false });
+    await ClearanceCode.create({
+      user_id: userId,
+      clearance_code: encrypted,
+      invitation_code: xiaowu_id,
+      status: false
+    });
 
     // 上传至素材库
     // const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');
@@ -254,7 +271,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendMessage(
       userId,
-      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 邀请码：${code}`].join('\n\n')
+      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
     );
 
     await sendServiceQRcode(userId);
