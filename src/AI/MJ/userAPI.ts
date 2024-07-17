@@ -204,7 +204,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
       console.log('代理下载完成: ', jumpRes.data);
     } catch (error) {
       taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
-      console.log('发送下载任务失败');
+      console.log('发送下载任务失败: ', error);
     }
   });
 
