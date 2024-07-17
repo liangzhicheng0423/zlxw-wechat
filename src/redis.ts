@@ -3,7 +3,7 @@ import moment from 'moment';
 import cron from 'node-cron';
 import { Product as sqProduct } from './mysqlModal/product';
 import { User } from './mysqlModal/user';
-import { UserProduct } from './mysqlModal/user_product';
+import { UserServiceProduct } from './mysqlModal/user_service_product';
 import { Product } from './types';
 
 let redisClient: Redis;
@@ -160,7 +160,7 @@ export const updateRedis = async () => {
   // 找到所有的用户
   const users = await User.findAll();
 
-  const userProducts = await UserProduct.findAll();
+  const userProducts = await UserServiceProduct.findAll();
   const formatUserProducts = userProducts.map(v => v.toJSON());
 
   const product = await sqProduct.findOne({ where: { name: Product.Group } });

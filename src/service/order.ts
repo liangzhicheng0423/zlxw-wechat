@@ -7,7 +7,7 @@ import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { Order } from '../mysqlModal/order';
 import { Product as sqProduct } from '../mysqlModal/product';
 import { User } from '../mysqlModal/user';
-import { UserProduct } from '../mysqlModal/user_product';
+import { UserServiceProduct } from '../mysqlModal/user_service_product';
 import { updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
 import {
@@ -208,7 +208,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     console.log('currentProduct.toJSON(): ', currentProduct.toJSON());
-    const [userProduct, created] = await UserProduct.findOrCreate({
+    const [userProduct, created] = await UserServiceProduct.findOrCreate({
       where: { user_id: userId },
       defaults: { product_id: currentProduct.toJSON().id, last_date: moment(), expire_date: moment() }
     });

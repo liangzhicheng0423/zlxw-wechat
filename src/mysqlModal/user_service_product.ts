@@ -1,9 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../db';
 
-export class UserProduct extends Model {}
+export class UserServiceProduct extends Model {}
 
-UserProduct.init(
+UserServiceProduct.init(
   {
     // 定义模型的字段
     id: {
@@ -25,23 +25,23 @@ UserProduct.init(
     // 到期时间
     expire_date: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     // 最后一次缴费时间
     last_date: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     }
   },
   {
     sequelize,
-    modelName: 'UserProduct',
-    tableName: 'userProduct',
+    modelName: 'UserServiceProduct',
+    tableName: 'userServiceProduct',
     timestamps: true
   }
 );
 
-export const syncUserProduct = async () => {
-  await UserProduct.sync({ alter: true });
-  console.log('UserProduct successfully.');
+export const syncUserServiceProduct = async () => {
+  await UserServiceProduct.sync({ alter: true });
+  console.log('UserServiceProduct successfully.');
 };
