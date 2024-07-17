@@ -197,7 +197,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
 
     try {
       const jumpRes = await axios.post(
-        'http://api.ai-xiaowu.com:3000/download',
+        'https://jump.ai-xiaowu.com/download',
         { originUrl: result.url, taskId, userId, type: 'generate', mjType: TaskType.GENERATE },
         { headers: { 'Content-Type': 'application/json' } }
       );
