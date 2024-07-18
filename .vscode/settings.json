@@ -130,5 +130,5 @@
   "prettier.configPath": ".prettierrc.js",
   "wxcloud.containerDebug.appid": "wxd00871cb6294c274",
   "wxcloud.containerDebug.cliKey": "AAQ9G7sEAAABAAAAAAA6zcdWoKM9NeC5nZFZZiAAAAAraAdzKm8i8JwFJ68cDOJBtIHsmv3F8e00LCv7f+tYvi/Dp6/Te3K7lRGNTU6kTyfvuSsDPF6TFvOjgk+GU0O5cqBMV4c0IKyJ4cJnwaXRiSAnaH/d/DHEWkvCA+EoP6uYYU7Lpo+hh/d1zt4o5CWFIO/bcB3k9H4/zw==",
-  "cSpell.words": ["envid", "mplogin", "respdata", "snsapi"]
+  "cSpell.words": ["envid", "mplogin", "respdata", "snsapi", "Wechat", "xiaowu_id"]
 }

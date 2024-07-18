@@ -18,6 +18,17 @@ Product.init(
       unique: true,
       allowNull: false
     },
+    // 产品配色
+    color: {
+      type: DataTypes.CHAR(50),
+      allowNull: true
+    },
+    // 子产品
+    sub_product: {
+      type: DataTypes.CHAR(50),
+      allowNull: true,
+      defaultValue: '[]'
+    },
     // 月度会费
     month_fee: {
       type: DataTypes.INTEGER,

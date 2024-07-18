@@ -248,7 +248,16 @@ const handleEvent = async (message: EventMessage, res: any) => {
       break;
 
     case 'unsubscribe':
-      await User.update({ subscribe_status: false }, { where: { user_id: FromUserName } });
+      const user = await User.findOne({ where: { user_id: FromUserName } });
+      if (!user) {
+        await User.findOrCreate({
+          where: { user_id: FromUserName },
+          defaults: { subscribe_status: false, user_id: FromUserName }
+        });
+      } else {
+        await user.update({ subscribe_status: false });
+      }
+
       break;
 
     case 'SCAN':

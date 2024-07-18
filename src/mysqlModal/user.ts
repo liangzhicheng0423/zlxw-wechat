@@ -13,13 +13,14 @@ User.init(
       autoIncrement: true
     },
     // 用户唯一id
+    xiaowu_id: {
+      type: DataTypes.CHAR(50),
+      allowNull: true
+    },
+    // 用户唯一id
     user_id: {
       type: DataTypes.CHAR(50),
       unique: true,
-      allowNull: false
-    },
-    xiaowu_id: {
-      type: DataTypes.CHAR(50),
       allowNull: false
     },
     // 父级id
@@ -115,7 +116,7 @@ User.init(
     disabled: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 1
     }
   },
   {

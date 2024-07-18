@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment, { Moment } from 'moment';
-import { PayBody, PayLevel } from '../constant';
+import { PayLevel } from '../constant';
 import { encrypt } from '../crypto';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
@@ -8,6 +8,7 @@ import { Order } from '../mysqlModal/order';
 import { Product as sqProduct } from '../mysqlModal/product';
 import { User } from '../mysqlModal/user';
 import { UserServiceProduct } from '../mysqlModal/user_service_product';
+import { WechatUser } from '../mysqlModal/wechat_user';
 import { updateUserVipStatus } from '../redis';
 import { OrderBody, Product, VipLevel, WeChatPayCallback } from '../types';
 import {
@@ -133,18 +134,18 @@ export const unifiedorderCb = async (req: any, res: any) => {
     // 奖励其父用户
     const [user] = await User.findOrCreate({
       where: { user_id: userId },
-      defaults: { subscribe_status: true }
+      defaults: { subscribe_status: true, user_id: userId }
     });
 
     const formatUser = user?.toJSON();
 
-    let xiaowu_id = formatUser.xiaowu_id;
+    let xiaowu_id = formatUser?.xiaowu_id;
 
-    if (xiaowu_id) {
+    if (!xiaowu_id) {
       const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
       if (!invitationCode) {
         // 邀请码短缺了
-        await sendMessage(userId, `邀请码不足，请联系客服`);
+        await sendMessage(userId, `激活码不足，请联系客服`);
         return;
       }
       xiaowu_id = invitationCode.toJSON().code;
@@ -174,7 +175,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     }
 
     // 更新用户表
-    await user.update({ is_award });
+    await user.update({ is_award, xiaowu_id });
 
     const expire_date = getExpireDate(moment(), vip_level);
 
@@ -275,6 +276,12 @@ export const unifiedorderCb = async (req: any, res: any) => {
     );
 
     await sendServiceQRcode(userId);
+
+    // 创建微信用户记录
+    await WechatUser.findOrCreate({
+      where: { xiaowu_id },
+      defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false }
+    });
 
     // case 1: 私聊
     // await sendImage(userId, updateRes.media_id);
