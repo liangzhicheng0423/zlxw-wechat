@@ -120,6 +120,8 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const { level: vip_level, product } = getLevelAndProduct(out_trade_no);
 
+    console.log('【支持成功】产品名: ', product, ' 会员级别: ', vip_level);
+
     if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
 
     let is_award = false;
@@ -208,10 +210,11 @@ export const unifiedorderCb = async (req: any, res: any) => {
       return;
     }
 
-    console.log('currentProduct.toJSON(): ', currentProduct.toJSON());
+    const product_id = currentProduct.toJSON().id;
+
     const [userProduct, created] = await UserServiceProduct.findOrCreate({
-      where: { user_id: userId },
-      defaults: { product_id: currentProduct.toJSON().id, last_date: moment(), expire_date: moment() }
+      where: { user_id: userId, product_id },
+      defaults: { product_id, last_date: moment(), expire_date: moment() }
     });
 
     let userExpireDate: moment.Moment | null = null;

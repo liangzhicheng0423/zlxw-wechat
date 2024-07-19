@@ -231,6 +231,18 @@ const handleText = async (message: TextMessage, res: any) => {
       await sendMessage(message.FromUserName, reply.join('\n\n'));
 
       break;
+    case '领取100元限时优惠券':
+      const saleReply = [
+        '🎉 成功领取100元限时优惠券',
+        '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
+        '🔥 ' +
+          getOrderUrl('299元/年（24.9元/月）', {
+            level: VipLevel.Year,
+            product: Product.Group,
+            isRecommend: true
+          })
+      ];
+      await sendMessage(message.FromUserName, saleReply.join('\n\n'));
 
     default:
       await chatWithAI(message, res);
@@ -266,15 +278,12 @@ const handleEvent = async (message: EventMessage, res: any) => {
       // 二维码中携带了上一个用户的id
       if (EventKey) {
         const reply = [
-          '🎉 成功领取100元限时优惠券',
-          '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
-          '🔥 ' +
-            getOrderUrl('299元/年（24.9元/月）', {
-              level: VipLevel.Year,
-              product: Product.Group,
-              isRecommend: true
-            })
+          '你好，朋友！',
+          '👩🏻‍💻 我是你的助理小吴，我可以：',
+          '🥇 让排名第一的AI工具，成为你的微信好友',
+          `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
         ];
+
         await sendMessage(FromUserName, reply.join('\n\n'));
 
         await sendAIGroupIntroduce(FromUserName);
