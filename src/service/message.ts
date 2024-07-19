@@ -53,7 +53,10 @@ const chatWithAI = async (message: TextMessage, res: any) => {
   }
   let mode = await getMode(userId);
 
-  if (!mode) return;
+  if (!mode) {
+    await setMode(message.FromUserName, Product.GPT4);
+    mode = Product.GPT4;
+  }
 
   if (mode === Product.GPT4) {
     await chatWithTextAI(message, res);
@@ -240,6 +243,7 @@ const handleText = async (message: TextMessage, res: any) => {
           })
       ];
       await sendMessage(message.FromUserName, saleReply.join('\n\n'));
+      break;
 
     default:
       await chatWithAI(message, res);
