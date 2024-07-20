@@ -171,19 +171,29 @@ export const getBonus = (strategy: 'subscribe' | 'order') => {
 };
 
 export const sendMessage = async (userId: string, text: string) => {
-  await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
-    touser: userId,
-    msgtype: 'text',
-    text: { content: text }
-  });
+  try {
+    const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+      touser: userId,
+      msgtype: 'text',
+      text: { content: text }
+    });
+    console.log('sendMessage response:', response.data);
+  } catch (error) {
+    console.log('【sendMessage】 error: ', error);
+  }
 };
 
 export const sendImage = async (userId: string, mediaId: string) => {
-  await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
-    touser: userId,
-    msgtype: 'image',
-    image: { media_id: mediaId }
-  });
+  try {
+    const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+      touser: userId,
+      msgtype: 'image',
+      image: { media_id: mediaId }
+    });
+    console.log('【sendImage】 response:', response.data);
+  } catch (error) {
+    console.log('【sendImage】 error: ', error);
+  }
 };
 
 export const mergeImages = async (image1Path: string, image2Path: string, outputImagePath: string) => {

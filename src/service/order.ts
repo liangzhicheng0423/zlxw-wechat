@@ -250,18 +250,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     // 加密
     const encrypted = encrypt(clearanceCode);
 
-    // // 生成短邀请码，跟核销码唯一绑定
-    // const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
-    // if (!invitationCode) {
-    //   // 邀请码短缺了
-    //   await sendMessage(userId, `邀请码不足，请联系客服`);
-    //   await sendServiceQRcode(userId);
-    //   return;
-    // }
-
-    // const code = invitationCode.toJSON().code;
-
-    console.info('step 6: 【激活xiaowu_id】');
+    console.info('step 7: 【激活xiaowu_id】');
     await InvitationCode.update({ status: true, send: true }, { where: { code: xiaowu_id } });
 
     // 存储核销码
@@ -272,22 +261,14 @@ export const unifiedorderCb = async (req: any, res: any) => {
       status: false
     });
 
-    // 上传至素材库
-    // const updateRes = await uploadTemporaryMedia(path.join(__dirname, '../public/images/gpt4_qrcode.png'), 'image');
-
-    // await sendMessage(
-    //   userId,
-    //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
-    // );
-
-    console.info('step 7:【创建微信用户】');
+    console.info('step 8:【创建微信用户】');
     // 创建微信用户
     await WechatUser.findOrCreate({
       where: { xiaowu_id },
       defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false, source: '服务号创建' }
     });
 
-    console.info('step 8:【更新微信会员的到期日期】');
+    console.info('step 9:【更新微信会员的到期日期】');
     // 更新微信会员的到期日期
     const currentWechatUserProduct = await UserCustomerProduct.findOne({ where: { user_id: xiaowu_id, product_id } });
     if (!currentWechatUserProduct) {
@@ -302,27 +283,14 @@ export const unifiedorderCb = async (req: any, res: any) => {
       currentWechatUserProduct.update({ expire_date: userCustomerExpireDate?.toDate() });
     }
 
-    // case 1: 私聊
-    // await sendImage(userId, updateRes.media_id);
-
-    // case 2: 群聊
-    /**
-     * 1. 找到一个未使用的群聊二维码
-     * 2. 将群聊二维码上传至素材库
-     * 3. 发送群聊二维码至用户
-     *
-     */
-
-    console.info('step 9:【发送客服二维码】');
+    console.info('step 10:【发送客服二维码】');
     await sendServiceQRcode(userId);
 
-    console.info('step 10:【发送开通成功通知】');
+    console.info('step 11:【发送开通成功通知】');
     await sendMessage(
       userId,
       ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
     );
-
-    // await invitationCode.update({ send: true });
   } catch (error) {
     console.error('order error: ', error);
   } finally {
