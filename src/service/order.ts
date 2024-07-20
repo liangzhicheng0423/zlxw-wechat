@@ -16,6 +16,7 @@ import {
   generateOrderNumber,
   getExpireDate,
   getLevelAndProduct,
+  getReplyBaseInfo,
   isNumber,
   sendMessage,
   sendServiceQRcode
@@ -111,7 +112,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
   try {
     const message: WeChatPayCallback = req.body;
 
-    console.info('支付成功回调:', message);
+    console.info('step 1:【支付成功】:', message);
 
     const userId = message.subOpenid;
 
@@ -121,7 +122,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const { level: vip_level, product } = getLevelAndProduct(out_trade_no);
 
-    console.log('【支持成功】产品名: ', product, ' 会员级别: ', vip_level);
+    console.log('step 2:【支持成功】产品名: ', product, ' 会员级别: ', vip_level);
 
     if (message.resultCode !== 'SUCCESS' || message.returnCode !== 'SUCCESS') return;
 
@@ -154,6 +155,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       xiaowu_id = invitationCode.toJSON().code;
     }
 
+    console.info('step 3: 【生成xiaowu_id】', xiaowu_id);
     const update: { expire_date_group?: Moment | null; expire_date_dan?: Moment | null } = {};
 
     if (formatUser) {
@@ -164,6 +166,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       else update.expire_date_group = userExpireDate;
     }
 
+    console.info('step 4: 【奖励上级用户】', formatUser?.p_id);
     // 奖励上级用户
     if (formatUser?.p_id) {
       const p_id = formatUser.p_id;
@@ -177,12 +180,13 @@ export const unifiedorderCb = async (req: any, res: any) => {
       }
     }
 
+    console.info('step 5: 【更新用户表的xiaowu_id】');
     // 更新用户表
     await user.update({ is_award, xiaowu_id });
 
     const expire_date = getExpireDate(moment(), vip_level);
 
-    console.info('创建订单', {
+    console.info('step 6:【创建订单】', {
       user_id: userId,
       product,
       vip_level,
@@ -213,6 +217,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     const product_id = currentProduct.toJSON().id;
 
+    console.info('step 6: 【创建用户购买产品列表】');
     const [userProduct, created] = await UserServiceProduct.findOrCreate({
       where: { user_id: userId, product_id },
       defaults: { product_id, last_date: moment(), expire_date: moment() }
@@ -256,6 +261,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     // const code = invitationCode.toJSON().code;
 
+    console.info('step 6: 【激活xiaowu_id】');
     await InvitationCode.update({ status: true, send: true }, { where: { code: xiaowu_id } });
 
     // 存储核销码
@@ -274,19 +280,19 @@ export const unifiedorderCb = async (req: any, res: any) => {
     //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     // );
 
-    await sendMessage(
-      userId,
-      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
-    );
+    // await sendMessage(
+    //   userId,
+    //   ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
+    // );
 
-    await sendServiceQRcode(userId);
-
-    // 创建微信用户记录
+    console.info('step 7:【创建微信用户】');
+    // 创建微信用户
     await WechatUser.findOrCreate({
       where: { xiaowu_id },
       defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false, source: '服务号创建' }
     });
 
+    console.info('step 8:【更新微信会员的到期日期】');
     // 更新微信会员的到期日期
     const currentWechatUserProduct = await UserCustomerProduct.findOne({ where: { user_id: xiaowu_id, product_id } });
     if (!currentWechatUserProduct) {
@@ -311,6 +317,18 @@ export const unifiedorderCb = async (req: any, res: any) => {
      * 3. 发送群聊二维码至用户
      *
      */
+
+    console.info('step 9:【发送客服二维码】');
+    await sendServiceQRcode(userId);
+
+    console.info('step 10:【发送开通成功通知】');
+    res.send({
+      ToUserName: userId,
+      MsgType: 'text',
+      Content: ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join(
+        '\n\n'
+      )
+    });
 
     // await invitationCode.update({ send: true });
   } catch (error) {
