@@ -280,11 +280,6 @@ export const unifiedorderCb = async (req: any, res: any) => {
     //   `会员开通成功，请添加AI机器人为好友（请在申请好友时将邀请码填入申请备注中）。\n\n🔑 邀请码: ${code}`
     // );
 
-    // await sendMessage(
-    //   userId,
-    //   ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
-    // );
-
     console.info('step 7:【创建微信用户】');
     // 创建微信用户
     await WechatUser.findOrCreate({
@@ -322,13 +317,10 @@ export const unifiedorderCb = async (req: any, res: any) => {
     await sendServiceQRcode(userId);
 
     console.info('step 10:【发送开通成功通知】');
-    res.send({
-      ToUserName: userId,
-      MsgType: 'text',
-      Content: ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join(
-        '\n\n'
-      )
-    });
+    await sendMessage(
+      userId,
+      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”，并备注邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
+    );
 
     // await invitationCode.update({ send: true });
   } catch (error) {
