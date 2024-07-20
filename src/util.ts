@@ -262,11 +262,11 @@ export const getOneYearLater = (date: Moment = moment()): Moment => {
 export const getExpireDate = (date: Moment, level: VipLevel) => {
   switch (level) {
     case VipLevel.Month:
-      return date.clone().add(1, 'months');
+      return date.clone().add(31, 'days');
     case VipLevel.Quarter:
-      return date.clone().add(3, 'months');
+      return date.clone().add(93, 'days');
     case VipLevel.Year:
-      return date.clone().add(12, 'months');
+      return date.clone().add(366, 'days');
     default:
       return null;
   }

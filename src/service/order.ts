@@ -7,6 +7,7 @@ import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { Order } from '../mysqlModal/order';
 import { Product as sqProduct } from '../mysqlModal/product';
 import { User } from '../mysqlModal/user';
+import { UserCustomerProduct } from '../mysqlModal/user_customer_product';
 import { UserServiceProduct } from '../mysqlModal/user_service_product';
 import { WechatUser } from '../mysqlModal/wechat_user';
 import { updateUserVipStatus } from '../redis';
@@ -222,7 +223,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     const now = moment();
     if (created) {
       // 新增购买
-      userExpireDate = getExpireDate(moment(), vip_level);
+      userExpireDate = expire_date;
     } else {
       // 查看之前的到期时间是否已经到期，如果到期，从当前开时间始算到期时间，如果未到期，则累加到期时间
       const isExpire = now.isAfter(moment(userProduct.toJSON().expire_date));
@@ -285,6 +286,20 @@ export const unifiedorderCb = async (req: any, res: any) => {
       where: { xiaowu_id },
       defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false }
     });
+
+    // 更新微信会员的到期日期
+    const currentWechatUserProduct = await UserCustomerProduct.findOne({ where: { user_id: xiaowu_id, product_id } });
+    if (!currentWechatUserProduct) {
+      await UserCustomerProduct.bulkCreate([{ user_id: xiaowu_id, product_id, expire_date: userExpireDate?.toDate() }]);
+    } else {
+      let userCustomerExpireDate: moment.Moment | null = null;
+      const oldExpireDate = moment(currentWechatUserProduct.toJSON().expire_date);
+      const isExpire = now.isAfter(oldExpireDate);
+
+      if (isExpire) userCustomerExpireDate = expire_date;
+      else userCustomerExpireDate = getExpireDate(oldExpireDate, vip_level);
+      currentWechatUserProduct.update({ expire_date: userCustomerExpireDate?.toDate() });
+    }
 
     // case 1: 私聊
     // await sendImage(userId, updateRes.media_id);
