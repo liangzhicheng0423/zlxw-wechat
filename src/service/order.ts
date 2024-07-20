@@ -284,7 +284,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
     // 创建微信用户记录
     await WechatUser.findOrCreate({
       where: { xiaowu_id },
-      defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false }
+      defaults: { xiaowu_id, nickname: formatUser?.nickname, disabled: false, source: '服务号创建' }
     });
 
     // 更新微信会员的到期日期

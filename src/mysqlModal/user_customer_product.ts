@@ -5,6 +5,7 @@ interface UserCustomerProductAttributes {
   id: number;
   user_id: string;
   product_id: number;
+  remark?: string;
   expire_date?: Date;
   last_date?: Date;
   createdAt?: Date;
@@ -23,6 +24,7 @@ export class UserCustomerProduct
   public product_id!: number;
   public expire_date?: Date;
   public last_date?: Date;
+  public remark?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -49,6 +51,10 @@ UserCustomerProduct.init(
     // 到期时间
     expire_date: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    remark: {
+      type: DataTypes.CHAR(255),
       allowNull: true
     },
     // 最后一次缴费时间

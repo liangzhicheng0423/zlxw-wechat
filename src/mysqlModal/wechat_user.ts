@@ -30,6 +30,11 @@ WechatUser.init(
       type: DataTypes.CHAR(255),
       allowNull: true
     },
+    // 来源
+    source: {
+      type: DataTypes.CHAR(255),
+      allowNull: true
+    },
     // 是否禁用
     disabled: {
       type: DataTypes.BOOLEAN,
