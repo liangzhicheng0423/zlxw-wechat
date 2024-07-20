@@ -286,7 +286,11 @@ export const unifiedorderCb = async (req: any, res: any) => {
     console.info('step 10:【发送开通成功通知】');
     await sendMessage(
       userId,
-      ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”和个人邀请码', `🔑 激活码：${xiaowu_id}`].join('\n\n')
+      [
+        '🎉 会员开通成功',
+        '👩🏻‍💻 请扫码添加客服（菜单栏点击联系客服），向客服发送“激活”和邀请码',
+        `🔑 激活码：${xiaowu_id}`
+      ].join('\n\n')
     );
   } catch (error) {
     console.error('order error: ', error);
