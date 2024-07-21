@@ -7,29 +7,35 @@ export const getUserInfo = async (req: any, res: any) => {
   const { APP_ID, APP_SECRET } = process.env;
 
   try {
-    console.log('APP_SECRET: ', APP_SECRET);
+    console.info('【getUserInfo】 通过code获取access_token和openid');
     // 通过code获取access_token和openid
     const response = await axios.get(
       `http://api.weixin.qq.com/sns/oauth2/access_token?appid=${APP_ID}&secret=${APP_SECRET}&code=${code}&grant_type=authorization_code`
     );
 
-    console.log('response.data: ', response.data);
     const { access_token, openid } = response.data;
+    console.info('【getUserInfo】 access_token, openid', { access_token }, { openid });
+
+    const [user] = await User.findOrCreate({
+      where: { user_id: openid },
+      defaults: { subscribe_status: true }
+    });
+
+    console.info('【getUserInfo】 系统中用户昵称', user?.toJSON().nickname);
+    if (user?.toJSON().nickname) return;
 
     // 使用access_token和openid获取用户信息
     const userInfo = await axios.get(
       `http://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`
     );
 
-    const user = await User.findOne({ where: { user_id: openid } });
+    console.info('【getUserInfo】 使用access_token和openid获取用户信息', userInfo.data);
 
-    console.log('openid: ', userInfo.data.openid, openid);
     if (userInfo.data.openid === openid) {
-      console.log('user: ', !!user);
-      user?.update({ nickname: userInfo.data.nickname, weixin_info: JSON.stringify(userInfo.data) });
+      console.info('【getUserInfo】 更新用信息');
+      await user?.update({ nickname: userInfo.data.nickname, weixin_info: JSON.stringify(userInfo.data) });
     }
 
-    console.log('userInfo.data: ', userInfo.data);
     res.json(userInfo.data);
   } catch (error) {
     console.error('Error getting user info:', error);
