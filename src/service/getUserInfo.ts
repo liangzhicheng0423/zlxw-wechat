@@ -21,8 +21,7 @@ export const getUserInfo = async (req: any, res: any) => {
       defaults: { subscribe_status: true }
     });
 
-    console.info('【getUserInfo】 系统中用户昵称', user?.toJSON().nickname);
-    if (user?.toJSON().nickname) return;
+    console.info('【getUserInfo】 原系统中用户昵称：', user?.toJSON().nickname);
 
     // 使用access_token和openid获取用户信息
     const userInfo = await axios.get(
@@ -32,7 +31,7 @@ export const getUserInfo = async (req: any, res: any) => {
     console.info('【getUserInfo】 使用access_token和openid获取用户信息', userInfo.data);
 
     if (userInfo.data.openid === openid) {
-      console.info('【getUserInfo】 更新用信息');
+      console.info('【getUserInfo】 更新用户信息');
       await user?.update({ nickname: userInfo.data.nickname, weixin_info: JSON.stringify(userInfo.data) });
     }
 
