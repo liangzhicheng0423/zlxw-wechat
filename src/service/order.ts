@@ -273,7 +273,9 @@ export const unifiedorderCb = async (req: any, res: any) => {
     // 更新微信会员的到期日期
     const currentWechatUserProduct = await UserCustomerProduct.findOne({ where: { user_id: xiaowu_id, product_id } });
     if (!currentWechatUserProduct) {
-      await UserCustomerProduct.bulkCreate([{ user_id: xiaowu_id, product_id, expire_date: userExpireDate?.toDate() }]);
+      await UserCustomerProduct.bulkCreate([
+        { user_id: xiaowu_id, product_id, expire_date: userExpireDate?.toDate(), channel: '服务号下单' }
+      ]);
     } else {
       let userCustomerExpireDate: moment.Moment | null = null;
       const oldExpireDate = moment(currentWechatUserProduct.toJSON().expire_date);
@@ -281,7 +283,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
       if (isExpire) userCustomerExpireDate = expire_date;
       else userCustomerExpireDate = getExpireDate(oldExpireDate, vip_level);
-      currentWechatUserProduct.update({ expire_date: userCustomerExpireDate?.toDate() });
+      currentWechatUserProduct.update({ expire_date: userCustomerExpireDate?.toDate(), channel: '服务号下单' });
     }
 
     console.info('step 10:【发送开通成功通知】');

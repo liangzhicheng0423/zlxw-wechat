@@ -6,6 +6,7 @@ interface UserCustomerProductAttributes {
   user_id: string;
   product_id: number;
   remark?: string;
+  channel?: '服务号下单' | '客服录入';
   expire_date?: Date;
   last_date?: Date;
   createdAt?: Date;
@@ -24,6 +25,7 @@ export class UserCustomerProduct
   public product_id!: number;
   public expire_date?: Date;
   public last_date?: Date;
+  public channel?: '服务号下单' | '客服录入';
   public remark?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -55,6 +57,10 @@ UserCustomerProduct.init(
     },
     remark: {
       type: DataTypes.CHAR(255),
+      allowNull: true
+    },
+    channel: {
+      type: DataTypes.CHAR(50),
       allowNull: true
     },
     // 最后一次缴费时间
