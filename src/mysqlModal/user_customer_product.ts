@@ -59,6 +59,7 @@ UserCustomerProduct.init(
       type: DataTypes.CHAR(255),
       allowNull: true
     },
+    // 创建渠道
     channel: {
       type: DataTypes.CHAR(50),
       allowNull: true
