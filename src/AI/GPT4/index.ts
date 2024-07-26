@@ -1,11 +1,13 @@
 import { getFreeCount, getIsVip, useFreeCount } from '../../redis';
 import { Product, TaskStatus, TextMessage } from '../../types';
 import {
+  cancelTyping,
   getReplyBaseInfo,
   getTextReplyUrl,
   sendMessage,
   sendVoiceMessage,
   textToVoice,
+  typing,
   uploadTemporaryMedia
 } from '../../util';
 import { check } from '../check';
@@ -26,6 +28,8 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
   const done = () => {
     taskManager.updateTask(userId, quoteId, TaskStatus.Finished);
   };
+
+  await typing(userId);
 
   try {
     const pass = await check(text);
@@ -75,7 +79,9 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
 
     if (message.ReplyWithVoice) {
       // 将文字转换为音频
+      console.log('【文字转语音】');
       const mp3Path = await textToVoice(reply);
+      console.log('【文字转语音】 转换后的地址: ', mp3Path);
       console.log('mp3Path', mp3Path);
       if (!mp3Path) {
         await sendMessage(userId, '抱歉，请再说一次吧～');
@@ -99,5 +105,6 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
     res.send({ ...baseReply, MsgType: 'text', Content: '[ERROR]\n由于神秘力量，本次操作失败，请重新尝试' });
   } finally {
     done();
+    await cancelTyping(userId);
   }
 };

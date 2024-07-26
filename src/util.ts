@@ -423,7 +423,7 @@ export const anyToMp3 = async (anyPath: string, mp3Path: string): Promise<void> 
 
 export const voiceToText = async (voiceFile: string): Promise<null | string> => {
   try {
-    const url = `https://api.link-ai.chat/v1/audio/transcriptions`;
+    const url = `https://api.link-ai.tech/v1/audio/transcriptions`;
     const headers = { Authorization: `Bearer ${LINK_AI_APP_KEY}` };
     const model = 'whisper-1';
 
@@ -446,7 +446,10 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
     formData.append('file', file);
     formData.append('model', model);
 
+    console.log('【voiceToText】:', '语音转文本');
     const res = await axios.post(url, formData, { headers, timeout: 60000 });
+
+    console.log('【voiceToText】 转换结果: ', res.data);
 
     if (res.status === 200) return res.data.text;
     return null;
@@ -458,7 +461,7 @@ export const voiceToText = async (voiceFile: string): Promise<null | string> => 
 
 export const textToVoice = async (input: string): Promise<string | null> => {
   try {
-    const url = `https://api.link-ai.chat/v1/audio/speech`;
+    const url = `https://api.link-ai.tech/v1/audio/speech`;
     const headers = {
       Authorization: `Bearer ${LINK_AI_APP_KEY}`,
       'Content-Type': 'application/json'
@@ -506,4 +509,26 @@ export const getNow = () => {
 
 export const isNumber = (value: any) => {
   return !isNaN(parseFloat(value)) && isFinite(value);
+};
+
+/** 下发输入状态 */
+export const typing = async (userId: string) => {
+  try {
+    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/typing`;
+    const data = { touser: userId, command: 'Typing' };
+    await axios.post(url, data);
+  } catch (error) {
+    console.error(`Failed to send voice message`);
+  }
+};
+
+/** 取消输入状态 */
+export const cancelTyping = async (userId: string) => {
+  try {
+    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/typing`;
+    const data = { touser: userId, command: 'CancelTyping' };
+    await axios.post(url, data);
+  } catch (error) {
+    console.error(`Failed to send voice message`);
+  }
 };

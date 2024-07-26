@@ -316,6 +316,8 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
 
   const transformText = await voiceToText(voicePath);
 
+  console.log('【message】 handleVoice transformText: ', transformText);
+
   if (!transformText) {
     res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧' });
     return;
