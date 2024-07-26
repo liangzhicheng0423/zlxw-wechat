@@ -514,7 +514,8 @@ export const isNumber = (value: any) => {
 /** 下发输入状态 */
 export const typing = async (userId: string) => {
   try {
-    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/typing`;
+    console.log('【下发输入状态】');
+    const url = `http://api.weixin.qq.com/cgi-bin/message/custom/typing`;
     const data = { touser: userId, command: 'Typing' };
     await axios.post(url, data);
   } catch (error) {
@@ -525,7 +526,8 @@ export const typing = async (userId: string) => {
 /** 取消输入状态 */
 export const cancelTyping = async (userId: string) => {
   try {
-    const url = `https://api.weixin.qq.com/cgi-bin/message/custom/typing`;
+    console.log('【取消输入状态】');
+    const url = `http://api.weixin.qq.com/cgi-bin/message/custom/typing`;
     const data = { touser: userId, command: 'CancelTyping' };
     await axios.post(url, data);
   } catch (error) {

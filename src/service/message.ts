@@ -300,17 +300,6 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
 const handleVoice = async (message: VoiceMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
-  const userId = message.FromUserName;
-  const mode = await getMode(userId);
-
-  if (!mode) {
-    res.send({
-      ...baseReply,
-      MsgType: 'text',
-      Content: '您当前未进入任何模式！～（请点击菜单栏中的"GPT4"按钮切换模式）'
-    });
-    return;
-  }
 
   const voicePath = await downloadVoiceFile(message.MediaId);
 
