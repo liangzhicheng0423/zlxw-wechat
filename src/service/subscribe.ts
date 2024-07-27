@@ -21,6 +21,8 @@ export const subscribe = async (message: EventMessage) => {
 
     channel = extractChannel(EventKey);
 
+    console.log('【subscribe】 channel: ', channel);
+
     if (channel) {
       pid = extractBetween(EventKey, 'qrscene_', '?');
       console.log('【subscribe】 pid 第二个', pid);
