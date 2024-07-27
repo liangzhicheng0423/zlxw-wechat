@@ -1,4 +1,3 @@
-import { channel } from 'diagnostics_channel';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
 import { EventMessage, Product, VipLevel } from '../types';
@@ -11,6 +10,8 @@ export const subscribe = async (message: EventMessage) => {
   let temp_user_id = undefined;
 
   let pid: string | undefined;
+
+  let channel: string | undefined;
   if (EventKey) {
     // 来自于公众号的二维码
     const keys = EventKey.split(/_(.+)/).filter(v => !!v);
@@ -18,10 +19,11 @@ export const subscribe = async (message: EventMessage) => {
 
     console.log('【subscribe】 pid 第一个', pid);
 
-    const channel = extractChannel(EventKey);
+    channel = extractChannel(EventKey);
 
     if (channel) {
       pid = extractBetween(EventKey, 'qrscene_', '?');
+      console.log('【subscribe】 pid 第二个', pid);
     }
 
     if (EventKey.endsWith('_temp_user')) {
