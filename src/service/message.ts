@@ -12,7 +12,7 @@ import {
   createQRCode,
   downloadImage,
   downloadVoiceFile,
-  extractChannel,
+  extractBetween,
   getAiGroupText,
   getBeforeQuestionMark,
   getDanText,
@@ -280,7 +280,25 @@ const handleEvent = async (message: EventMessage, res: any) => {
     case 'SCAN':
       // if (EventKey === FromUserName) return;
 
-      if (EventKey?.endsWith('_temp_use')) return;
+      if (EventKey?.endsWith('_temp_use')) {
+        const temp_user_id = extractBetween(EventKey, '', '_temp_user');
+
+        // const user = await User.findOne({ where: { user_id: FromUserName } });
+        // if (!user) {
+        //   await User.create({ user_id: FromUserName, xiaowu_id: temp_user_id, subscribe_status: true });
+        // }
+
+        const [user, created] = await User.findOrCreate({
+          where: { user_id: FromUserName },
+          defaults: { subscribe_status: true, xiaowu_id: temp_user_id }
+        });
+
+        if (!created && user && !user.toJSON().xiaowu_id) {
+          await user.update({ xiaowu_id: temp_user_id });
+        }
+
+        return;
+      }
 
       // 二维码中携带了上一个用户的id
       if (EventKey) {

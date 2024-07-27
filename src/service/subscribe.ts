@@ -70,7 +70,8 @@ export const subscribe = async (message: EventMessage) => {
       defaults: { subscribe_status: true, p_id: pid, channel_code: channel, xiaowu_id: temp_user_id }
     });
 
-    if (created) {
+    // 新增关注 && 不是通过微信扫描公众号二维码来的。则分配一个xiaowu_id
+    if (created && !temp_user_id) {
       const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
       if (!invitationCode) {
         // 邀请码短缺了
