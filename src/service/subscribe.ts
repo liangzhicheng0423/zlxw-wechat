@@ -5,87 +5,89 @@ import { extractBetween, extractChannel, getOrderUrl, getWelcome, sendAIGroupInt
 import { award } from './award';
 
 export const subscribe = async (message: EventMessage) => {
-  const { FromUserName, EventKey } = message;
+  try {
+    const { FromUserName, EventKey } = message;
 
-  let temp_user_id = undefined;
+    let temp_user_id = undefined;
 
-  let pid: string | undefined;
+    let pid: string | undefined;
 
-  let channel: string | undefined;
-  if (EventKey) {
-    // 来自于公众号的二维码
-    const keys = EventKey.split(/_(.+)/).filter(v => !!v);
-    pid = keys[keys.length - 1];
+    let channel: string | undefined;
+    if (EventKey) {
+      // 来自于公众号的二维码
+      const keys = EventKey.split(/_(.+)/).filter(v => !!v);
+      pid = keys[keys.length - 1];
 
-    console.log('【subscribe】 pid 第一个', pid);
+      console.log('【subscribe】 pid 第一个', pid);
 
-    channel = extractChannel(EventKey);
+      channel = extractChannel(EventKey);
 
-    console.log('【subscribe】 channel: ', channel);
+      console.log('【subscribe】 channel: ', channel);
 
-    if (channel) {
-      pid = extractBetween(EventKey, 'qrscene_', '?');
-      console.log('【subscribe】 pid 第二个', pid);
+      if (channel) {
+        pid = extractBetween(EventKey, 'qrscene_', '?');
+        console.log('【subscribe】 pid 第二个', pid);
+      }
+
+      if (EventKey.endsWith('_temp_user')) {
+        // 微信产生的二维码，此时为临时用户
+        temp_user_id = extractBetween(EventKey, 'qrscene_', '_temp_user');
+        pid = undefined;
+        console.log('【subscribe】 pid 第三个', pid);
+      }
     }
 
-    if (EventKey.endsWith('_temp_user')) {
-      // 微信产生的二维码，此时为临时用户
-      temp_user_id = extractBetween(EventKey, 'qrscene_', '_temp_user');
+    if (pid === FromUserName) {
       pid = undefined;
-      console.log('【subscribe】 pid 第三个', pid);
-    }
-  }
-
-  if (pid === FromUserName) {
-    pid = undefined;
-    console.log('【subscribe】 pid 第四个', pid);
-  }
-
-  console.log('【subscribe】 pid 第五个', pid);
-
-  console.log('【subscribe】 temp_user_id', temp_user_id);
-
-  if (pid) {
-    const reply = [
-      '🎉 成功领取100元限时优惠券',
-      '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
-      '🔥 ' +
-        getOrderUrl('299元/年（24.9元/月）', {
-          level: VipLevel.Year,
-          product: Product.Group,
-          isRecommend: true
-        })
-    ];
-    await sendMessage(FromUserName, reply.join('\n\n'));
-
-    await sendAIGroupIntroduce(FromUserName);
-  } else {
-    await sendMessage(FromUserName, getWelcome());
-  }
-
-  // 用户订阅
-  const [user, created] = await User.findOrCreate({
-    where: { user_id: FromUserName },
-    defaults: { subscribe_status: true, p_id: pid, channel_code: channel, xiaowu_id: temp_user_id }
-  });
-
-  if (created) {
-    const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
-    if (!invitationCode) {
-      // 邀请码短缺了
-      await sendMessage(FromUserName, `邀请码不足，请联系客服`);
-      return;
+      console.log('【subscribe】 pid 第四个', pid);
     }
 
-    const code = invitationCode.toJSON().code;
-    await invitationCode.update({ send: 1, status: 1 });
-    await user.update({ xiaowu_id: code });
-  }
+    console.log('【subscribe】 pid 第五个', pid);
 
-  console.log('[关注公众号] created: ', created, 'pid: ', pid);
+    console.log('【subscribe】 temp_user_id', temp_user_id);
 
-  if (!created) await user.update({ subscribe_status: true, p_id: pid });
+    if (pid) {
+      const reply = [
+        '🎉 成功领取100元限时优惠券',
+        '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
+        '🔥 ' +
+          getOrderUrl('299元/年（24.9元/月）', {
+            level: VipLevel.Year,
+            product: Product.Group,
+            isRecommend: true
+          })
+      ];
+      await sendMessage(FromUserName, reply.join('\n\n'));
 
-  // 只有新增关注才给予奖励
-  if (created && pid) await award(pid, 'subscribe');
+      await sendAIGroupIntroduce(FromUserName);
+    } else {
+      await sendMessage(FromUserName, getWelcome());
+    }
+
+    // 用户订阅
+    const [user, created] = await User.findOrCreate({
+      where: { user_id: FromUserName },
+      defaults: { subscribe_status: true, p_id: pid, channel_code: channel, xiaowu_id: temp_user_id }
+    });
+
+    if (created) {
+      const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
+      if (!invitationCode) {
+        // 邀请码短缺了
+        await sendMessage(FromUserName, `邀请码不足，请联系客服`);
+        return;
+      }
+
+      const code = invitationCode.toJSON().code;
+      await invitationCode.update({ send: 1, status: 1 });
+      await user.update({ xiaowu_id: code });
+    }
+
+    console.log('[关注公众号] created: ', created, 'pid: ', pid);
+
+    if (!created) await user.update({ subscribe_status: true, p_id: pid });
+
+    // 只有新增关注才给予奖励
+    if (created && pid) await award(pid, 'subscribe');
+  } catch (error) {}
 };

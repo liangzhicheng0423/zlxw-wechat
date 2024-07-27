@@ -540,12 +540,17 @@ export const extractChannel = (url: string): string | undefined => {
   return match ? match[1] : undefined;
 };
 
+const escapeRegExp = (string: string): string => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};
+
 export const extractBetween = (str: string, start: string, end: string): string | undefined => {
-  const regex = new RegExp(`${start}(.*?)${end}`);
+  const escapedStart = escapeRegExp(start);
+  const escapedEnd = escapeRegExp(end);
+  const regex = new RegExp(`${escapedStart}(.*?)${escapedEnd}`);
   const match = str.match(regex);
   return match ? match[1] : undefined;
 };
-
 export const getBeforeQuestionMark = (str: string): string | null => {
   const match = str.match(/^(.*?)\?/);
   return match ? match[1] : str;
