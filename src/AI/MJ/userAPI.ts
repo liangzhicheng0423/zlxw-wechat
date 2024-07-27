@@ -84,10 +84,13 @@ const getUserAPIOperation = async (message: TextMessage, res: any, cmd: CmdData)
         );
       } catch (error) {
         console.log('发送下载任务失败');
+        send('抱歉，图片下载失败，请重新尝试');
       }
     } catch (error) {
       console.error('[useAPI] worker message response error: ' + error);
       taskManager.updateTask(userId, taskId, '', '', TaskStatus.ABORTED);
+    } finally {
+      taskManager.updateTask(userId, taskId, '', '', TaskStatus.FINISHED);
     }
   });
 
@@ -205,6 +208,9 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     } catch (error) {
       taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
       console.log('发送下载任务失败: ', error);
+      send('抱歉，图片下载失败，请重新尝试');
+    } finally {
+      taskManager.updateTask(user_id, task_id, '', '', TaskStatus.FINISHED);
     }
   });
 
@@ -313,6 +319,7 @@ export const blendImage = async (message: TextMessage, res: any) => {
     } catch (error) {
       taskManager.updateTask(user_id, task_id, '', '', TaskStatus.ABORTED);
       console.log('发送下载任务失败');
+      send('抱歉，图片下载失败，请重新尝试');
     } finally {
       taskManager.updateTask(user_id, task_id, undefined, undefined, TaskStatus.FINISHED);
       taskManager.updateMode(user_id, OPERATE.Close);
