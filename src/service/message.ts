@@ -12,7 +12,9 @@ import {
   createQRCode,
   downloadImage,
   downloadVoiceFile,
+  extractChannel,
   getAiGroupText,
+  getBeforeQuestionMark,
   getDanText,
   getGptConfig,
   getMjConfig,
@@ -251,20 +253,10 @@ const handleText = async (message: TextMessage, res: any) => {
   }
 };
 
-const extractChannel = (url: string): string | null => {
-  const match = url.match(/channel=([^&]+)/);
-  return match ? match[1] : null;
-};
-
 const handleEvent = async (message: EventMessage, res: any) => {
   const { FromUserName, Event, EventKey } = message;
 
   console.log('【handleEvent】 Event: ', Event, ' EventKey: ', EventKey);
-
-  if (EventKey) {
-    const channel = extractChannel(EventKey);
-    console.log('【handleEvent】 channel: ', channel);
-  }
 
   switch (Event) {
     case 'subscribe':
@@ -286,10 +278,17 @@ const handleEvent = async (message: EventMessage, res: any) => {
       break;
 
     case 'SCAN':
-      if (EventKey === FromUserName) return;
+      // if (EventKey === FromUserName) return;
+
+      if (EventKey?.endsWith('_temp_use')) return;
 
       // 二维码中携带了上一个用户的id
       if (EventKey) {
+        const who = getBeforeQuestionMark(EventKey);
+
+        console.log('【SCAN】 who: ', who);
+        if (who === FromUserName) return;
+
         const reply = [
           '你好，朋友！',
           '👩🏻‍💻 我是你的助理小吴，我可以：',

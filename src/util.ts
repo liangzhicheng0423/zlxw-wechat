@@ -534,3 +534,19 @@ export const cancelTyping = async (userId: string) => {
     console.error(`Failed to send voice message`);
   }
 };
+
+export const extractChannel = (url: string): string | undefined => {
+  const match = url.match(/channel=([^&]+)/);
+  return match ? match[1] : undefined;
+};
+
+export const extractBetween = (str: string, start: string, end: string): string | undefined => {
+  const regex = new RegExp(`${start}(.*?)${end}`);
+  const match = str.match(regex);
+  return match ? match[1] : undefined;
+};
+
+export const getBeforeQuestionMark = (str: string): string | null => {
+  const match = str.match(/^(.*?)\?/);
+  return match ? match[1] : str;
+};

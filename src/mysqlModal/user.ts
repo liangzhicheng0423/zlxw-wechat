@@ -86,6 +86,11 @@ User.init(
       type: DataTypes.CHAR(255),
       allowNull: true
     },
+    // 渠道码
+    channel_code: {
+      type: DataTypes.CHAR(255),
+      allowNull: true
+    },
     // 标签列表
     tag_list: {
       type: DataTypes.CHAR(255),

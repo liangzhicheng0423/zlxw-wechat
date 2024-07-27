@@ -1,18 +1,45 @@
+import { channel } from 'diagnostics_channel';
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
 import { EventMessage, Product, VipLevel } from '../types';
-import { getOrderUrl, getWelcome, sendAIGroupIntroduce, sendMessage } from '../util';
+import { extractBetween, extractChannel, getOrderUrl, getWelcome, sendAIGroupIntroduce, sendMessage } from '../util';
 import { award } from './award';
 
 export const subscribe = async (message: EventMessage) => {
   const { FromUserName, EventKey } = message;
 
+  let temp_user_id = undefined;
+
   let pid: string | undefined;
   if (EventKey) {
+    // 来自于公众号的二维码
     const keys = EventKey.split(/_(.+)/).filter(v => !!v);
     pid = keys[keys.length - 1];
+
+    console.log('【subscribe】 pid 第一个', pid);
+
+    const channel = extractChannel(EventKey);
+
+    if (channel) {
+      pid = extractBetween(EventKey, 'qrscene_', '?');
+    }
+
+    if (EventKey.endsWith('_temp_user')) {
+      // 微信产生的二维码，此时为临时用户
+      temp_user_id = extractBetween(EventKey, 'qrscene_', '_temp_user');
+      pid = undefined;
+      console.log('【subscribe】 pid 第三个', pid);
+    }
   }
-  if (pid === FromUserName) pid = undefined;
+
+  if (pid === FromUserName) {
+    pid = undefined;
+    console.log('【subscribe】 pid 第四个', pid);
+  }
+
+  console.log('【subscribe】 pid 第五个', pid);
+
+  console.log('【subscribe】 temp_user_id', temp_user_id);
 
   if (pid) {
     const reply = [
@@ -35,7 +62,7 @@ export const subscribe = async (message: EventMessage) => {
   // 用户订阅
   const [user, created] = await User.findOrCreate({
     where: { user_id: FromUserName },
-    defaults: { subscribe_status: true, p_id: pid }
+    defaults: { subscribe_status: true, p_id: pid, channel_code: channel, xiaowu_id: temp_user_id }
   });
 
   if (created) {
