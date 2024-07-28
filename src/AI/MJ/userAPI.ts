@@ -78,7 +78,7 @@ const getUserAPIOperation = async (message: TextMessage, res: any, cmd: CmdData)
 
       try {
         await axios.post(
-          'http://api.ai-xiaowu.com:3000/download',
+          'http://jump.ai-xiaowu.com:3000/download',
           { originUrl: res.result.url, taskId, userId, type: 'operate', mjType: cmd.mj_type },
           { headers: { 'Content-Type': 'application/json' } }
         );
@@ -201,6 +201,7 @@ export const getUserAPIGenerate = async (message: TextMessage, res: any, cmd?: C
     try {
       const jumpRes = await axios.post(
         'https://jump.ai-xiaowu.com/download',
+
         { originUrl: result.url, taskId, userId, type: 'generate', mjType: TaskType.GENERATE },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -311,7 +312,7 @@ export const blendImage = async (message: TextMessage, res: any) => {
 
     try {
       const jumpRes = await axios.post(
-        'http://api.ai-xiaowu.com:3000/download',
+        'http://jump.ai-xiaowu.com:3000/download',
         { originUrl: result.url, taskId, userId, type: 'generate' },
         { headers: { 'Content-Type': 'application/json' } }
       );
