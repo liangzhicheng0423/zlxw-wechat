@@ -63,8 +63,6 @@ export const subscribe = async (message: EventMessage) => {
 
       await sendMessage(FromUserName, reply.join('\n\n'));
 
-      await sendMessage(FromUserName, reply.join('\n\n'));
-
       await sendAIGroupIntroduce(FromUserName);
     } else {
       await sendMessage(FromUserName, getWelcome());

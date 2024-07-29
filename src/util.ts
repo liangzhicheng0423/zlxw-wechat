@@ -172,28 +172,41 @@ export const getBonus = (strategy: 'subscribe' | 'order') => {
 
 const MAX_MESSAGE_LENGTH = 600;
 
-const splitMessage = (longMessage: string): string[] => {
-  const messageParts: string[] = [];
+const splitMessage = (longMessage: string) => {
+  const messageParts = [];
   let start = 0;
 
   while (start < longMessage.length) {
-    // 计算本次截取的结束位置，尽量接近MAX_MESSAGE_LENGTH
-    let end = Math.min(start + MAX_MESSAGE_LENGTH, longMessage.length);
+    // 计算结束位置，接近 MAX_CHINESE_LENGTH
+    let end = start + MAX_MESSAGE_LENGTH;
 
-    // 如果不是完整的一段，向前寻找最近的标点符号进行分割
-    if (end < longMessage.length) {
+    // 如果 end 超过消息长度，调整 end 位置
+    if (end >= longMessage.length) {
+      end = longMessage.length;
+    } else {
+      // 向前寻找最近的合适的分隔符进行分割
+      const segment = longMessage.slice(start, end + 1); // 取 end + 1 以包含当前字符
       const lastPunctuationIndex = Math.max(
-        longMessage.lastIndexOf('.', end),
-        longMessage.lastIndexOf('!', end),
-        longMessage.lastIndexOf('?', end),
-        longMessage.lastIndexOf('，', end),
-        longMessage.lastIndexOf('。', end),
-        longMessage.lastIndexOf('！', end),
-        longMessage.lastIndexOf('？', end)
+        segment.lastIndexOf('。'),
+        segment.lastIndexOf('！'),
+        segment.lastIndexOf('？'),
+        segment.lastIndexOf('\n') // 也可以在换行符处分段
       );
 
-      if (lastPunctuationIndex > start) {
-        end = lastPunctuationIndex + 1;
+      if (lastPunctuationIndex >= 0) {
+        end = start + lastPunctuationIndex + 1;
+      } else {
+        // 如果没有找到合适的分隔符，强制使用当前的 end 位置
+        end = Math.min(start + MAX_MESSAGE_LENGTH, longMessage.length);
+      }
+    }
+
+    // 确保每段的结束处不会在中文逗号处分段
+    const segment = longMessage.slice(start, end).trim();
+    if (segment.endsWith('，')) {
+      const lastCommaIndex = segment.lastIndexOf('，');
+      if (lastCommaIndex > 0) {
+        end = start + lastCommaIndex + 1;
       }
     }
 
