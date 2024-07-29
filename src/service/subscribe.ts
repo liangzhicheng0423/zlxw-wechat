@@ -1,6 +1,6 @@
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
-import { EventMessage, Product, VipLevel } from '../types';
+import { EventMessage } from '../types';
 import {
   extractBetween,
   extractChannel,
@@ -61,6 +61,7 @@ export const subscribe = async (message: EventMessage) => {
         `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
       ];
 
+      console.log('【订阅发送】');
       await sendMessage(FromUserName, reply.join('\n\n'));
 
       await sendAIGroupIntroduce(FromUserName);

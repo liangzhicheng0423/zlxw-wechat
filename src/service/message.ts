@@ -312,6 +312,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
         `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
       ];
 
+      console.log('【扫码发送】');
       await sendMessage(FromUserName, reply.join('\n\n'));
 
       await sendAIGroupIntroduce(FromUserName);

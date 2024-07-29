@@ -235,6 +235,8 @@ export const sendMessageAPI = async (userId: string, text: string) => {
 export const sendMessage = async (userId: string, text: string): Promise<void> => {
   const messageParts = splitMessage(text);
 
+  console.log('【段落拆分】：', messageParts.length);
+
   for (const part of messageParts) {
     await sendMessageAPI(userId, part);
   }
