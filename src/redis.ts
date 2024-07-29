@@ -178,8 +178,6 @@ export const updateRedis = async () => {
       v => v.user_id === formatUser.user_id && v.product_id === formatProduct.id
     )?.expire_date;
 
-    console.log('updateRedis: ', userGroupExpireDate);
-
     if (userGroupExpireDate && now.isBefore(userGroupExpireDate)) isVip = true;
 
     if (formatUser.disabled) isVip = false;

@@ -1,7 +1,14 @@
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
 import { EventMessage, Product, VipLevel } from '../types';
-import { extractBetween, extractChannel, getOrderUrl, getWelcome, sendAIGroupIntroduce, sendMessage } from '../util';
+import {
+  extractBetween,
+  extractChannel,
+  getTextReplyUrl,
+  getWelcome,
+  sendAIGroupIntroduce,
+  sendMessage
+} from '../util';
 import { award } from './award';
 
 export const subscribe = async (message: EventMessage) => {
@@ -48,15 +55,14 @@ export const subscribe = async (message: EventMessage) => {
 
     if (pid) {
       const reply = [
-        '🎉 成功领取100元限时优惠券',
-        '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
-        '🔥 ' +
-          getOrderUrl('299元/年（24.9元/月）', {
-            level: VipLevel.Year,
-            product: Product.Group,
-            isRecommend: true
-          })
+        '你好，朋友！',
+        '👩🏻‍💻 我是你的助理小吴，我可以：',
+        '🥇 让排名第一的AI工具，成为你的微信好友',
+        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
       ];
+
+      await sendMessage(FromUserName, reply.join('\n\n'));
+
       await sendMessage(FromUserName, reply.join('\n\n'));
 
       await sendAIGroupIntroduce(FromUserName);

@@ -278,46 +278,43 @@ const handleEvent = async (message: EventMessage, res: any) => {
       break;
 
     case 'SCAN':
-      // if (EventKey === FromUserName) return;
+      if (!EventKey) return;
 
-      if (EventKey?.endsWith('_temp_use')) {
+      // 临时用户，从微信过来的
+      if (EventKey.endsWith('_temp_use')) {
         const temp_user_id = extractBetween(EventKey, '', '_temp_user');
-
-        // const user = await User.findOne({ where: { user_id: FromUserName } });
-        // if (!user) {
-        //   await User.create({ user_id: FromUserName, xiaowu_id: temp_user_id, subscribe_status: true });
-        // }
 
         const [user, created] = await User.findOrCreate({
           where: { user_id: FromUserName },
           defaults: { subscribe_status: true, xiaowu_id: temp_user_id }
         });
 
-        if (!created && user && !user.toJSON().xiaowu_id) {
+        if (!created && !user.toJSON().xiaowu_id) {
           await user.update({ xiaowu_id: temp_user_id });
         }
 
         return;
       }
 
+      // 会员用户，从微信过来的
+      if (EventKey.endsWith('_vip_use')) return;
+
       // 二维码中携带了上一个用户的id
-      if (EventKey) {
-        const who = getBeforeQuestionMark(EventKey);
+      const who = getBeforeQuestionMark(EventKey);
 
-        console.log('【SCAN】 who: ', who);
-        if (who === FromUserName) return;
+      console.log('【SCAN】 who: ', who);
+      if (who === FromUserName) return;
 
-        const reply = [
-          '你好，朋友！',
-          '👩🏻‍💻 我是你的助理小吴，我可以：',
-          '🥇 让排名第一的AI工具，成为你的微信好友',
-          `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
-        ];
+      const reply = [
+        '你好，朋友！',
+        '👩🏻‍💻 我是你的助理小吴，我可以：',
+        '🥇 让排名第一的AI工具，成为你的微信好友',
+        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
+      ];
 
-        await sendMessage(FromUserName, reply.join('\n\n'));
+      await sendMessage(FromUserName, reply.join('\n\n'));
 
-        await sendAIGroupIntroduce(FromUserName);
-      }
+      await sendAIGroupIntroduce(FromUserName);
       break;
 
     case 'CLICK':

@@ -170,7 +170,43 @@ export const getBonus = (strategy: 'subscribe' | 'order') => {
   };
 };
 
-export const sendMessage = async (userId: string, text: string) => {
+const MAX_MESSAGE_LENGTH = 600;
+
+const splitMessage = (longMessage: string): string[] => {
+  const messageParts: string[] = [];
+  let start = 0;
+
+  while (start < longMessage.length) {
+    // 计算本次截取的结束位置，尽量接近MAX_MESSAGE_LENGTH
+    let end = Math.min(start + MAX_MESSAGE_LENGTH, longMessage.length);
+
+    // 如果不是完整的一段，向前寻找最近的标点符号进行分割
+    if (end < longMessage.length) {
+      const lastPunctuationIndex = Math.max(
+        longMessage.lastIndexOf('.', end),
+        longMessage.lastIndexOf('!', end),
+        longMessage.lastIndexOf('?', end),
+        longMessage.lastIndexOf('，', end),
+        longMessage.lastIndexOf('。', end),
+        longMessage.lastIndexOf('！', end),
+        longMessage.lastIndexOf('？', end)
+      );
+
+      if (lastPunctuationIndex > start) {
+        end = lastPunctuationIndex + 1;
+      }
+    }
+
+    // 截取消息并存入数组
+    const messagePart = longMessage.slice(start, end).trim();
+    messageParts.push(messagePart);
+    start = end;
+  }
+
+  return messageParts;
+};
+
+export const sendMessageAPI = async (userId: string, text: string) => {
   try {
     const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
       touser: userId,
@@ -180,6 +216,14 @@ export const sendMessage = async (userId: string, text: string) => {
     console.log('sendMessage response:', response.data);
   } catch (error) {
     console.log('【sendMessage】 error: ', error);
+  }
+};
+
+export const sendMessage = async (userId: string, text: string): Promise<void> => {
+  const messageParts = splitMessage(text);
+
+  for (const part of messageParts) {
+    await sendMessageAPI(userId, part);
   }
 };
 
