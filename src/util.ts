@@ -173,6 +173,8 @@ export const getBonus = (strategy: 'subscribe' | 'order') => {
 const MAX_MESSAGE_LENGTH = 600;
 
 const splitMessage = (longMessage: string) => {
+  if (longMessage.length <= MAX_MESSAGE_LENGTH) return [longMessage];
+
   const messageParts = [];
   let start = 0;
 

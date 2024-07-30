@@ -39,20 +39,8 @@ const { admins, welcome: gpt_welcome, welcome_enable: gpt_welcome_enable } = get
 const { welcome: mj_welcome, welcome_enable: mj_welcome_enable } = getMjConfig();
 
 const chatWithAI = async (message: TextMessage, res: any) => {
-  const baseReply = getReplyBaseInfo(message);
-
   const userId = message.FromUserName;
 
-  const user = await User.findOne({ where: { user_id: userId } });
-
-  if (!user) {
-    res.send({
-      ...baseReply,
-      MsgType: 'text',
-      Content: '抱歉，用户信息丢失，请重新关注公众号'
-    });
-    return;
-  }
   let mode = await getMode(userId);
 
   if (!mode) {
@@ -236,13 +224,10 @@ const handleText = async (message: TextMessage, res: any) => {
     case '领取100元限时优惠券':
       const saleReply = [
         '🎉 成功领取100元限时优惠券',
-        '👩🏻‍💻 助理小吴AI群，折后叠加100元立减券，仅需',
-        '🔥 ' +
-          getOrderUrl('299元/年（24.9元/月）', {
-            level: VipLevel.Year,
-            product: Product.Group,
-            isRecommend: true
-          })
+        '👩🏻‍💻 助理小吴AI群，新用户首次体验价399元/年',
+        '🎟️ 折上叠加100元限时立减券，仅需',
+        `👉 ${getOrderUrl('299元/年，马上抢', { level: VipLevel.Year, product: Product.Group, isRecommend: true })} 🔥`,
+        '7️⃣ 支持7天无理由'
       ];
       await sendMessage(message.FromUserName, saleReply.join('\n\n'));
       break;
@@ -309,7 +294,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
         '你好，朋友！',
         '👩🏻‍💻 我是你的助理小吴，我可以：',
         '🥇 让排名第一的AI工具，成为你的微信好友',
-        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
+        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
       ];
 
       console.log('【扫码发送】');

@@ -58,7 +58,7 @@ export const subscribe = async (message: EventMessage) => {
         '你好，朋友！',
         '👩🏻‍💻 我是你的助理小吴，我可以：',
         '🥇 让排名第一的AI工具，成为你的微信好友',
-        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券')}`
+        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
       ];
 
       console.log('【订阅发送】');
