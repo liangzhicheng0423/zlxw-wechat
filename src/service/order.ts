@@ -27,6 +27,8 @@ import { award } from './award';
 export const unifiedorder = async (req: any, res: any) => {
   const { level, product, isRecommend } = req.body as OrderBody;
 
+  console.log('【下单】: ', req.headers);
+
   const ip = req.headers['x-forwarded-for']; // 小程序直接callcontainer请求会存在
   const openid = req.headers['x-wx-openid']; // 小程序直接callcontainer请求会存在
   const env_id = req.headers['x-wx-env'];

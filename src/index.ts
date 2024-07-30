@@ -11,10 +11,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { initRedis } from './redis';
 import { create } from './service/create';
 import { getUserInfo } from './service/getUserInfo';
-import { getUserInfo2 } from './service/getUserInfo2';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
-import { uploadPermanentImageMedia } from './util';
 
 const logger = morgan('tiny');
 
@@ -41,8 +39,6 @@ app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
 });
 
 app.get('/getUserInfo', asyncHandler(getUserInfo));
-
-app.get('/getUserInfo2', asyncHandler(getUserInfo2));
 
 /** 统一下单 */
 app.post('/unifiedorder', asyncHandler(unifiedorder));
