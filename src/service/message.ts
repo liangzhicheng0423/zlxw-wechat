@@ -207,7 +207,7 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     case '获取用户信息':
-      await axios.get(`/getUserInfo?openid=${message.FromUserName})`);
+      await axios.get(`/getUserInfo2?openid=${message.FromUserName})`);
       break;
 
     case '绘图Midjourney':
