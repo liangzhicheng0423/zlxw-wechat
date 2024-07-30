@@ -226,7 +226,7 @@ const handleText = async (message: TextMessage, res: any) => {
         '🎉 成功领取100元限时优惠券',
         '👩🏻‍💻 助理小吴AI群，新用户首次体验价399元/年',
         '🎟️ 折上叠加100元限时立减券，仅需',
-        `👉 ${getOrderUrl('299元/年，马上抢', { level: VipLevel.Year, product: Product.Group, isRecommend: true })} 🔥`,
+        `👉🏻 ${getOrderUrl('299元/年，马上抢', { level: VipLevel.Year, product: Product.Group, isRecommend: true })} 🔥`,
         '7️⃣ 支持7天无理由'
       ];
       await sendMessage(message.FromUserName, saleReply.join('\n\n'));
