@@ -15,31 +15,33 @@
 
       const params = window.location.search;
 
-      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com/authorize' + params);
+      const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com' + params);
       const scope = 'snsapi_userinfo';
 
       const state = 'STATE';
 
       const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
 
-      console.log('authUrl: ', authUrl);
+      // 用户未授权，引导用户进行授权
+      window.location.href = authUrl;
 
-      const urlParams = new URLSearchParams(params);
 
-      const code = urlParams.get('code');
-
-      if (code) {
-
-        console.log('code: ', code);
-        console.log('用户已授权，获取用户信息');
-
-        // 用户已授权，获取用户信息
-        fetch(`/getUserInfo?code=${code}`)
-        window.location.href = `https://wechat.ai-xiaowu.com` + params;
-      } else {
-        // 用户未授权，引导用户进行授权
-        window.location.href = authUrl;
-      }
+//       const urlParams = new URLSearchParams(params);
+//
+//       const code = urlParams.get('code');
+//
+//      if (code) {
+//
+//        console.log('code: ', code);
+//        console.log('用户已授权，获取用户信息');
+//
+//        // 用户已授权，获取用户信息
+//        fetch(`/getUserInfo?code=${code}`)
+//        window.location.href = `https://wechat.ai-xiaowu.com` + params;
+//      } else {
+//        // 用户未授权，引导用户进行授权
+//        window.location.href = authUrl;
+//      }
     </script>
   </body>
 </html>

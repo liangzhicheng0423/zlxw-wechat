@@ -125,6 +125,17 @@
 
     <script>
 
+      const params = window.location.search;
+
+      const urlParams = new URLSearchParams(params);
+
+      const code = urlParams.get('code');
+
+      // 用户已授权，获取用户信息
+      if (code) {
+        fetch(`/getUserInfo?code=${code}`)
+      }
+
       async function order() {
         const res = await callAPI('unifiedorder');
 
@@ -207,16 +218,14 @@
 
         if (result.ret !== 0) return
 
-        setLoading(false);
-
-        await order();
-
         window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
-
         // 监听签名注册成功
-        wx.ready(() => {
+        wx.ready(async () => {
           console.log('WX监听完成');
+          setLoading(false);
+
+          await order();
         });
 
         // 发起签名注册，是一个异步操作，成功会触发wx.ready
