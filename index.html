@@ -6,75 +6,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>支付中...</title>
     <style>
-        /* 样式定义开始 */
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: #000000; /* 黑色背景 */
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-        }
+      /* Define the colors used */
+      :root {
+        --color1: hsla(337, 84%, 48%, 0.75);
+        --color2: hsla(160, 50%, 48%, 0.75);
+        --color3: hsla(190, 61%, 65%, 0.75);
+        --color4: hsla(41, 82%, 52%, 0.75);
+      }
 
-        .loader {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 120px;
-            height: 120px;
-        }
+      /* Calculated values */
+      .loader {
+        position: relative;
+        width: 2.5em;
+        height: 2.5em;
+        transform: rotate(165deg);
+      }
 
-        .loader div {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff); /* 科技感渐变色 */
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 0 20px rgba(0, 198, 255, 0.6); /* 发光效果 */
-        }
+      .loader:before,
+      .loader:after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: block;
+        width: 0.5em;
+        height: 0.5em;
+        border-radius: 0.25em;
+        transform: translate(-50%, -50%);
+      }
 
-        .loader div:nth-child(1) {
-            animation-delay: -0.32s;
-        }
+      .loader:before {
+        animation: before 2s infinite;
+      }
 
-        .loader div:nth-child(2) {
-            animation-delay: -0.16s;
-        }
+      .loader:after {
+        animation: after 2s infinite;
+      }
 
-        @keyframes bounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-                opacity: 0.6;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
+      @keyframes before {
+        0% {
+          width: 0.5em;
+          box-shadow:
+            1em -1em var(--color1),
+            -1em 1em var(--color3);
         }
+        35% {
+          width: 2.5em;
+          box-shadow:
+            0 -1em var(--color1),
+            0 1em var(--color3);
+        }
+        70% {
+          width: 0.5em;
+          box-shadow:
+            -1em -1em var(--color1),
+            1em 1em var(--color3);
+        }
+        100% {
+          box-shadow:
+            1em -1em var(--color1),
+            -1em 1em var(--color3);
+        }
+      }
 
-        .loading-text {
-            margin-top: 20px;
-            font-size: 18px;
-            animation: text-blink 2s infinite;
+      @keyframes after {
+        0% {
+          height: 0.5em;
+          box-shadow:
+            1em 1em var(--color2),
+            -1em -1em var(--color4);
         }
+        35% {
+          height: 2.5em;
+          box-shadow:
+            1em 0 var(--color2),
+            -1em 0 var(--color4);
+        }
+        70% {
+          height: 0.5em;
+          box-shadow:
+            1em -1em var(--color2),
+            -1em 1em var(--color4);
+        }
+        100% {
+          box-shadow:
+            1em 1em var(--color2),
+            -1em -1em var(--color4);
+        }
+      }
 
-        @keyframes text-blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        /* 样式定义结束 */
+      /* Center the loader */
+      html, body {
+        height: 100%;
+      }
+
+      .loader {
+        position: absolute;
+        top: calc(50% - 1.25em); /* 2.5em / 2 */
+        left: calc(50% - 1.25em); /* 2.5em / 2 */
+      }
+
     </style>
   </head>
 
   <body>
     <div id="loading" class="loader">
-      <div></div>
-      <div></div>
-      <div></div>
     </div>
 
     <!-- <script
@@ -88,8 +124,9 @@
     </script>
 
     <script>
+
       async function order() {
-        const res = await callAPI('unifiedorder')
+        const res = await callAPI('unifiedorder');
 
         if ((res.respdata || {}).payment != null) {
           const { timeStamp, signType, paySign, package, nonceStr } = res.respdata.payment
@@ -144,9 +181,17 @@
       }
 
       window.onload = async function () {
-        let isLoading = true;
 
         const loadingContainer = document.getElementById('loading');
+
+        function setLoading(loading) {
+          console.log('设置loading: ', loading)
+          if (loading) {
+            loadingContainer.style.display = 'flex';
+          } else {
+            loadingContainer.style.display = 'none';
+          }
+        }
 
         // const vConsole = new window.VConsole();
         // 使用登录模块，传入信息开始授权登录过程
@@ -160,29 +205,18 @@
 
         console.log({ result });
 
-        if (result.ret !== 0) {
-          return
-        }
+        if (result.ret !== 0) return
+
+        setLoading(false);
+
+        await order();
 
         window.app = result.cloud             // result.cloud 返回初始化可操作的 cloud 函数对象，将其放置全局
 
-        function setLoading(loading) {
-          console.log('设置loading: ', loading)
-          isLoading = loading;
-          if (isLoading) {
-            loadingContainer.style.display = 'flex';
-          } else {
-            loadingContainer.style.display = 'none';
-          }
-        }
-
-        setLoading(true);
 
         // 监听签名注册成功
         wx.ready(() => {
-          setLoading(false);
           console.log('WX监听完成');
-          order();
         });
 
         // 发起签名注册，是一个异步操作，成功会触发wx.ready
