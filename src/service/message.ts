@@ -1,3 +1,4 @@
+import axios from 'axios';
 import moment from 'moment';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
@@ -203,6 +204,10 @@ const handleText = async (message: TextMessage, res: any) => {
       if (!gpt_welcome_enable) return;
 
       await sendMessage(message.FromUserName, gpt_welcome);
+      break;
+
+    case '获取用户信息':
+      await axios.get(`/getUserInfo?openid=${message.FromUserName})`);
       break;
 
     case '绘图Midjourney':
