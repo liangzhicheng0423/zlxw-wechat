@@ -7,27 +7,22 @@ export const award = async (userId: string, type: 'subscribe' | 'order') => {
   // 查找用户
   const foundUser = await User.findOne({ where: { user_id: userId, subscribe_status: true } });
 
-  if (!foundUser) {
-    console.log('【award】 未找到上级用户');
-    return;
-  }
-
   // 更新奖励
-  const formatUser = foundUser.toJSON();
+  const formatUser = foundUser?.toJSON();
 
-  console.log('【award】 nickname：', formatUser.nickname);
+  console.log('【award】 nickname：', formatUser?.nickname);
 
   const bonus = getBonus(type);
   const update: { cash?: number; integral?: number; share_count: number } = {
-    share_count: (formatUser.share_count ?? 0) + 1
+    share_count: (formatUser?.share_count ?? 0) + 1
   };
 
-  if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus + (formatUser.cash ?? 0);
-  if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus + (formatUser.integral ?? 0);
+  if (bonus.type === BonusTypeEnum.Cash) update.cash = bonus.bonus + (formatUser?.cash ?? 0);
+  if (bonus.type === BonusTypeEnum.Integral) update.integral = bonus.bonus + (formatUser?.integral ?? 0);
 
   console.log('【award】 update：', update);
 
-  await foundUser.update(update);
+  await foundUser?.update(update);
 
   let text: string[] = [];
   if (type === 'subscribe') {
