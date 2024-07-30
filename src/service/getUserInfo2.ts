@@ -19,7 +19,7 @@ const getAccessToken = async () => {
 export const getUserInfo2 = async (req: any, res: any) => {
   const openid = req.query.openid;
 
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
 
   console.log('【getUserInfo2】 accessToken: ', accessToken);
 
@@ -38,7 +38,11 @@ export const getUserInfo2 = async (req: any, res: any) => {
       `http://api.weixin.qq.com/sns/userinfo?access_token=${accessToken}&openid=${openid}&lang=zh_CN`
     );
 
-    console.info('【getUserInfo】 使用access_token和openid获取用户信息', response.data);
+    const response2 = await axios.get(`http://api.weixin.qq.com/sns/userinfo?openid=${openid}&lang=zh_CN`);
+
+    console.info('【getUserInfo2】 使用access_token和openid获取用户信息 - 1', response.data);
+
+    console.info('【getUserInfo2】 使用access_token和openid获取用户信息 - 2', response2.data);
 
     res.json(response.data);
   } catch (error) {
