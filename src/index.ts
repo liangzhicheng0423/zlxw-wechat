@@ -35,6 +35,7 @@ app.get('/authorize', async (req, res) => {
 });
 
 app.get('/cancel', async (req, res) => {
+  console.log('【cancel】', req.query);
   res.sendFile(path.join(__dirname, '../cancel.html'));
 });
 
