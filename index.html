@@ -220,6 +220,27 @@
             success: function (res) {
               console.log('支付成功：', res)
             },
+            complete: function(res) {
+              // 接口调用完成时执行的回调函数，无论成功或失败都会执行
+              if (res.errMsg == 'chooseWXPay:ok') {
+                // 【支付成功】：支付成功提示页面，点击完成按钮之后
+                wx.closeWindow(); /* 关闭微信窗口，调用时需要在config中进行校验 */
+              } else if (res.errMsg == 'chooseWXPay:cancel') {
+                // 【支付取消】
+                window.location.href = 'https://wechat.ai-xiaowu.com/cancel' + params;
+              }
+              /**
+               * iOS和Android支付成功点击“完成”后都会进入success和complete函数，都返回'chooseWXPay:ok'
+               * （也有人说Android支付成功不进入success函数，）
+               * 原因是【iOS和Android返回数据不同。支付成功后Android返回 {"errMsg":"getBrandWCPayRequest:ok"}，iOS返回{"err_Info":"success","errMsg":"chooseWXPay:ok"}，故Android找不到success方法，导致失败】
+               * */
+            },
+            fail: function(err) {
+              // 接口调用失败
+            },
+            cancel: function(err) {
+              // 用户点击取消时的回调函数：用户取消支付后实际上进入cancel 和 complate函数
+            }
           })
         }
       }
@@ -282,7 +303,6 @@
         // 监听签名注册成功
         wx.ready(async () => {
           console.log('WX监听完成');
-
           await order();
         });
 

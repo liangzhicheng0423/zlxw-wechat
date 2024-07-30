@@ -34,6 +34,10 @@ app.get('/authorize', async (req, res) => {
   res.sendFile(path.join(__dirname, '../authorize.html'));
 });
 
+app.get('/cancel', async (req, res) => {
+  res.sendFile(path.join(__dirname, '../cancel.html'));
+});
+
 app.get('/MP_verify_EvBmWC5rklVARznL.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'MP_verify_EvBmWC5rklVARznL.txt'));
 });
