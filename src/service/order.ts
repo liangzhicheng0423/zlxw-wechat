@@ -174,6 +174,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       const formatShareUser = shareUser?.toJSON();
 
       // 只有群聊的年卡才会有奖励
+      console.info('step 4: 【奖励上级用户】 只有群聊的年卡才会有奖励', formatUser.is_award, product, vip_level);
       if (formatShareUser && !formatUser.is_award && product === Product.Group && vip_level === VipLevel.Year) {
         await award(formatShareUser.user_id, 'order');
         is_award = true;
