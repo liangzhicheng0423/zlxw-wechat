@@ -141,8 +141,9 @@
             const params = new URLSearchParams(url.search);
 
             function retryPayment() {
+                alert('https://wechat.ai-xiaowu.com' + params)
                 // 跳转到重新支付页面
-                window.location.href = 'https://wechat.ai-xiaowu.com' + params;
+                window.location.href = `https://wechat.ai-xiaowu.com` + params;
             }
     </script>
     </body>
