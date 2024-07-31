@@ -177,9 +177,10 @@ const handleText = async (message: TextMessage, res: any) => {
         const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
         console.log('上传至素材库: ', updateRes);
-        res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+        // res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+        await sendImage(userId, updateRes.media_id);
       } catch (error) {
-        res.send({ ...baseReply, MsgType: 'text', Content: '生成失败，请重新尝试' });
+        await sendMessage(userId, '生成失败，请重新尝试');
       }
 
       break;
