@@ -69,8 +69,38 @@ const handleText = async (message: TextMessage, res: any) => {
   if (isAdmin) {
     const [cmd, code] = message.Content.split(' ');
 
-    // 二次确认核销码信息
+    if (message.Content === '123321') {
+      // 测试成功模板消息
+      // http请求方式: POST https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
+
+      try {
+        // 发送请求
+        const response = await axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send', {
+          touser: userId,
+          template_id: 'joT9zuZgb45DVdmy-_tK_6lsxPOG3vDIkK3k-g71AuU	',
+          data: {
+            thing1: {
+              value: 'AI群聊'
+            },
+            amount3: {
+              value: '39.8元'
+            },
+            thing7: {
+              value: '助理小吴'
+            },
+            character_string8: {
+              value: '132132'
+            }
+          }
+        });
+        console.log(response.data);
+      } catch (error) {}
+
+      return;
+    }
+
     if (isClearance) {
+      // 二次确认核销码信息
       if (cmd !== '核销' || !code) {
         res.send({ ...baseReply, MsgType: 'text', Content: `命令格式错误` });
         return;
@@ -86,13 +116,13 @@ const handleText = async (message: TextMessage, res: any) => {
         `订单金额：${Number(fee) / 100}`,
         `核对无误后请点击 ${getTextReplyUrl(`确认核销 ${code}`, '确认核对无误')}`
       ];
-      await sendMessage(userId, reply.join('\n\n'));
+      res.send({ ...baseReply, MsgType: 'text', Content: reply.join('\n\n') });
       return;
     }
 
     if (isConfirmClearance) {
       if (cmd !== '确认核销' || !code) {
-        await sendMessage(userId, '命令格式错误');
+        res.send({ ...baseReply, MsgType: 'text', Content: '命令格式错误' });
         return;
       }
       // 解密
@@ -100,19 +130,19 @@ const handleText = async (message: TextMessage, res: any) => {
       const [customerId] = decryptedText.split('-');
       const clearance = await ClearanceCode.findOne({ where: { user_id: customerId, clearance_code: code } });
       if (!clearance) {
-        await sendMessage(userId, '抱歉，核销码不存在～');
+        res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，核销码不存在～' });
         return;
       }
 
       const formatClearance = clearance.toJSON();
       console.log('formatClearance.status: ', formatClearance.status);
       if (formatClearance.status === true) {
-        await sendMessage(userId, '抱歉，核销码已经被核销');
+        res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，核销码已经被核销' });
         return;
       }
 
       await clearance.update({ status: true, check_date: moment() });
-      await sendMessage(userId, '核销成功');
+      res.send({ ...baseReply, MsgType: 'text', Content: '核销成功' });
       return;
     }
   }

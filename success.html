@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>支付成功</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        background-size: 200% 200%;
+        animation: gradientAnimation 15s ease infinite;
+      }
+
+      .container {
+        text-align: center;
+        padding: 2em;
+        width: 90%;
+        max-width: 500px;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      .container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, transparent 80%);
+        opacity: 0.2;
+        z-index: 0;
+      }
+
+      .qr-code {
+        width: 150px;
+        margin: 1em auto;
+        border-radius: 10px;
+        border: 2px solid #2ecc71;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        font-size: 2em;
+        margin: 0.5em 0;
+        color: #2ecc71;
+        font-weight: bold;
+        z-index: 1;
+      }
+
+      p {
+        font-size: 1em;
+        color: #f0ecec;
+        margin: 1em 0;
+        line-height: 1.5;
+        z-index: 1;
+      }
+
+      .description {
+        white-space: pre-line;
+      }
+
+      .decorative-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .decorative-elements::before,
+      .decorative-elements::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        pointer-events: none;
+      }
+
+      .decorative-elements::before {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -100px;
+        animation: float 12s ease-in-out infinite;
+      }
+
+      .decorative-elements::after {
+        width: 400px;
+        height: 400px;
+        bottom: -100px;
+        right: -100px;
+        animation: float 15s ease-in-out infinite;
+        opacity: 0.3;
+      }
+
+      .circuit {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -2;
+        background: url('https://cdn.pixabay.com/photo/2018/04/11/20/25/circuit-3314017_960_720.png') no-repeat center
+          center;
+        background-size: cover;
+        opacity: 0.2;
+        animation: circuitAnimation 20s linear infinite;
+      }
+
+      .icons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1em;
+        z-index: 1;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes gradientAnimation {
+        0% {
+          background-position: 0% 0%;
+        }
+        50% {
+          background-position: 100% 100%;
+        }
+        100% {
+          background-position: 0% 0%;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+          opacity: 0.2;
+        }
+        50% {
+          transform: translateY(-20px);
+          opacity: 0.4;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 0.2;
+        }
+      }
+
+      @keyframes circuitAnimation {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 100% 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎉 恭喜，开通成功！</h1>
+      <img
+        src="./src/public/images/contact_customer_service.jpg"
+        alt="客服二维码"
+        class="qr-code" />
+      <p class="description">
+        👩🏻‍💻 请扫码添加客服，并向客服发送“激活”
+        <br />
+        😎 即刻开始AI之旅吧
+      </p>
+      <div class="decorative-elements"></div>
+      <div class="circuit"></div>
+    </div>
+  </body>
+
+  <script>
+    const appId = 'wxd00871cb6294c274';
+
+    const params = window.location.search;
+
+    const redirectUri = encodeURIComponent('https://wechat.ai-xiaowu.com/success');
+    const scope = 'snsapi_userinfo';
+
+    const state = 'STATE';
+
+    const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
+
+    const urlParams = new URLSearchParams(params);
+
+    const code = urlParams.get('code');
+
+    // 用户已授权，获取用户信息
+    if (code) fetch(`/getUserInfo?code=${code}`);
+    // 用户未授权，引导用户进行授权
+    else window.location.href = authUrl;
+
+  </script>
+</html>
