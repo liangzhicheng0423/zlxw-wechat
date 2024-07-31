@@ -224,7 +224,8 @@
               // 接口调用完成时执行的回调函数，无论成功或失败都会执行
               if (res.errMsg == 'chooseWXPay:ok') {
                 // 【支付成功】：支付成功提示页面，点击完成按钮之后
-                wx.closeWindow(); /* 关闭微信窗口，调用时需要在config中进行校验 */
+                // wx.closeWindow(); /* 关闭微信窗口，调用时需要在config中进行校验 */
+                window.location.href = 'https://wechat.ai-xiaowu.com/success';
               } else if (res.errMsg == 'chooseWXPay:cancel') {
                 // 【支付取消】
                 window.location.href = 'https://wechat.ai-xiaowu.com/cancel' + params;
