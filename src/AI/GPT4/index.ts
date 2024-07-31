@@ -93,8 +93,6 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       // 上传临时素材
       const updateRes = await uploadTemporaryMedia(mp3Path, 'voice');
 
-      console.log('updateRes', updateRes);
-
       await sendVoiceMessage(userId, updateRes.media_id);
     } else {
       await sendMessage(userId, reply);
