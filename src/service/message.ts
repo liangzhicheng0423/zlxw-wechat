@@ -78,7 +78,7 @@ const handleText = async (message: TextMessage, res: any) => {
         // 发送请求
         const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/template/send', {
           touser: userId,
-          template_id: 'joT9zuZgb45DVdmy-_tK_6lsxPOG3vDIkK3k-g71AuU	',
+          template_id: 'joT9zuZgb45DVdmy-_tK_6lsxPOG3vDIkK3k-g71AuU',
           data: {
             thing1: {
               value: 'AI群聊'
