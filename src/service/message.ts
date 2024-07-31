@@ -1,6 +1,5 @@
 import axios from 'axios';
 import moment from 'moment';
-import { Context } from 'natural';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
