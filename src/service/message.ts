@@ -73,9 +73,10 @@ const handleText = async (message: TextMessage, res: any) => {
       // 测试成功模板消息
       // http请求方式: POST https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
 
+      console.log('测试成功模板消息');
       try {
         // 发送请求
-        const response = await axios.post('https://api.weixin.qq.com/cgi-bin/message/template/send', {
+        const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/template/send', {
           touser: userId,
           template_id: 'joT9zuZgb45DVdmy-_tK_6lsxPOG3vDIkK3k-g71AuU	',
           data: {
@@ -94,7 +95,9 @@ const handleText = async (message: TextMessage, res: any) => {
           }
         });
         console.log(response.data);
-      } catch (error) {}
+      } catch (error) {
+        console.log('error: ', error);
+      }
 
       return;
     }
