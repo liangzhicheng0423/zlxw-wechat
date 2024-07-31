@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
+import { Context } from 'natural';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
@@ -11,6 +12,7 @@ import { getMode, setMode, updateRedis } from '../redis';
 import { EventMessage, Product, TextMessage, VipLevel, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
+  danUrl,
   downloadImage,
   downloadVoiceFile,
   extractBetween,
@@ -176,10 +178,9 @@ const handleText = async (message: TextMessage, res: any) => {
         const updateRes = await uploadTemporaryMedia(bgPath, 'image');
 
         console.log('上传至素材库: ', updateRes);
-        await sendImage(userId, updateRes.media_id);
-        // res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
+        res.send({ ...baseReply, MsgType: 'image', Image: { MediaId: updateRes.media_id } });
       } catch (error) {
-        await sendMessage(userId, '生成失败，请重新尝试');
+        res.send({ ...baseReply, MsgType: 'text', Content: '生成失败，请重新尝试' });
       }
 
       break;
@@ -195,8 +196,13 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     case '兑换':
-      await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
       await sendServiceQRcode(baseReply.ToUserName);
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"'
+      });
+      // await sendMessage(baseReply.ToUserName, '每满500N币即可兑换现金50元，请扫码添加客服，并向客服发送"兑换"');
       break;
 
     // case '马上接入':
@@ -205,42 +211,62 @@ const handleText = async (message: TextMessage, res: any) => {
     //   break;
 
     case '获取助理小吴AI群':
-      await sendAiGroupText(baseReply.ToUserName);
+      // await sendAiGroupText(baseReply.ToUserName);
+
+      await sendAIGroupIntroduce(userId);
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: [`助理小吴AI群`, `${getTextReplyUrl('马上抢（助理小吴AI群）', '👉🏻 马上抢')}`].join('\n\n')
+      });
       break;
 
     case '获取Dan':
-      await sendDanText(baseReply.ToUserName);
+      // await sendDanText(baseReply.ToUserName);
+
+      const danReply = [
+        'Dan',
+        `👉🏻 <a href="${danUrl}">Dan是什么？</a>`,
+        `👉🏻 ${getTextReplyUrl('马上抢（Dan）', '马上抢')}`
+      ];
+
+      res.send({ ...baseReply, MsgType: 'text', Content: danReply });
       break;
 
     case '马上抢（Dan）':
       const danText = await getDanText();
-      await sendMessage(baseReply.ToUserName, danText);
+      // await sendMessage(baseReply.ToUserName, danText);
+
+      res.send({ ...baseReply, MsgType: 'text', Content: danText });
       break;
 
     case '马上抢（助理小吴AI群）':
       const aiGroupText = await getAiGroupText();
-      await sendMessage(baseReply.ToUserName, aiGroupText);
+      // await sendMessage(baseReply.ToUserName, aiGroupText);
+
+      res.send({ ...baseReply, MsgType: 'text', Content: aiGroupText });
       break;
 
     case '企业购买/赠好友':
-      await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”');
+      // await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”');
       await sendServiceQRcode(baseReply.ToUserName);
+
+      res.send({ ...baseReply, MsgType: 'text', Content: '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”' });
       break;
 
     case '获取10份年卡':
-      await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“获取10份年卡”');
+      // await sendMessage(baseReply.ToUserName, '👩🏻‍💻 请扫码添加客服，并向客服发送“获取10份年卡”');
       await sendServiceQRcode(baseReply.ToUserName);
+
+      res.send({ ...baseReply, MsgType: 'text', Content: '👩🏻‍💻 请扫码添加客服，并向客服发送“获取10份年卡”' });
       break;
 
     case '对话4o':
       await setMode(message.FromUserName, Product.GPT4);
       if (!gpt_welcome_enable) return;
+      // await sendMessage(message.FromUserName, gpt_welcome);
 
-      await sendMessage(message.FromUserName, gpt_welcome);
-      break;
-
-    case '获取用户信息':
-      await axios.get(`/getUserInfo2?openid=${message.FromUserName})`);
+      res.send({ ...baseReply, MsgType: 'text', Content: gpt_welcome });
       break;
 
     case '绘图Midjourney':
@@ -256,8 +282,9 @@ const handleText = async (message: TextMessage, res: any) => {
           'Very simple, minimalist, cartoon graffiti, line art, cute black line little girl, various poses and expressions. Crying, running away, shy, Smile, eating, kneeling, surprised, laughing, etc. --niji 5'
         )
       ];
-      await sendMessage(message.FromUserName, reply.join('\n\n'));
+      // await sendMessage(message.FromUserName, reply.join('\n\n'));
 
+      res.send({ ...baseReply, MsgType: 'text', Content: reply.join('\n\n') });
       break;
 
     case '领取100元限时优惠券':
@@ -268,7 +295,9 @@ const handleText = async (message: TextMessage, res: any) => {
         `👉🏻 ${getOrderUrl('299元/年，马上抢', { level: VipLevel.Year, product: Product.Group, isRecommend: true })}🔥`,
         '7️⃣ 支持7天无理由，下单后添加客服激活'
       ];
-      await sendMessage(message.FromUserName, saleReply.join('\n\n'));
+      // await sendMessage(message.FromUserName, saleReply.join('\n\n'));
+
+      res.send({ ...baseReply, MsgType: 'text', Content: saleReply.join('\n\n') });
       break;
 
     default:
