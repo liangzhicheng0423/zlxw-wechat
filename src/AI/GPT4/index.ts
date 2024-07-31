@@ -84,7 +84,8 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       console.log('【文字转语音】 转换后的地址: ', mp3Path);
       console.log('mp3Path', mp3Path);
       if (!mp3Path) {
-        await sendMessage(userId, '抱歉，请再说一次吧～');
+        // await sendMessage(userId, '抱歉，请再说一次吧～');
+        res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧～' });
         done();
         return;
       }
