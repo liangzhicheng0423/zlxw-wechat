@@ -72,7 +72,7 @@ const handleText = async (message: TextMessage, res: any) => {
     // 二次确认核销码信息
     if (isClearance) {
       if (cmd !== '核销' || !code) {
-        await sendMessage(userId, '命令格式错误');
+        res.send({ ...baseReply, MsgType: 'text', Content: `命令格式错误` });
         return;
       }
 
