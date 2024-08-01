@@ -6,6 +6,7 @@ import {
   activityRulesUrl,
   getReplyBaseInfo,
   getTextReplyUrl,
+  sendAIGroupIntroduce,
   sendAiGroupText,
   sendDanText,
   sendMessage,
@@ -46,7 +47,14 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       break;
 
     case MenuKey.AIGroup:
-      await sendAiGroupText(message.FromUserName);
+      await sendAIGroupIntroduce(message.FromUserName);
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content: [`助理小吴AI群`, `${getTextReplyUrl('马上抢（助理小吴AI群）', '👉🏻 马上抢')}`].join('\n\n')
+      });
+
+      // await sendAiGroupText(message.FromUserName);
       break;
 
     case MenuKey.SharingIsPolite:
@@ -61,12 +69,12 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       res.send({ ...baseReply, MsgType: 'text', Content: myAccountText });
       break;
 
-    case MenuKey.AIAccess:
-      await sendMessage(message.FromUserName, aiAccessText);
+    // case MenuKey.AIAccess:
+    //   await sendMessage(message.FromUserName, aiAccessText);
 
-      /** TODO: 后续要更换成图片 */
-      res.send({ ...baseReply, MsgType: 'text', Content: '【AI接入服务介绍页】' });
-      break;
+    //   /** TODO: 后续要更换成图片 */
+    //   res.send({ ...baseReply, MsgType: 'text', Content: '【AI接入服务介绍页】' });
+    //   break;
 
     case MenuKey.More:
       const msg = [
@@ -87,7 +95,12 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
       break;
 
     case MenuKey.ContactCustomerService:
-      await sendServiceQRcode(baseReply.ToUserName);
+      res.send({
+        ...baseReply,
+        MsgType: 'image',
+        Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128hoYUlCcEPAXZGev6Fbjn8UQQmPUFimia3nMO59EXMIf' }
+      });
+      // await sendServiceQRcode(baseReply.ToUserName);
       break;
   }
 };

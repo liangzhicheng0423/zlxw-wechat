@@ -291,16 +291,16 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     console.info('step 10:【发送开通成功通知】');
 
-    await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”'].join('\n\n'));
     await sendServiceQRcode(userId);
-    // await sendMessage(
-    //   userId,
-    //   [
-    //     '🎉 会员开通成功',
-    //     '👩🏻‍💻 请扫码添加客服（菜单栏点击联系客服），向客服发送“激活”和邀请码',
-    //     `🔑 激活码：${xiaowu_id}`
-    //   ].join('\n\n')
-    // );
+
+    // await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”'].join('\n\n'));
+    res.send({
+      errcode: 0,
+      errmsg: '',
+      ToUserName: userId,
+      MsgType: 'text',
+      Content: '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”'
+    });
   } catch (error) {
     console.error('order error: ', error);
   } finally {
