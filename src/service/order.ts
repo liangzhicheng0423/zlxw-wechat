@@ -16,7 +16,6 @@ import {
   generateOrderNumber,
   getExpireDate,
   getLevelAndProduct,
-  getReplyBaseInfo,
   isNumber,
   sendMessage,
   sendServiceQRcode
