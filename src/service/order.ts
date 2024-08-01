@@ -151,7 +151,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       const invitationCode = await InvitationCode.findOne({ where: { status: 0, send: 0 } });
       if (!invitationCode) {
         // 邀请码短缺了
-        await sendMessage(userId, `激活码不足，请联系客服`);
+        res.send({ ToUserName: userId, MsgType: 'text', Content: `激活码不足，请联系客服` });
         return;
       }
       xiaowu_id = invitationCode.toJSON().code;
@@ -293,14 +293,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
 
     await sendServiceQRcode(userId);
 
-    // await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”'].join('\n\n'));
-    res.send({
-      errcode: 0,
-      errmsg: '',
-      ToUserName: userId,
-      MsgType: 'text',
-      Content: '👩🏻‍💻 请扫码添加客服，并向客服发送“企业购买”或“赠好友”'
-    });
+    await sendMessage(userId, ['🎉 会员开通成功', '👩🏻‍💻 请扫码添加客服，向客服发送“激活”'].join('\n\n'));
   } catch (error) {
     console.error('order error: ', error);
   } finally {
