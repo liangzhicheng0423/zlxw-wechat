@@ -355,8 +355,8 @@ export const getWelcome = () => {
     '🥇 让排名第一的AI工具，成为你的微信好友',
     `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`,
     `👉🏻 ${getTextReplyUrl('获取Dan')}`,
-    `官网 | <a href="${officialWebsite}">ai-xiaowu.com</a>`,
-    `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
+    `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`,
+    `官网 | <a href="${officialWebsite}">ai-xiaowu.com</a>`
   ];
   return reply.join('\n\n');
 };

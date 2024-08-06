@@ -53,21 +53,21 @@ export const subscribe = async (message: EventMessage) => {
 
     console.log('【subscribe】 temp_user_id', temp_user_id);
 
-    if (pid) {
-      const reply = [
-        '你好，朋友！',
-        '👩🏻‍💻 我是你的助理小吴，我可以：',
-        '🥇 让排名第一的AI工具，成为你的微信好友',
-        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
-      ];
+    // if (pid) {
+    const reply = [
+      '你好，朋友！',
+      '👩🏻‍💻 我是你的助理小吴，我可以：',
+      '🥇 让排名第一的AI工具，成为你的微信好友',
+      `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
+    ];
 
-      console.log('【订阅发送】');
-      await sendMessage(FromUserName, reply.join('\n\n'));
+    console.log('【订阅发送】');
+    await sendMessage(FromUserName, reply.join('\n\n'));
 
-      await sendAIGroupIntroduce(FromUserName);
-    } else {
-      await sendMessage(FromUserName, getWelcome());
-    }
+    await sendAIGroupIntroduce(FromUserName);
+    // } else {
+    //   await sendMessage(FromUserName, getWelcome());
+    // }
 
     // 用户订阅
     const [user, created] = await User.findOrCreate({
