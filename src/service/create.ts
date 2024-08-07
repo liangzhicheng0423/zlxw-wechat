@@ -15,13 +15,24 @@ import {
 
 export const create = () => {
   axios
-    .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, { button: [] })
-    // .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, Menu)
+    // .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, { button: [] })
+    .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, Menu)
     .then(response => {
       console.log('Menu created:', response.data);
     })
     .catch(error => {
       console.error('Error creating menu:', error);
+    });
+};
+
+export const deleteMenu = () => {
+  axios
+    .get(`http://api.weixin.qq.com/cgi-bin/menu/delete`)
+    .then(response => {
+      console.log('Menu delete:', response.data);
+    })
+    .catch(error => {
+      console.error('Error deleting menu:', error);
     });
 };
 

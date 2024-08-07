@@ -67,7 +67,7 @@ export const subscribe = async (message: EventMessage) => {
       '🎉 成功获取惊喜彩蛋专链',
       '🎟️ 199元得惊喜彩蛋2年卡，无限次使用，支持7天无理由',
       '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
-      `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}🔥`
+      `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
     ];
 
     console.log('【订阅发送】');

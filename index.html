@@ -273,11 +273,14 @@
         const isRecommend = params.get('isRecommend');
         console.log('isRecommend', isRecommend);
 
+        const boon = params.get('boon');
+        console.log('boon', boon);
+
         const response = await window.app.callContainer({
           path: `/${api}`,              // 填入业务自定义路径和参数，根目录，就是 /
           method: 'POST',               // 按照自己的业务开发，选择对应的方法
           header: { 'X-WX-SERVICE': 'express-nvni' },
-          data: { level, product, isRecommend }
+          data: { level, product, isRecommend, boon }
         })
         console.log('response', response)
         return response.data || {}

@@ -9,7 +9,7 @@ import { sequelize } from './db';
 import { asyncHandler } from './middleware/asyncHandler';
 import { errorHandler } from './middleware/errorHandler';
 import { initRedis } from './redis';
-import { create } from './service/create';
+import { create, deleteMenu } from './service/create';
 import { getUserInfo } from './service/getUserInfo';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
@@ -90,8 +90,8 @@ async function bootstrap() {
     // 同步数据库
     try {
       // 创建菜单
-      console.log('创建菜单');
-      create();
+      // console.log('创建菜单');
+      deleteMenu();
       await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();
