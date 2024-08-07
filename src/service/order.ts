@@ -24,7 +24,7 @@ import { award } from './award';
 
 /** 下单 */
 export const unifiedorder = async (req: any, res: any) => {
-  const { level, product, isRecommend } = req.body as OrderBody;
+  const { level, product, isRecommend, boon } = req.body as OrderBody;
 
   console.log('【下单】: ', req.headers);
 
@@ -61,6 +61,9 @@ export const unifiedorder = async (req: any, res: any) => {
       if (isRecommend && product === Product.Group) {
         body = '299元/年（24.9元/月）';
         total_fee = 29900;
+      } else if (boon && product === Product.Group) {
+        body = '199 2年';
+        total_fee = 19900;
       } else {
         body = yearText;
         total_fee = yearFee;

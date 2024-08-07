@@ -301,7 +301,7 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     default:
-      await chatWithAI(message, res);
+      // await chatWithAI(message, res);
       break;
   }
 };
@@ -358,17 +358,17 @@ const handleEvent = async (message: EventMessage, res: any) => {
       console.log('【SCAN】 who: ', who);
       if (who === FromUserName) return;
 
-      const reply = [
-        '你好，朋友！',
-        '👩🏻‍💻 我是你的助理小吴，我可以：',
-        '🥇 让排名第一的AI工具，成为你的微信好友',
-        `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
-      ];
+      // const reply = [
+      //   '你好，朋友！',
+      //   '👩🏻‍💻 我是你的助理小吴，我可以：',
+      //   '🥇 让排名第一的AI工具，成为你的微信好友',
+      //   `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
+      // ];
 
-      console.log('【扫码发送】');
-      await sendMessage(FromUserName, reply.join('\n\n'));
+      // console.log('【扫码发送】');
+      // await sendMessage(FromUserName, reply.join('\n\n'));
 
-      await sendAIGroupIntroduce(FromUserName);
+      // await sendAIGroupIntroduce(FromUserName);
       break;
 
     case 'CLICK':

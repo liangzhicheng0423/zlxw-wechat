@@ -1,13 +1,15 @@
 import { InvitationCode } from '../mysqlModal/InvitationCode';
 import { User } from '../mysqlModal/user';
-import { EventMessage } from '../types';
+import { EventMessage, Product, VipLevel } from '../types';
 import {
   extractBetween,
   extractChannel,
+  getOrderUrl,
   getTextReplyUrl,
   getWelcome,
   sendAIGroupIntroduce,
-  sendMessage
+  sendMessage,
+  sendServiceQRcode
 } from '../util';
 import { award } from './award';
 
@@ -54,17 +56,28 @@ export const subscribe = async (message: EventMessage) => {
     console.log('【subscribe】 temp_user_id', temp_user_id);
 
     // if (pid) {
+    // const reply = [
+    //   '你好，朋友！',
+    //   '👩🏻‍💻 我是你的助理小吴，我可以：',
+    //   '🥇 让排名第一的AI工具，成为你的微信好友',
+    //   `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
+    // ];
+
     const reply = [
-      '你好，朋友！',
-      '👩🏻‍💻 我是你的助理小吴，我可以：',
-      '🥇 让排名第一的AI工具，成为你的微信好友',
-      `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
+      '🎉 成功获取惊喜彩蛋专链',
+      '🎟️ 199元得惊喜彩蛋2年卡，无限次使用，支持7天无理由',
+      '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
+      `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}🔥`
     ];
 
     console.log('【订阅发送】');
     await sendMessage(FromUserName, reply.join('\n\n'));
 
-    await sendAIGroupIntroduce(FromUserName);
+    await sendMessage(FromUserName, '成功抢到后务必添加客服，发“激活”自动拉群');
+
+    await sendServiceQRcode(FromUserName);
+
+    // await sendAIGroupIntroduce(FromUserName);
     // } else {
     //   await sendMessage(FromUserName, getWelcome());
     // }

@@ -87,7 +87,7 @@ export enum VipLevel {
   Month = 'month'
 }
 
-export type OrderBody = { level: VipLevel; product: Product; isRecommend?: boolean };
+export type OrderBody = { level: VipLevel; product: Product; isRecommend?: boolean; boon?: boolean };
 
 export type GPTConfig = {
   factory: 'linkAI'; // 默认策略
