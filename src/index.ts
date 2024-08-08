@@ -91,7 +91,7 @@ async function bootstrap() {
     try {
       // 创建菜单
       // console.log('创建菜单');
-      deleteMenu();
+      create();
       await sequelize.authenticate();
       // await syncUser();
       // await syncOrder();

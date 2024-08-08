@@ -56,6 +56,16 @@ export const Menu = {
   ]
 };
 
+export const MenuTemp = {
+  button: [
+    {
+      type: 'click',
+      name: '联系客服',
+      key: 'MenuKey.ContactCustomerService'
+    }
+  ]
+};
+
 export const PayBody = {
   [Product.Dan]: {
     [VipLevel.Year]: '年卡 899元/年（75元/月）',

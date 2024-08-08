@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Menu, MenuKey } from '../constant';
+import { Menu, MenuKey, MenuTemp } from '../constant';
 import { User } from '../mysqlModal/user';
 import { WeChatMessage } from '../types';
 import {
@@ -16,7 +16,7 @@ import {
 export const create = () => {
   axios
     // .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, { button: [] })
-    .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, Menu)
+    .post(`http://api.weixin.qq.com/cgi-bin/menu/create`, MenuTemp)
     .then(response => {
       console.log('Menu created:', response.data);
     })
