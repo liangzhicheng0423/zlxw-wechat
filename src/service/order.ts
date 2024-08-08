@@ -62,7 +62,7 @@ export const unifiedorder = async (req: any, res: any) => {
         body = '299元/年（24.9元/月）';
         total_fee = 29900;
       } else if (boon && product === Product.Group) {
-        body = '199 2年';
+        body = '199 年卡';
         total_fee = 19900;
       } else {
         body = yearText;
