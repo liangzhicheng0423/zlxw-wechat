@@ -61,7 +61,7 @@ export const MenuTemp = {
     {
       type: 'click',
       name: '联系客服',
-      key: 'MenuKey.ContactCustomerService'
+      key: MenuKey.ContactCustomerService
     }
   ]
 };
