@@ -356,19 +356,18 @@ const handleEvent = async (message: EventMessage, res: any) => {
       const who = getBeforeQuestionMark(EventKey);
 
       console.log('【SCAN】 who: ', who);
+
       if (who === FromUserName) return;
 
-      // const reply = [
-      //   '你好，朋友！',
-      //   '👩🏻‍💻 我是你的助理小吴，我可以：',
-      //   '🥇 让排名第一的AI工具，成为你的微信好友',
-      //   `👉🏻 ${getTextReplyUrl('领取100元限时优惠券', '点此领取100元限时优惠券')}`
-      // ];
+      const reply = [
+        '🎉 成功获取惊喜彩蛋专链',
+        '🎟 199元/365天无限次使用，支持7天无理由',
+        '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
+        `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
+      ];
 
-      // console.log('【扫码发送】');
-      // await sendMessage(FromUserName, reply.join('\n\n'));
+      await sendMessage(FromUserName, reply.join('\n\n'));
 
-      // await sendAIGroupIntroduce(FromUserName);
       break;
 
     case 'CLICK':
