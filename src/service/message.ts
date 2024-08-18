@@ -368,6 +368,10 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
       await sendMessage(FromUserName, reply.join('\n\n'));
 
+      await sendMessage(FromUserName, '成功抢到后务必添加客服，发“激活”自动拉群');
+
+      await sendServiceQRcode(FromUserName);
+
       break;
 
     case 'CLICK':
