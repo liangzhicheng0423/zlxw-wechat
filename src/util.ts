@@ -447,7 +447,10 @@ export const sendServiceQRcode = async (userId: string) => {
   // await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128hoYUlCcEPAXZGev6Fbjn8UQQmPUFimia3nMO59EXMIf');
 
   // 第二版客服二维码
-  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128tUqPn-IMs4dTSmg46nNnuR4TEO6aR2itsbcT1jTIGX3');
+  // await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128tUqPn-IMs4dTSmg46nNnuR4TEO6aR2itsbcT1jTIGX3');
+
+  // 第三版客服二维码
+  await sendImage(userId, 'FLs_fBoOlhvVW6z2cE128nGA_-iBrJulgva63AHd5f05eaGQxhBmR2bLfIAqkYpD');
 };
 
 export const sendAIGroupIntroduce = async (userId: string) => {
