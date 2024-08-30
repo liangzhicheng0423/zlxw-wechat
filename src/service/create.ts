@@ -114,7 +114,10 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
         // Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128hoYUlCcEPAXZGev6Fbjn8UQQmPUFimia3nMO59EXMIf' }
 
         // 第二版客服二维码
-        Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128tUqPn-IMs4dTSmg46nNnuR4TEO6aR2itsbcT1jTIGX3' }
+        // Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128tUqPn-IMs4dTSmg46nNnuR4TEO6aR2itsbcT1jTIGX3' }
+
+        // 第三版客服二维码
+        Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128nGA_-iBrJulgva63AHd5f05eaGQxhBmR2bLfIAqkYpD' }
       });
       break;
   }
