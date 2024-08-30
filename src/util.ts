@@ -620,6 +620,7 @@ export const extractBetween = (str: string, start: string, end: string): string 
   const match = str.match(regex);
   return match ? match[1] : undefined;
 };
+
 export const getBeforeQuestionMark = (str: string): string | null => {
   const match = str.match(/^(.*?)\?/);
   return match ? match[1] : str;
