@@ -35,8 +35,8 @@ import {
   sendMessage,
   sendServiceQRcode,
   uploadTemporaryMedia,
-  voiceToText,
-  void2Text
+  voice2Text,
+  voiceToText
 } from '../util';
 import { create, menuEvent } from './create';
 import { subscribe } from './subscribe';
@@ -401,7 +401,14 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
 
   console.log('url : ', url);
 
-  await void2Text(url);
+  const result = await voice2Text(url);
+
+  if (!result?.Result) {
+    await sendMessage(message.FromUserName, '抱歉，请再说一次吧');
+    return;
+  }
+
+  await sendMessage(message.FromUserName, result.Result);
 
   /** ------------------------------------------------ */
 
