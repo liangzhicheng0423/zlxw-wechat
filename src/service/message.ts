@@ -384,17 +384,27 @@ const handleEvent = async (message: EventMessage, res: any) => {
 const handleVoice = async (message: VoiceMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
-  const voicePath = `http://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext?format=${message.Format}&voice_id=${message.MediaId}`;
+  const data = {
+    format: message.Format,
+    voice_id: message.MediaId
+  };
+  const voicePath = `http://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext?`;
 
-  const voiceRes = await axios.post(voicePath, {});
+  const voiceRes = await axios.post(voicePath, data);
 
   console.log('voiceRes: ', voiceRes);
 
   await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5 seconds
 
-  const getVoiceUrl = `http://api.weixin.qq.com/cgi-bin/media/voice/queryrecoresultfortext?voice_id=${message.MediaId}`;
+  const options = {
+    voice_id: message.MediaId
+  };
 
-  console.log('getVoiceUrl: ', getVoiceUrl);
+  const getVoiceUrl = `http://api.weixin.qq.com/cgi-bin/media/voice/queryrecoresultfortext`;
+
+  const voiceResF = await axios.post(getVoiceUrl, options);
+
+  console.log('voiceResF:  ', voiceResF);
 
   // const voicePath = await downloadVoiceFile(message.MediaId);
 
