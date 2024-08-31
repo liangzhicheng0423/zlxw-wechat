@@ -388,7 +388,7 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
     format: message.Format,
     voice_id: message.MediaId
   };
-  const voicePath = `http://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext?`;
+  const voicePath = `http://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext`;
 
   const voiceRes = await axios.post(voicePath, data);
 
