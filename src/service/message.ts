@@ -384,19 +384,31 @@ const handleEvent = async (message: EventMessage, res: any) => {
 const handleVoice = async (message: VoiceMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
-  const voicePath = await downloadVoiceFile(message.MediaId);
+  const voicePath = `https://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext?format=${message.Format}&voice_id=${message.MediaId}`;
 
-  const transformText = await voiceToText(voicePath);
+  const voiceRes = await axios.post(voicePath, {});
 
-  console.log('【message】 handleVoice transformText: ', transformText);
+  console.log('voiceRes: ', voiceRes);
 
-  if (!transformText) {
-    res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧' });
-    return;
-  }
+  await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5 seconds
 
-  const granMessage = { ...message, MsgType: 'text', Content: transformText, ReplyWithVoice: true };
-  await chatWithAI(granMessage as TextMessage, res);
+  const getVoiceUrl = `https://api.weixin.qq.com/cgi-bin/media/voice/queryrecoresultfortext?voice_id=${message.MediaId}`;
+
+  console.log('getVoiceUrl: ', getVoiceUrl);
+
+  // const voicePath = await downloadVoiceFile(message.MediaId);
+
+  // const transformText = await voiceToText(voicePath);
+
+  // console.log('【message】 handleVoice transformText: ', transformText);
+
+  // if (!transformText) {
+  //   res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧' });
+  //   return;
+  // }
+
+  // const granMessage = { ...message, MsgType: 'text', Content: transformText, ReplyWithVoice: true };
+  // await chatWithAI(granMessage as TextMessage, res);
 };
 
 const handleMessage = async (message: WeChatMessage, res: any) => {
