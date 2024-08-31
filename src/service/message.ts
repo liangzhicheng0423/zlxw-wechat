@@ -35,7 +35,8 @@ import {
   sendMessage,
   sendServiceQRcode,
   uploadTemporaryMedia,
-  voiceToText
+  voiceToText,
+  void2Text
 } from '../util';
 import { create, menuEvent } from './create';
 import { subscribe } from './subscribe';
@@ -399,6 +400,8 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
   const url = `${cdn_url}/${message.MediaId}`;
 
   console.log('url : ', url);
+
+  await void2Text(url);
 
   /** ------------------------------------------------ */
 
