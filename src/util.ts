@@ -627,7 +627,7 @@ export const getBeforeQuestionMark = (str: string): string | null => {
 };
 
 export const downloadTempVoiceFile = async (mediaId: string): Promise<string> => {
-  const url = `http://api.weixin.qq.com/cgi-bin/media/get&media_id=${mediaId}`;
+  const url = `http://api.weixin.qq.com/cgi-bin/media/get?media_id=${mediaId}`;
 
   const response = await axios({ method: 'GET', url: url, responseType: 'stream' });
 
