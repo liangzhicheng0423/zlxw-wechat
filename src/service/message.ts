@@ -388,7 +388,7 @@ const handleVoice = async (message: VoiceMessage, res: any) => {
 
   const response = await axios.get(getVoiceDaaUrl);
 
-  console.log('response: ', response);
+  console.log('response: ', response.data);
 
   // const data = {
   //   format: message.Format,
