@@ -100,7 +100,7 @@ async function bootstrap() {
       // await syncClearanceCode();
 
       // console.log('上传客服二维码');
-      await uploadPermanentImageMedia('./src/public/images/contact_customer_service_03.png');
+      // await uploadPermanentImageMedia('./src/public/images/contact_customer_service_03.png');
       // await uploadPermanentImageMedia('./src/public/images/contact_customer_service.jpg');
 
       console.log('Connection has been established successfully.');
