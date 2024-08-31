@@ -384,7 +384,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 const handleVoice = async (message: VoiceMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
-  const getVoiceDaaUrl = `https://api.weixin.qq.com/cgi-bin/media/get?media_id=${message.MediaId}`;
+  const getVoiceDaaUrl = `http://api.weixin.qq.com/cgi-bin/media/get?media_id=${message.MediaId}`;
 
   const response = await axios.get(getVoiceDaaUrl);
 
