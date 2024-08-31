@@ -150,18 +150,14 @@ export const uploadFile = (cos: COS, filePath: string, key: string): Promise<COS
       SliceSize: 1024 * 1024 * 10 /* 触发分块上传的阈值，超过10MB使用分块上传，非必须 */,
       onTaskReady: function (taskId) {
         /* 非必须 */
-        console.log(taskId);
       },
       onProgress: function (progressData) {
         /* 非必须 */
-        console.log(JSON.stringify(progressData));
       },
       onFileFinish: function (err, data, options) {
-        console.log(data);
         if (err) reject(err);
         else resolve(data);
         /* 非必须 */
-        console.log(options.Key + '上传' + (err ? '失败' : '完成'));
       }
     });
   });
@@ -242,7 +238,6 @@ export const imageReview = async (access_token: string, url: string) => {
 
     return { pass: true, message: 'SUCCESS' };
   } catch (error) {
-    console.error('[LinkAI] img censor error: ', error);
     return { pass: true, message: 'SUCCESS' };
   }
 };

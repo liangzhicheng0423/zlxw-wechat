@@ -625,3 +625,19 @@ export const getBeforeQuestionMark = (str: string): string | null => {
   const match = str.match(/^(.*?)\?/);
   return match ? match[1] : str;
 };
+
+export const downloadTempVoiceFile = async (mediaId: string): Promise<string> => {
+  const url = `https://api.weixin.qq.com/cgi-bin/media/get&media_id=${mediaId}`;
+
+  const response = await axios({ method: 'GET', url: url, responseType: 'stream' });
+
+  const localPath = path.join(__dirname, `../tmp/audio/${mediaId}.amr`);
+  const writer = fs.createWriteStream(localPath);
+
+  response.data.pipe(writer);
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', () => resolve(localPath));
+    writer.on('error', () => resolve(''));
+  });
+};

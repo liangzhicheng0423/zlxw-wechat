@@ -1,9 +1,12 @@
 import axios from 'axios';
+import COS from 'cos-nodejs-sdk-v5';
+import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
 import { doImageMode } from '../AI/MJ/doImageMode';
+import { uploadFile } from '../AI/MJ/util';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
@@ -13,6 +16,7 @@ import {
   createQRCode,
   danUrl,
   downloadImage,
+  downloadTempVoiceFile,
   downloadVoiceFile,
   extractBetween,
   getAiGroupText,
@@ -36,9 +40,11 @@ import {
 import { create, menuEvent } from './create';
 import { subscribe } from './subscribe';
 
+const { COS_SECRET_ID, COS_SECRET_KEY } = process.env;
+
 const { admins, welcome: gpt_welcome, welcome_enable: gpt_welcome_enable } = getGptConfig();
 
-const { welcome: mj_welcome, welcome_enable: mj_welcome_enable } = getMjConfig();
+const { welcome: mj_welcome, welcome_enable: mj_welcome_enable, cdn_url } = getMjConfig();
 
 const chatWithAI = async (message: TextMessage, res: any) => {
   const userId = message.FromUserName;
@@ -384,33 +390,17 @@ const handleEvent = async (message: EventMessage, res: any) => {
 const handleVoice = async (message: VoiceMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
 
-  const getVoiceDaaUrl = `http://api.weixin.qq.com/cgi-bin/media/get?media_id=${message.MediaId}`;
+  const localPath = await downloadTempVoiceFile(message.MediaId);
 
-  const response = await axios.get(getVoiceDaaUrl);
+  const cosInstance = new COS({ SecretId: COS_SECRET_ID, SecretKey: COS_SECRET_KEY });
 
-  console.log('response: ', response.data);
+  await uploadFile(cosInstance, localPath, message.MediaId);
 
-  // const data = {
-  //   format: message.Format,
-  //   voice_id: message.MediaId
-  // };
-  // const voicePath = `http://api.weixin.qq.com/cgi-bin/media/voice/addvoicetorecofortext`;
+  const url = `${cdn_url}/${message.MediaId}`;
 
-  // const voiceRes = await axios.post(voicePath, data);
+  console.log('url : ', url);
 
-  // console.log('voiceRes: ', voiceRes);
-
-  // await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5 seconds
-
-  // const options = {
-  //   voice_id: message.MediaId
-  // };
-
-  // const getVoiceUrl = `http://api.weixin.qq.com/cgi-bin/media/voice/queryrecoresultfortext`;
-
-  // const voiceResF = await axios.post(getVoiceUrl, options);
-
-  // console.log('voiceResF:  ', voiceResF);
+  /** ------------------------------------------------ */
 
   // const voicePath = await downloadVoiceFile(message.MediaId);
 
