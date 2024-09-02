@@ -11,7 +11,7 @@ import {
   uploadTemporaryMedia
 } from '../../util';
 import { check } from '../check';
-import { getLinkAIReply } from './linkAI';
+import { getLinkAIReply } from './linkAI2';
 import taskManager from './taskManager';
 
 // 文字聊天
@@ -57,11 +57,7 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
       if (!freeCount) {
         const reply = ['体验对话剩余：0', `👉🏻 ${getTextReplyUrl('获取助理小吴AI群')}`];
 
-        res.send({
-          ...baseReply,
-          MsgType: 'text',
-          Content: reply.join('\n\n')
-        });
+        res.send({ ...baseReply, MsgType: 'text', Content: reply.join('\n\n') });
         return;
       }
     }
@@ -79,10 +75,7 @@ export const chatWithTextAI = async (message: TextMessage, res: any) => {
 
     if (message.ReplyWithVoice) {
       // 将文字转换为音频
-      console.log('【文字转语音】');
       const mp3Path = await textToVoice(reply);
-      console.log('【文字转语音】 转换后的地址: ', mp3Path);
-      console.log('mp3Path', mp3Path);
       if (!mp3Path) {
         // await sendMessage(userId, '抱歉，请再说一次吧～');
         res.send({ ...baseReply, MsgType: 'text', Content: '抱歉，请再说一次吧～' });

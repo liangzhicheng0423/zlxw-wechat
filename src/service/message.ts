@@ -308,7 +308,10 @@ const handleText = async (message: TextMessage, res: any) => {
       break;
 
     default:
-      // await chatWithAI(message, res);
+      if (isAdmin) {
+        await chatWithAI(message, res);
+      }
+
       break;
   }
 };
