@@ -10,7 +10,7 @@ export const getLinkAIReply = async (content: string, userId: string): Promise<s
     const options = {
       method: 'POST',
       url: api_url,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${LINK_AI_APP_KEY}-${LINK_AI_APP_CODE}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${LINK_AI_APP_KEY}` },
       data: { app_code: LINK_AI_APP_CODE, question: content, session_id: userId }
     };
 
