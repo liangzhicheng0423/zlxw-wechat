@@ -77,7 +77,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
 
       console.log('任务轮训结果', res);
 
-      const outputDir = path.join(__dirname, '../../../tmp/music');
+      const outputDir = path.join(__dirname, '../../tmp/music');
       console.log('outputDir: ', outputDir);
 
       const taskId = res.data[0].task_id;
