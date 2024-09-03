@@ -37,13 +37,12 @@ export const createMusic = async (message: TextMessage, res: any) => {
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${API_KEY}`,
-    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
     Accept: 'application/json'
   };
 
   let response: any;
   try {
-    response = await axios.post(BASE_URL + PATH, { gpt_description_prompt, mv: 'suno_music' }, { headers });
+    response = await axios.post(BASE_URL + PATH, { data: { gpt_description_prompt, mv: 'suno_music' } }, { headers });
 
     console.log('++++++++++++ ');
     console.log({ response: response.data });
