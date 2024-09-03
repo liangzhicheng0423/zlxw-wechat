@@ -7,7 +7,7 @@ import { CreateMusicResponseData } from './types';
 import { downloadFile } from './utils';
 
 const BASE_URL = 'https://api.bltcy.ai';
-const PATH = '/task/suno/v1/submit/music';
+const PATH = '/suno/submit/music';
 const API_KEY = 'sk-rEI1JL9r2q3rQU4DFd6627A002B047BcA3D24450B63d3381';
 
 const dlFn = async (url: string, outputPath: string, times?: number) => {
@@ -37,6 +37,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${API_KEY}`,
+    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
     Accept: 'application/json'
   };
 
