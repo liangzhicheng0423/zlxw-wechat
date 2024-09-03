@@ -42,7 +42,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
 
   let response: any;
   try {
-    response = await axios.post(BASE_URL + PATH, { data: { gpt_description_prompt, mv: 'chirp-v3-5' } }, { headers });
+    response = await axios.post(BASE_URL + PATH, { data: { gpt_description_prompt } }, { headers });
 
     console.log('++++++++++++ ');
     console.log({ response: response.data });
