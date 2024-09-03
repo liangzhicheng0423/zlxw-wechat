@@ -259,6 +259,20 @@ export const sendImage = async (userId: string, mediaId: string) => {
   }
 };
 
+export const sendVideo = async (userId: string, mediaId: string, title?: string, description?: string) => {
+  try {
+    const url = `http://api.weixin.qq.com/cgi-bin/message/custom/send`;
+    const data = {
+      touser: userId,
+      msgtype: 'video',
+      video: { media_id: mediaId, title, description }
+    };
+    await axios.post(url, data);
+  } catch (error) {
+    console.error(`Failed to send voice message`);
+  }
+};
+
 export const mergeImages = async (image1Path: string, image2Path: string, outputImagePath: string) => {
   try {
     const [image1, image2] = await Promise.all([Jimp.read(image1Path), Jimp.read(image2Path)]);

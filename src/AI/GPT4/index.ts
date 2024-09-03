@@ -11,7 +11,7 @@ import {
   uploadTemporaryMedia
 } from '../../util';
 import { check } from '../check';
-import { getLinkAIReply } from './linkAI2';
+import { getLinkAIReply } from './linkAI';
 import taskManager from './taskManager';
 
 // 文字聊天

@@ -7,6 +7,7 @@ import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
 import { doImageMode } from '../AI/MJ/doImageMode';
 import { uploadFile } from '../AI/MJ/util';
+import { createMusic } from '../AI/Music/createMusic';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
@@ -75,6 +76,11 @@ const handleText = async (message: TextMessage, res: any) => {
   const isConfirmClearance = message.Content.startsWith('确认核销');
 
   if (isAdmin) {
+    if (message.Content.startsWith('创作音乐')) {
+      await createMusic(message, res);
+      return;
+    }
+
     const [cmd, code] = message.Content.split(' ');
 
     if (message.Content === '123321') {

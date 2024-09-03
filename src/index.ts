@@ -82,6 +82,8 @@ async function bootstrap() {
   cron.schedule('0 4 * * *', () => {
     exec(`rm -rf ./tmp/voice/*`);
     exec(`rm -rf ./tmp/image/*`);
+    exec(`rm -rf ./tmp/music/*`);
+    exec(`rm -rf ./tmp/audio/*`);
   });
 
   app.listen(port, async () => {
