@@ -32,6 +32,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
   const { FromUserName: userId, Content: text } = message;
 
   const gpt_description_prompt = text.replace('创作音乐', '');
+  console.log('gpt_description_prompt: ', gpt_description_prompt);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
 
   let response: any;
   try {
-    response = await axios.post(BASE_URL + PATH, { gpt_description_prompt }, { headers });
+    response = await axios.post(BASE_URL + PATH, { gpt_description_prompt, mv: 'chirp-v3-5' }, { headers });
 
     console.log({ response: response.data });
 
