@@ -45,7 +45,6 @@ export const createMusic = async (message: TextMessage, res: any) => {
   try {
     response = await axios.post(BASE_URL + PATH, { gpt_description_prompt, mv: 'suno_music' }, { headers });
 
-    console.log('++++++++++++++');
     console.log({ response: response.data });
 
     if (response?.data.code !== 'success') {
