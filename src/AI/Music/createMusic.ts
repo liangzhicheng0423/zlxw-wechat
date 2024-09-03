@@ -59,10 +59,12 @@ export const createMusic = async (message: TextMessage, res: any) => {
 
   const taskId = response.data.data;
 
+  console.log('创建一个新的Worker线程');
   // 创建一个新的Worker线程
-  const worker = new Worker(path.join(__dirname, './musicThread.ts'));
+  const worker = new Worker(path.join(__dirname, './musicThread.js'));
 
   // 发送消息给Worker线程
+  console.log('发送消息给Worker线程');
   worker.postMessage({ taskId });
 
   worker.on('message', async (res: CreateMusicResponseData | null) => {
@@ -73,7 +75,7 @@ export const createMusic = async (message: TextMessage, res: any) => {
         return;
       }
 
-      console.log(res);
+      console.log('任务轮训结果', res);
 
       const outputDir = path.join(__dirname, '../../../tmp/music');
       console.log('outputDir: ', outputDir);
