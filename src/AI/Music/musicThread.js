@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { parentPort } = require('worker_threads');
 
-const PATH = '/task/suno/v1/fetch';
+const PATH = '/suno/fetch';
 const BASE_URL = 'https://api.bltcy.ai';
 const API_KEY = 'sk-rEI1JL9r2q3rQU4DFd6627A002B047BcA3D24450B63d3381';
 
