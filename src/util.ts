@@ -7,6 +7,7 @@ import fs from 'fs';
 import Jimp from 'jimp';
 import moment, { Moment } from 'moment';
 import path from 'path';
+import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
 import { MJConfig } from './AI/MJ/types';
@@ -266,6 +267,24 @@ export const sendMusic = async (data: {
   } catch (error) {
     console.log('【sendMessage】 error: ', error);
   }
+};
+
+export const sharpImage = (inputImagePath: string, outputImagePath: string) => {
+  return new Promise((resolve, reject) => {
+    // 裁剪并调整图片尺寸为 520x416
+    sharp(inputImagePath)
+      .resize(520, 416, {
+        fit: sharp.fit.cover, // 确保图片被裁剪到目标尺寸
+        position: sharp.strategy.entropy // 使用 entropy 策略裁剪（可以自动选择最佳裁剪区域）
+      })
+      .toFile(outputImagePath)
+      .then(() => {
+        console.log('Image successfully cropped and saved as:', outputImagePath);
+      })
+      .catch(err => {
+        console.error('Error while processing image:', err);
+      });
+  });
 };
 
 export const sendImage = async (userId: string, mediaId: string) => {

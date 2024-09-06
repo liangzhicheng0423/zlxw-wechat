@@ -3,6 +3,7 @@ import COS from 'cos-nodejs-sdk-v5';
 import fs from 'fs';
 import moment from 'moment';
 import path from 'path';
+import sharp from 'sharp';
 import { chatWithTextAI } from '../AI/GPT4';
 import { chatWithDrawAI } from '../AI/MJ';
 import { doImageMode } from '../AI/MJ/doImageMode';
@@ -36,6 +37,7 @@ import {
   sendMessage,
   sendMusic,
   sendServiceQRcode,
+  sharpImage,
   uploadTemporaryMedia,
   voice2Text,
   voiceToText
@@ -82,12 +84,23 @@ const handleText = async (message: TextMessage, res: any) => {
       // await createMusic(message, res);
       const url = 'https://cdn.ai-xiaowu.com/%E6%9F%AF%E5%9F%BA.mp3';
 
+      // 输入图像的路径
+      const inputImagePath = path.join(__dirname, '../tmp/image/WechatIMG1115.jpg');
+
+      // 输出图像的路径
+      const outputImagePath = path.join(__dirname, '../tmp/image/WechatIMG1115-2.jpg');
+
+      await sharpImage(inputImagePath, outputImagePath);
+
+      const uploadRes = await uploadTemporaryMedia(outputImagePath, 'image');
+      const media_id = uploadRes.media_id;
+
       await sendMusic({
         userId,
         title: '柯基',
         musicurl: url,
         hqmusicurl: url,
-        thumb_media_id: 'FLs_fBoOlhvVW6z2cE128nGA_-iBrJulgva63AHd5f05eaGQxhBmR2bLfIAqkYpD'
+        thumb_media_id: media_id
       });
       return;
     }
