@@ -246,6 +246,28 @@ export const sendMessage = async (userId: string, text: string): Promise<void> =
   }
 };
 
+export const sendMusic = async (data: {
+  userId: string;
+  title: string;
+  musicurl: string;
+  hqmusicurl: string;
+  thumb_media_id: string;
+  description?: string;
+}) => {
+  try {
+    const { userId, title, description, musicurl, thumb_media_id, hqmusicurl } = data;
+    const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {
+      touser: userId,
+      msgtype: 'music',
+
+      music: { title, description, musicurl, thumb_media_id, hqmusicurl }
+    });
+    console.log('sendMessage response:', response.data);
+  } catch (error) {
+    console.log('【sendMessage】 error: ', error);
+  }
+};
+
 export const sendImage = async (userId: string, mediaId: string) => {
   try {
     const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/custom/send', {

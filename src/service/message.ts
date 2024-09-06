@@ -34,6 +34,7 @@ import {
   sendDanText,
   sendImage,
   sendMessage,
+  sendMusic,
   sendServiceQRcode,
   uploadTemporaryMedia,
   voice2Text,
@@ -77,7 +78,17 @@ const handleText = async (message: TextMessage, res: any) => {
 
   if (isAdmin) {
     if (message.Content.startsWith('创作音乐')) {
-      await createMusic(message, res);
+      // https://cdn.ai-xiaowu.com/%E6%9F%AF%E5%9F%BA.mp3
+      // await createMusic(message, res);
+      const url = 'https://cdn.ai-xiaowu.com/%E6%9F%AF%E5%9F%BA.mp3';
+
+      await sendMusic({
+        userId,
+        title: '柯基',
+        musicurl: url,
+        hqmusicurl: url,
+        thumb_media_id: 'FLs_fBoOlhvVW6z2cE128nGA_-iBrJulgva63AHd5f05eaGQxhBmR2bLfIAqkYpD'
+      });
       return;
     }
 
