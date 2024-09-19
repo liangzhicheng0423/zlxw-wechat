@@ -10,7 +10,6 @@ const getAccessToken = async () => {
   // 通过code获取access_token和openid
   const response = await axios.get(
     `https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=oHBuD6awi6Jsb3cckL3f93VO1TZA`
-    // `http://api.weixin.qq.com/sns/oauth2/access_token?appid=${APP_ID}&secret=${APP_SECRET}&code=${code}&grant_type=authorization_code`
   );
 };
 
