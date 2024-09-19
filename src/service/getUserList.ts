@@ -30,6 +30,6 @@ export const getUserList = async (message: TextMessage) => {
 
     console.log('获取用户列表：', response.data);
   } catch (error) {
-    console.log('getUserList error', error);
+    console.log('getUserList error');
   }
 };
