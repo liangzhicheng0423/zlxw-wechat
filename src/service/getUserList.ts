@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
-import { Product, VipLevel } from '../types';
+import { Product, TextMessage, VipLevel } from '../types';
 import { getOrderUrlForTemp } from '../util';
 
 const getAccessToken = async () => {
@@ -13,12 +13,12 @@ const getAccessToken = async () => {
   );
 };
 
-export const getUserList = async () => {
+export const getUserList = async (message: TextMessage) => {
   const url = getOrderUrlForTemp({ level: VipLevel.Year, product: Product.Group, boon: true });
   try {
     // 发送请求
     const response = await axios.post('http://api.weixin.qq.com/cgi-bin/message/template/send', {
-      touser: 'oHBuD6evwpLpv9MSr9xflzXi10Ks',
+      touser: message.FromUserName,
       template_id: 'j8mwUuaIWpjDbcSicc6RspTpz3m7ibPgHWDtG634BRI',
       url,
       data: {
