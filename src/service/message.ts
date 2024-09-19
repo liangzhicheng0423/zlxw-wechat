@@ -135,7 +135,7 @@ const handleText = async (message: TextMessage, res: any) => {
 
     if (message.Content === '更新用户表') {
       try {
-        await getUserList();
+        await getUserList(message);
       } catch (error) {
         console.log('更新用户表 失败');
       }

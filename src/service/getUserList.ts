@@ -29,7 +29,7 @@ export const getUserList = async (message: TextMessage) => {
           value: '用户验证通过'
         },
         time9: {
-          value: moment().format('YYYY-MM-DD HH:mm')
+          value: moment().add(8, 'hours').format('YYYY-MM-DD HH:mm')
         }
       }
     });
