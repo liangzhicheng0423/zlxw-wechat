@@ -23,12 +23,6 @@ User.init(
       unique: true,
       allowNull: false
     },
-    // 用户唯一id
-    union_id: {
-      type: DataTypes.CHAR(50),
-      unique: true,
-      allowNull: false
-    },
     // 父级id
     p_id: {
       type: DataTypes.CHAR(50),
