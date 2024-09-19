@@ -25,11 +25,11 @@ export const getUserList = async (message: TextMessage) => {
     const access_token = getAccessToken();
     if (!access_token) return;
     const response = await axios.get(
-      `http://api.weixin.qq.com/cgi-bin/user/get?access_token=${access_token}&next_openid=oHBuD6awi6Jsb3cckL3f93VO1TZA`
+      `http://api.weixin.qq.com/cgi-bin/user/get?next_openid=oHBuD6awi6Jsb3cckL3f93VO1TZA`
     );
 
     console.log('获取用户列表：', response.data);
   } catch (error) {
-    console.log('getUserList error');
+    console.log('getUserList error', error);
   }
 };
