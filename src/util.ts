@@ -369,6 +369,18 @@ export const getTextReplyUrl = (reply: string, display?: string) => {
   return `<a href="weixin://bizmsgmenu?msgmenucontent=${reply}&msgmenuid=${msgMenUid}">${display ?? reply}</a>`;
 };
 
+export const getOrderUrlForTemp = (params?: OrderBody) => {
+  const baseUrl = 'https://wechat.ai-xiaowu.com/authorize';
+
+  // 将 params 对象转换为查询字符串
+  const queryString = params ? new URLSearchParams(params as any).toString() : '';
+
+  // 拼接查询字符串到 URL 后面
+  const urlWithParams = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+  return urlWithParams;
+};
+
 export const getOrderUrl = (name: string, params?: OrderBody) => {
   const baseUrl = 'https://wechat.ai-xiaowu.com/authorize';
 

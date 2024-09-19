@@ -35,6 +35,7 @@ import {
   voice2Text
 } from '../util';
 import { create, menuEvent } from './create';
+import { getUserList } from './getUserList';
 import { subscribe } from './subscribe';
 
 const { COS_SECRET_ID, COS_SECRET_KEY } = process.env;
@@ -127,6 +128,16 @@ const handleText = async (message: TextMessage, res: any) => {
         console.log(response.data);
       } catch (error) {
         console.log('error: ', error);
+      }
+
+      return;
+    }
+
+    if (message.Content === '更新用户表') {
+      try {
+        await getUserList();
+      } catch (error) {
+        console.log('更新用户表 失败');
       }
 
       return;
