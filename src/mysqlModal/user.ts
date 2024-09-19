@@ -23,6 +23,12 @@ User.init(
       unique: true,
       allowNull: false
     },
+    // 用户唯一id
+    union_id: {
+      type: DataTypes.CHAR(50),
+      unique: true,
+      allowNull: false
+    },
     // 父级id
     p_id: {
       type: DataTypes.CHAR(50),
@@ -121,6 +127,11 @@ User.init(
     disabled: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: 0
+    }, // 是否禁用
+    is_find: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
       defaultValue: 0
     }
   },
