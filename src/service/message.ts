@@ -36,6 +36,7 @@ import {
 } from '../util';
 import { create, menuEvent } from './create';
 import { getUserList } from './getUserList';
+import { sendCard } from './sendCard';
 import { subscribe } from './subscribe';
 
 const { COS_SECRET_ID, COS_SECRET_KEY } = process.env;
@@ -139,7 +140,11 @@ const handleText = async (message: TextMessage, res: any) => {
       } catch (error) {
         console.log('更新用户表 失败');
       }
+      return;
+    }
 
+    if (message.Content === '推送模板消息') {
+      await sendCard(message, res);
       return;
     }
 
