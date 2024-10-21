@@ -201,15 +201,21 @@ export const unifiedorderCb = async (req: any, res: any) => {
       expire_date
     });
 
-    await Order.create({
-      user_id: userId,
-      product,
-      vip_level,
-      out_trade_no,
-      transaction_id,
-      fee: message.totalFee,
-      expire_date
-    });
+    try {
+      await Order.create({
+        user_id: userId,
+        p_user: formatUser?.p_id,
+        channel: formatUser?.channel_code,
+        product,
+        vip_level,
+        out_trade_no,
+        transaction_id,
+        fee: message.totalFee,
+        expire_date
+      });
+    } catch (error) {
+      console.error('创建订单表错误', error);
+    }
 
     // START -------- 更新该用户针对该产品的到期时间 ------------
 

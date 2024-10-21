@@ -17,6 +17,16 @@ Order.init(
       type: DataTypes.CHAR(50),
       allowNull: false
     },
+    // 父用户
+    p_user: {
+      type: DataTypes.CHAR(50),
+      allowNull: true
+    },
+    // 渠道
+    channel: {
+      type: DataTypes.CHAR(50),
+      allowNull: true
+    },
     // 产品
     product: {
       type: DataTypes.CHAR(50),
