@@ -361,9 +361,11 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
   switch (Event) {
     case 'subscribe':
-      await updateRedis();
-      await subscribe(message);
-      break;
+      // TODO: 下线付款
+      return;
+    // await updateRedis();
+    // await subscribe(message);
+    // break;
 
     case 'unsubscribe':
       const user = await User.findOne({ where: { user_id: FromUserName } });
@@ -379,48 +381,50 @@ const handleEvent = async (message: EventMessage, res: any) => {
       break;
 
     case 'SCAN':
-      if (!EventKey) return;
+      // TODO: 下线付款
+      return;
+    // if (!EventKey) return;
 
-      // 临时用户，从微信过来的
-      if (EventKey.endsWith('_temp_use')) {
-        const temp_user_id = extractBetween(EventKey, '', '_temp_user');
+    // // 临时用户，从微信过来的
+    // if (EventKey.endsWith('_temp_use')) {
+    //   const temp_user_id = extractBetween(EventKey, '', '_temp_user');
 
-        const [user, created] = await User.findOrCreate({
-          where: { user_id: FromUserName },
-          defaults: { subscribe_status: true, xiaowu_id: temp_user_id }
-        });
+    //   const [user, created] = await User.findOrCreate({
+    //     where: { user_id: FromUserName },
+    //     defaults: { subscribe_status: true, xiaowu_id: temp_user_id }
+    //   });
 
-        if (!created && !user.toJSON().xiaowu_id) {
-          await user.update({ xiaowu_id: temp_user_id });
-        }
+    //   if (!created && !user.toJSON().xiaowu_id) {
+    //     await user.update({ xiaowu_id: temp_user_id });
+    //   }
 
-        return;
-      }
+    //   return;
+    // }
 
-      // 会员用户，从微信过来的
-      if (EventKey.endsWith('_vip_use')) return;
+    // // 会员用户，从微信过来的
+    // if (EventKey.endsWith('_vip_use')) return;
 
-      // 二维码中携带了上一个用户的id
-      const who = getBeforeQuestionMark(EventKey);
+    // // 二维码中携带了上一个用户的id
+    // const who = getBeforeQuestionMark(EventKey);
 
-      console.log('【SCAN】 who: ', who);
+    // console.log('【SCAN】 who: ', who);
 
-      if (who === FromUserName) return;
+    // if (who === FromUserName) return;
 
-      const reply = [
-        '🎉 成功获取惊喜彩蛋专链',
-        '🎟 199元/365天无限次使用，支持7天无理由',
-        '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
-        `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
-      ];
+    // const reply = [
+    //   '🎉 成功获取惊喜彩蛋专链',
+    //   '🎟 199元/365天无限次使用，支持7天无理由',
+    //   '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
+    //   `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
+    // ];
 
-      await sendMessage(FromUserName, reply.join('\n\n'));
+    // await sendMessage(FromUserName, reply.join('\n\n'));
 
-      await sendMessage(FromUserName, '成功抢到后务必添加客服，发“激活”自动拉群');
+    // await sendMessage(FromUserName, '成功抢到后务必添加客服，发“激活”自动拉群');
 
-      await sendServiceQRcode(FromUserName);
+    // await sendServiceQRcode(FromUserName);
 
-      break;
+    // break;
 
     case 'CLICK':
       if (!EventKey) return;
@@ -477,15 +481,19 @@ const handleMessage = async (message: WeChatMessage, res: any) => {
       break;
 
     case 'text':
-      await handleText(message, res);
+      // TODO: 下线付款
+      return;
+      // await handleText(message, res);
       break;
 
     case 'image':
-      await doImageMode(message, res);
+      // TODO: 下线付款
+      // await doImageMode(message, res);
       break;
 
     case 'voice':
-      handleVoice(message, res);
+      // TODO: 下线付款
+      // handleVoice(message, res);
       break;
 
     default:
