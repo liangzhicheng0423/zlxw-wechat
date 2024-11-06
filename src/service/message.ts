@@ -361,7 +361,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
   switch (Event) {
     case 'subscribe':
-      await updateRedis();
+      // await updateRedis();
       await subscribe(message);
       break;
 
