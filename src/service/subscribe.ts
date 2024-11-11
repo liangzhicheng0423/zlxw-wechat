@@ -65,7 +65,7 @@ export const subscribe = async (message: EventMessage) => {
 
     const reply = [
       '🎉 成功获取惊喜彩蛋专链',
-      '🎟 199元/365天无限次使用，支持7天无理由',
+      '🎟 199元/365天无限次使用，支持14天无理由',
       '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
       `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
     ];
