@@ -338,7 +338,7 @@ const handleText = async (message: TextMessage, res: any) => {
         '👩🏻‍💻 助理小吴AI群，新用户首次体验价399元/年',
         '🎟️ 折上叠加100元限时立减券，仅需',
         `👉🏻 ${getOrderUrl('299元/年，马上抢', { level: VipLevel.Year, product: Product.Group, isRecommend: true })}🔥`,
-        '7️⃣ 支持14天无理由，下单后添加客服激活'
+        '7️⃣ 支持7天无理由，下单后添加客服激活'
       ];
       // await sendMessage(message.FromUserName, saleReply.join('\n\n'));
 
@@ -409,7 +409,7 @@ const handleEvent = async (message: EventMessage, res: any) => {
 
       const reply = [
         '🎉 成功获取惊喜彩蛋专链',
-        '🎟 199元/365天无限次使用，支持14天无理由',
+        '🎟 199元/365天无限次使用，支持7天无理由',
         '🎫 仅限100张，以下单成功页面为准，下单失败就是抢光了～',
         `👉🏻 ${getOrderUrl('点此立即抢购', { level: VipLevel.Year, product: Product.Group, boon: true })}`
       ];
