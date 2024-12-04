@@ -343,7 +343,7 @@ export const mergeImages = async (image1Path: string, image2Path: string, output
   }
 };
 
-function generateRandomString(length = 3) {
+export const generateRandomString = (length = 3) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   const charactersLength = characters.length;
@@ -351,7 +351,7 @@ function generateRandomString(length = 3) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-}
+};
 
 export const generateOrderNumber = (level: VipLevel, product: Product) => {
   return `${Date.now()}_${generateRandomString()}_${level}_${product}`;

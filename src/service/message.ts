@@ -9,7 +9,7 @@ import { uploadFile } from '../AI/MJ/util';
 import { decrypt } from '../crypto';
 import { ClearanceCode } from '../mysqlModal/clearanceCode';
 import { User } from '../mysqlModal/user';
-import { getMode, setMode, updateRedis } from '../redis';
+import { getMode, getRedisClient, getRefundSecretKey, setMode, updateRedis } from '../redis';
 import { EventMessage, Product, TextMessage, VipLevel, VoiceMessage, WeChatMessage } from '../types';
 import {
   createQRCode,
@@ -17,6 +17,7 @@ import {
   downloadImage,
   downloadTempVoiceFile,
   extractBetween,
+  generateRandomString,
   getAiGroupText,
   getBeforeQuestionMark,
   getDanText,
@@ -68,9 +69,20 @@ const handleText = async (message: TextMessage, res: any) => {
   const baseReply = getReplyBaseInfo(message);
   const userId = message.FromUserName;
 
+  const redis = getRedisClient();
+
   const isAdmin = admins.includes(userId);
   const isClearance = message.Content.startsWith('核销');
   const isConfirmClearance = message.Content.startsWith('确认核销');
+
+  // 判断是否是管理员
+  if (message.Content === '生成退款密钥' && isAdmin) {
+    const secret = generateRandomString(8);
+    await sendMessage(userId, ['密钥生成成功，三小时后失效', secret].join('\n\n'));
+    const key = getRefundSecretKey();
+    await redis?.set(key, secret, 'EX', 60 * 60 * 3);
+    return;
+  }
 
   if (isAdmin) {
     if (message.Content.startsWith('创作音乐')) {

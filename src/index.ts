@@ -13,6 +13,7 @@ import { create, deleteMenu } from './service/create';
 import { getUserInfo } from './service/getUserInfo';
 import { onMessage } from './service/message';
 import { unifiedorder, unifiedorderCb } from './service/order';
+import { refund, refundRes } from './service/refund';
 import { uploadPermanentImageMedia } from './util';
 
 const logger = morgan('tiny');
@@ -72,6 +73,12 @@ app.post('/drawSuccess', async (req, res) => {
 
 /** 自定义菜单 */
 app.post('/create', create);
+
+/** 发起退款申请 */
+app.post('/refund', refund);
+
+/** 退款申请状态 */
+app.post('/refundRes', refundRes);
 
 const port = process.env.PORT || 80;
 

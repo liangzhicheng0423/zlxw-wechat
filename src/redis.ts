@@ -46,6 +46,9 @@ export const getRedisClient = (): Redis | null => {
  * 3. 免费额度: ${userId}_free_count  // number
  */
 
+// 退款密钥
+export const getRefundSecretKey = () => 'refundSecret';
+
 export const getModeKey = (userId: string) => `${userId}_mode`;
 
 export const getVipKey = (userId: string) => `${userId}_is_vip`;
