@@ -248,7 +248,7 @@ export const unifiedorderCb = async (req: any, res: any) => {
       else userExpireDate = getExpireDate(moment(userProduct.toJSON().expire_date), vip_level);
     }
 
-    await userProduct.update({ expire_date: userExpireDate });
+    await userProduct.update({ expire_date: userExpireDate, last_date: moment() });
 
     // END -------- 更新该用户针对该产品的到期时间 ------------
 
