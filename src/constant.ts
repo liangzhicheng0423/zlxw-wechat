@@ -21,7 +21,8 @@ export enum MenuKey {
   BusinessCooperation = 'business_cooperation',
   SharingIsPolite = 'sharing_is_polite',
   MyAccount = 'my_account',
-  More = 'more'
+  More = 'more',
+  AfterSales = 'After_sales'
 }
 
 export const Menu = {
@@ -58,12 +59,17 @@ export const Menu = {
 
 export const MenuTemp = {
   button: [
-    { type: 'view', name: '官网', url: 'https://ai-xiaowu.com' },
-    { type: 'view', name: '教程', url: 'https://i1ze0gf4g8p.feishu.cn/wiki/FfeFwwLA4i54uykQlT2cHx70nsd' },
+    // { type: 'view', name: '官网', url: 'https://ai-xiaowu.com' },
+    { type: 'view', name: '使用教程', url: 'https://i1ze0gf4g8p.feishu.cn/wiki/FfeFwwLA4i54uykQlT2cHx70nsd' },
     {
       type: 'click',
-      name: '客服',
+      name: '联系客服',
       key: MenuKey.ContactCustomerService
+    },
+    {
+      type: 'click',
+      name: '售后退款',
+      key: MenuKey.AfterSales
     }
   ]
 };

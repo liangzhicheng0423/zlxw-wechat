@@ -120,5 +120,15 @@ export const menuEvent = async (message: WeChatMessage, eventKey: string, res: a
         Image: { MediaId: 'FLs_fBoOlhvVW6z2cE128nGA_-iBrJulgva63AHd5f05eaGQxhBmR2bLfIAqkYpD' }
       });
       break;
+
+    case MenuKey.AfterSales:
+      res.send({
+        ...baseReply,
+        MsgType: 'text',
+        Content:
+          '系统暂未查询到属于当前账号的订单信息，产品支持7天无理由，您在有效期内添加客服处理即可，客服在线时间为工作日：09:00-21:00，谢谢。'
+      });
+
+      break;
   }
 };
