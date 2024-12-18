@@ -60,17 +60,17 @@ export const Menu = {
 export const MenuTemp = {
   button: [
     // { type: 'view', name: '官网', url: 'https://ai-xiaowu.com' },
-    { type: 'view', name: '使用教程', url: 'https://i1ze0gf4g8p.feishu.cn/wiki/FfeFwwLA4i54uykQlT2cHx70nsd' },
+    // { type: 'view', name: '使用教程', url: 'https://i1ze0gf4g8p.feishu.cn/wiki/FfeFwwLA4i54uykQlT2cHx70nsd' },
     {
       type: 'click',
       name: '联系客服',
       key: MenuKey.ContactCustomerService
-    },
-    {
-      type: 'click',
-      name: '售后退款',
-      key: MenuKey.AfterSales
     }
+    // {
+    //   type: 'click',
+    //   name: '售后退款',
+    //   key: MenuKey.AfterSales
+    // }
   ]
 };
 
